@@ -1,0 +1,37 @@
+<% 
+const Table = (items, style) => (include('../atoms/table/table', {items, style}));
+const TableRow = (items, style) => (include('../atoms/table/row', {items, style}));
+const TableHeader = (width, item, style) => (include('../atoms/table/header', {width, item, style}));
+const TableData = (item, style) => (include('../atoms/table/data', {item, style}));
+%>
+
+<%
+const a = Table([
+    TableRow([
+        TableHeader('4%', '번호'),
+        TableHeader('35%', '제목'),
+        TableHeader('10%', '난이도'),
+        TableHeader('35%', '분류'),
+    ]), 
+    TableRow([
+        TableData('A'),
+        TableData('A', 'text-align: left;'),
+        TableData('A'),
+        TableData('A'),
+    ]),
+    TableRow([
+        TableData('A'),
+        TableData('A', 'text-align: left;'),
+        TableData('A'),
+        TableData('A'),
+    ]),
+    TableRow([
+        TableData('A'),
+        TableData('A', 'text-align: left;'),
+        TableData('A'),
+        TableData('A'),
+    ]),
+], 'text-align: center;');
+%>
+
+<%- a %>

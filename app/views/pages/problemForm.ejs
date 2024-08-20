@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <script type="importmap">
+      {
+        "imports": {
+            "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.js",
+            "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.0.0/"
+        }
+      }
+    </script>
+    <link rel='stylesheet' href='https://codersit.co.kr/coders/mission/bootstrap/css/bootstrap.css' />
+    <script src="https://codersit.co.kr/coders/mission/jquery/jquery-3.4.1.min.js"></script>
+    <script src="https://codersit.co.kr/coders/mission/bootstrap/js/popper.min.js"></script>
+    <script src="https://codersit.co.kr/coders/mission/bootstrap/js/bootstrap.js"></script>   
+    <script src="https://codersit.co.kr/coders/confetti_v2.js"></script>
+    <script>
+      window.onload = () => {
+        $('#uploadForm').on('submit', async (event) => {
+          event.preventDefault();
+  
+          const file = document.getElementById('fileInput').files[0];
+          if (!file) {
+            alert('select a file')
+            return;
+          }
+          
+          const formData = new FormData();
+          formData.append('file', file);
+
+          try {
+            const res = await fetch('/api/workspaces', { // 서버 URL을 여기에 적어주세요
+              method: 'POST',
+              body: formData
+            });
+            if (res.ok) {
+              const data = await res.json();
+              console.log(data)
+  
+              Entry.clearProject();
+              Entry.loadProject(data.project);
+            } else {
+              alert('File upload failed.');
+            }
+          } catch (error) {
+            console.error('Error uploading file:', error);
+            alert('An error occurred while uploading the file.');
+          }
+        });
+        
+        const resizer = document.getElementById('resizer');
+        const leftSide = resizer.previousElementSibling;
+        const rightSide = resizer.nextElementSibling;
+
+        let x = 0;
+        let y = 0;
+
+        let leftWidth = 0;
+
+        // resizer에 마우스 이벤트가 발생하면 실행하는 Handler
+        const mouseDownHandler = function (e) {
+          x = e.clientX;
+          y = e.clientY;
+          leftWidth = leftSide.getBoundingClientRect().width;
+
+          document.addEventListener('mousemove', mouseMoveHandler);
+          document.addEventListener('mouseup', mouseUpHandler);
+        };
+
+        const mouseMoveHandler = function (e) {
+          const dx = e.clientX - x;
+          const dy = e.clientY - y;
+
+          document.body.style.cursor = 'col-resize';
+          
+          leftSide.style.userSelect = 'none';
+          leftSide.style.pointerEvents = 'none';
+          
+          rightSide.style.userSelect = 'none';
+          rightSide.style.pointerEvents = 'none';
+          
+          const newLeftWidth = ((leftWidth + dx) * 100) / resizer.parentNode.getBoundingClientRect().width;
+          leftSide.style.width = `${newLeftWidth}%`;
+        };
+
+        const mouseUpHandler = function () {
+          document.body.style.removeProperty('cursor');
+
+          leftSide.style.removeProperty('user-select');
+          leftSide.style.removeProperty('pointer-events');
+          rightSide.style.removeProperty('user-select');
+          rightSide.style.removeProperty('pointer-events');
+          
+          document.removeEventListener('mousemove', mouseMoveHandler);
+          document.removeEventListener('mouseup', mouseUpHandler);
+          window.dispatchEvent(new Event('resize'));
+        };
+        resizer.addEventListener('mousedown', mouseDownHandler);
+      }
+    </script>
+  </head>
+  <body>
+    <div class="d-flex flex-row h-100 w-100">
+      <div id="left" class="d-flex flex-column" style="min-width: 1024px;">
+        <div id="top_nav" style="height: 2.5rem; background-color: #4f80ff;">
+          <form id="uploadForm">
+            <input type="file" id="fileInput" name="file"/>
+            <button type="submit">Upload</button>
+          </form>        
+        </div>
+        <div class="flex-grow-1">
+          <%- include("../organisms/workspace") -%>
+        </div>
+      </div>
+      <div id="resizer" class="resizer h-100" style="background-color: #DDDDDD; border: #999999 solid 1px; cursor: col-resize; width: 0.6rem;"></div>
+      <div id="right" class="d-flex flex-grow-1">
+        <div class="w-100 h-100">
+          <%- include("../organisms/textEditor") -%>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

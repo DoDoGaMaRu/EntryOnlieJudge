@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><%= title %></title>
+
+        <!-- <link rel='stylesheet' href='https://codersit.co.kr/coders/mission/bootstrap/css/bootstrap.css' />
+        <script src="https://codersit.co.kr/coders/mission/jquery/jquery-3.4.1.min.js"></script>
+        <script src="https://codersit.co.kr/coders/mission/bootstrap/js/popper.min.js"></script>
+        <script src="https://codersit.co.kr/coders/mission/bootstrap/js/bootstrap.js"></script>   
+        <script src="https://codersit.co.kr/coders/confetti_v2.js"></script> -->
+        <script>
+            window.onload = () => {
+                $('#btn_submit').click(() => {
+                    const data = JSON.stringify({
+                        project: Entry.exportProject(),
+                    });
+                    $.ajax({
+                        url: '/api/problems/submit/1',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: data,
+                        success: (res) => {
+                            console.log(res);
+                        },
+                        error: (xhr, status, error) => {
+                            console.log(error);
+                        }
+                    })
+                })
+            }
+        </script>
+    </head>
+    <body>
+        <div class="top_nev">
+            <button id="btn_submit">제출</button>
+        </div>
+        <%- include("../organisms/workspace") -%>
+        
+        <!-- <div id="left">
+        <div id="nav h10">
+            
+        </div>
+        <div>
+            
+        </div>
+        </div>
+        <div id="right"></div> -->
+    </body>
+</html>
