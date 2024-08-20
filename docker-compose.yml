@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  coders-boj:
+    container_name: coders-boj
+    image: node:22
+    restart: always
+    tty: true
+    working_dir: /home/node/app
+    environment:
+      TZ: "Asia/Seoul"
+    volumes:
+      - ./app:/home/node/app
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    network_mode: host

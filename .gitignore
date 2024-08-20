@@ -1,0 +1,7 @@
+# dependencies
+/app/node_modules
+**/node_modules
+.DS_store
+/app/.pnpm-store/
+/app/uploads
+/app/resources
