@@ -6,6 +6,10 @@
 	}
 }
 
+body {
+	margin: 0;
+}
+
 .main-container {
 	font-family: 'Lato';
 	width: fit-content;
@@ -25,5 +29,5 @@
 
 .editor-container_classic-editor .editor-container__editor {
 	width: 600px;
-	height: 90%;
+	height: 95%;
 }
