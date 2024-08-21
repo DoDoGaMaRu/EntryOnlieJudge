@@ -1,3 +1,5 @@
+import { installIframeEvent } from './iframeEvent.mjs';
+
 import {
 	ClassicEditor,
 	AccessibilityHelp,
@@ -52,16 +54,12 @@ const editorConfig = {
 			'undo',
 			'redo',
 			'|',
-			'findAndReplace',
-			'selectAll',
-			'|',
 			'bold',
 			'italic',
 			'underline',
 			'|',
 			'specialCharacters',
 			'horizontalLine',
-			'link',
 			'insertTable',
 			'|',
 			'alignment',
@@ -70,6 +68,10 @@ const editorConfig = {
 			'numberedList',
 			'outdent',
 			'indent',
+			'|',
+			'findAndReplace',
+			'selectAll',
+			'link',
 			'|',
 			'accessibilityHelp'
 		],
@@ -141,8 +143,7 @@ const editorConfig = {
 			'resizeImage'
 		]
 	},
-	initialData:
-		'<h2>Congratulations on setting up CKEditor 5! 🎉</h2>\n<p>\n    You\'ve successfully created a CKEditor 5 project. This powerful text editor will enhance your application, enabling rich text editing\n    capabilities that are customizable and easy to use.\n</p>\n<h3>What\'s next?</h3>\n<ol>\n    <li>\n        <strong>Integrate into your app</strong>: time to bring the editing into your application. Take the code you created and add to your\n        application.\n    </li>\n    <li>\n        <strong>Explore features:</strong> Experiment with different plugins and toolbar options to discover what works best for your needs.\n    </li>\n    <li>\n        <strong>Customize your editor:</strong> Tailor the editor\'s configuration to match your application\'s style and requirements. Or even\n        write your plugin!\n    </li>\n</ol>\n<p>\n    Keep experimenting, and don\'t hesitate to push the boundaries of what you can achieve with CKEditor 5. Your feedback is invaluable to us\n    as we strive to improve and evolve. Happy editing!\n</p>\n<h3>Helpful resources</h3>\n<ul>\n    <li>📝 <a href="https://orders.ckeditor.com/trial/premium-features">Trial sign up</a>,</li>\n    <li>📕 <a href="https://ckeditor.com/docs/ckeditor5/latest/installation/index.html">Documentation</a>,</li>\n    <li>⭐️ <a href="https://github.com/ckeditor/ckeditor5">GitHub</a> (star us if you can!),</li>\n    <li>🏠 <a href="https://ckeditor.com">CKEditor Homepage</a>,</li>\n    <li>🧑‍💻 <a href="https://ckeditor.com/ckeditor-5/demo/">CKEditor 5 Demos</a>,</li>\n</ul>\n<h3>Need help?</h3>\n<p>\n    See this text, but the editor is not starting up? Check the browser\'s console for clues and guidance. It may be related to an incorrect\n    license key if you use premium features or another feature-related requirement. If you cannot make it work, file a GitHub issue, and we\n    will help as soon as possible!\n</p>\n',
+	initialData: '<figure class="table" style="width:95%;"><table class="ck-table-resized" style="background-color:hsl( 35, 100%, 80% );border:3px solid hsl( 35, 100%, 80% );"><colgroup><col style="width:100%;"></colgroup><tbody><tr><td><p>&nbsp;</p><p style="margin-left:40px;"><strong>설명</strong></p><p style="margin-left:40px;">&nbsp;</p><p style="margin-left:40px;">&nbsp;</p></td></tr></tbody></table></figure><p>&nbsp;</p><figure class="table" style="width:95%;"><table class="ck-table-resized" style="background-color:hsl( 35, 100%, 80% );border:3px solid hsl( 35, 100%, 80% );"><colgroup><col style="width:100%;"></colgroup><tbody><tr><td><p style="margin-left:40px;">&nbsp;</p><p style="margin-left:40px;"><strong>동작 과정</strong></p><ol><li>&nbsp;시작하기 클릭하기</li><li>&nbsp;</li></ol><p style="margin-left:40px;">&nbsp;</p></td></tr></tbody></table></figure><p>&nbsp;</p><figure class="table" style="width:95%;"><table class="ck-table-resized" style="background-color:hsl( 35, 100%, 80% );border:3px solid hsl( 35, 100%, 80% );"><colgroup><col style="width:100%;"></colgroup><tbody><tr><td><p style="margin-left:40px;"><strong>변수 설명</strong></p></td></tr><tr><td style="background-color:hsl(0, 0%, 100%);"><ul style="list-style-type:disc;"><li>변수 1</li></ul><p style="margin-left:40px;">설명</p><ul style="list-style-type:disc;"><li>변수 2</li></ul><p style="margin-left:40px;">설명</p></td></tr></tbody></table></figure><p>&nbsp;</p><figure class="table" style="width:95%;"><table class="ck-table-resized" style="background-color:hsl( 35, 100%, 80% );border:3px solid hsl( 35, 100%, 80% );"><colgroup><col style="width:47.3%;"><col style="width:52.7%;"></colgroup><tbody><tr><td><p style="margin-left:40px;"><strong>코딩 오브젝트</strong></p></td><td style="background-color:hsl(0, 0%, 100%);"><p style="text-align:center;">오브젝트 명</p></td></tr><tr><td style="background-color:hsl(0, 0%, 100%);" colspan="2"><p style="margin-left:40px;"><strong>지시 사항</strong></p><ul style="list-style-type:disc;"><li>설명</li><li>&nbsp;</li></ul><p>&nbsp;</p><p style="margin-left:40px;"><strong>유의 사항</strong></p><p style="margin-left:40px;">지시 사항에서 설명한 블록만 이용하십시오.</p><p style="margin-left:40px;">그렇지 않은 경우 채점 되지 않습니다.</p><p style="margin-left:40px;">지시 사항 이외의 블록을 변경하였을 경우 "<u>다시 풀기</u>" 버튼을 눌러서 초기화 후 문제를 푸시기 바랍니다.</p></td></tr></tbody></table></figure>',
 	language: 'ko',
 	link: {
 		addTargetToExternalLinks: true,
@@ -172,4 +173,8 @@ const editorConfig = {
 };
 
 
-ClassicEditor.create(document.querySelector('#editor'), editorConfig);
+ClassicEditor.create(document.querySelector('#editor'), editorConfig)
+	.then((editor) => {
+		window.editor = editor;
+		installIframeEvent();
+	});
