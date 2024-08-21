@@ -9,8 +9,7 @@
 .main-container {
 	font-family: 'Lato';
 	width: fit-content;
-	margin-left: auto;
-	margin-right: auto;
+	margin: 0 auto;
 }
 
 .ck-content {
@@ -19,7 +18,12 @@
 	word-break: break-word;
 }
 
+
+.ck, .ck-editor__editable_inline {
+	height: 100%;
+}
+
 .editor-container_classic-editor .editor-container__editor {
-	min-width: 795px;
-	max-width: 795px;
+	width: 600px;
+	height: 90%;
 }

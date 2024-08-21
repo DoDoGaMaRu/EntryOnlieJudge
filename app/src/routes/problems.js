@@ -10,7 +10,5 @@ router.get('/ws/:problemKey', async (req, res) => {
 router.get('/new', async (req, res) => {
   res.render('pages/problemForm', {title: 'new problem test'});
 });
-router.get('/new/aaaa', async (req, res) => {
-  res.render('organisms/textEditor');
-});
+
 export default router;

@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
     const e = {}
-    return res.send("undefined" != typeof Symbol && null != e[Symbol.iterator] || null != e["@@iterator"]) 
+    return res.send("undefined" != typeof Symbol && null != e[Symbol.iterator] || null != e["@@iterator"])
 });
 
 router.get('/create/problem', async (req, res) => {
@@ -66,5 +66,10 @@ router.get('/readJson', (req, res) => {
     });
     res.send(filtered);
 })
+
+router.get('/editor', (req, res) => {
+    res.render('pages/index');
+})
+
 
 export default router;

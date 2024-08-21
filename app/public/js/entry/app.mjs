@@ -2,6 +2,7 @@ import { installPopup } from './popup/index.mjs';
 import { installListTool } from './listTool/index.mjs';
 import { installEntryEvent } from './event.mjs';
 import { installModalProgress } from './modalProgress/index.mjs';
+import { installIframeEvent } from './iframeEvent.mjs';
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -22,7 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
     installModalProgress();
     installListTool();
     installEntryEvent();
-
+    if (self !== top) {
+        installIframeEvent();
+    }
     // const projectData = document.getElementById("projectData");
     // const project = JSON.parse(projectData.value);
     // projectData.parentNode.removeChild(projectData);

@@ -171,4 +171,5 @@ const editorConfig = {
 	translations: [translations]
 };
 
-ClassicEditor.create(document.querySelector('#editor'), editorConfig)
+
+ClassicEditor.create(document.querySelector('#editor'), editorConfig);
