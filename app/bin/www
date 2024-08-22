@@ -17,7 +17,7 @@ var debug = debugManager('node:server');
  */
 
 // const DB_URI = "mongodb://coders-mongodb:27017/blockJudge";
-const DB_URI = "mongodb://root:zhejtm1!@localhost:27017/blockJudge?authSource=admin";
+const DB_URI = "mongodb://root:*********@localhost:27017/blockJudge?authSource=admin";
 const mongoOptions = {
   autoIndex: false,               // Don't build indexes
   maxPoolSize: 10,                // Maintain up to 10 socket connections
