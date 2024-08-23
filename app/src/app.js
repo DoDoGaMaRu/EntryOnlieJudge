@@ -37,7 +37,6 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/entry/assets', express.static(path.join(__dirname, 'resources/assets')));
 app.use('/@entrylabs', express.static(path.join(__dirname, 'node_modules', '@entrylabs')));
 app.use('/ckeditor5', express.static(path.join(__dirname, 'node_modules', 'ckeditor5', 'dist')));
-app.use('/@ckeditor', express.static(path.join(__dirname, 'node_modules', '@ckeditor')));
 
 // TODO load all routes 개발 중에만 사용하고, 나중에는 하드 코딩
 const routesPath = path.join(__dirname, 'src', 'routes');

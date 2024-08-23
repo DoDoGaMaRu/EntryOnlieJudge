@@ -5,10 +5,14 @@ router.get('/', (req, res) => {
   res.render('pages/problemList');
 });
 router.get('/ws/:problemKey', async (req, res) => {
-  res.render('pages/problemPage', {title: 'problem solve test'})
+  const { problemKey } = req.params;
+
+  const title = 'problem solve test';
+  res.render('pages/problemPage', { title, problemKey });
 });
 router.get('/new', async (req, res) => {
-  res.render('pages/problemForm', {title: 'new problem test'});
+  const title = '새 문제 작성';
+  res.render('pages/problemForm', { title });
 });
 
 export default router;

@@ -13,7 +13,7 @@ const ProblemSchema = new Schema(
         categories      : {type: Array, required: true},
         queProjectJson  : {type: Map, required: true},
         ansProjectJson  : {type: Map, required: true},
-        version         : {type: Number, required: true},
+        version         : {type: Number, default: 1}, // TODO findOneAndUpdate(...,{ $inc: { counter: 1 } }, ...) 와 조합
     },
     { timestamps: true },
 );

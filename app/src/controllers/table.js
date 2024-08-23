@@ -53,11 +53,14 @@ const toTable = (file) => {
     }
 }
 
-function getTable(req, res) {
+
+
+// API handlers
+export function getTable(req, res) {
     res.send(aml.get('table'));
 }
 
-function getTableBySearchTerm(req, res) {
+export function getTableBySearchTerm(req, res) {
     const query = req.query.query;
 
     if (!query) {
@@ -71,13 +74,9 @@ function getTableBySearchTerm(req, res) {
     res.send(filteredTables);
 }
 
-function uploadTable(_req, res) {
+export function uploadTable(_req, res) {
     const tables = _req.files.map(toTable)
     res.send({
         uploads: tables,
     })
 }
-
-
-export { getTable, getTableBySearchTerm, uploadTable };
-

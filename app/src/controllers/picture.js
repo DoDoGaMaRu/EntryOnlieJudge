@@ -29,11 +29,12 @@ const toPicture = (file) => {
 }
 
 
-function getCategories(req, res) {
+// API handlers
+export function getCategories(req, res) {
     res.send(aml.get('picture_category'));
 }
 
-function getPictures(req, res) {
+export function getPictures(req, res) {
     const { main_category, sub_category } = req.params;
 
     if (!main_category || !sub_category) {
@@ -48,7 +49,7 @@ function getPictures(req, res) {
     res.send(filteredPictures);
 }
 
-function getPicturesBySearchTerm(req, res) {
+export function getPicturesBySearchTerm(req, res) {
     const query = req.query.query;
 
     if (!query) {
@@ -62,7 +63,7 @@ function getPicturesBySearchTerm(req, res) {
     res.send(filteredPictures);
 }
 
-function uploadPictureAsset(_req, res) {
+export function uploadPictureAsset(_req, res) {
     try {
         const pictures = _req.files.map(toPicture);
         res.send({
@@ -74,7 +75,7 @@ function uploadPictureAsset(_req, res) {
     }
 }
 
-function savePaintedPicture(_req, res) {
+export function savePaintedPicture(_req, res) {
     try {
         const picture = toPicture(_req.file);
         res.send(picture);
@@ -83,5 +84,3 @@ function savePaintedPicture(_req, res) {
         res.sendStatus(400);
     }
 }
-
-export { getCategories, getPictures, getPicturesBySearchTerm, uploadPictureAsset, savePaintedPicture };

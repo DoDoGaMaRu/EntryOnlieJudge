@@ -7,3 +7,7 @@
     bottom: 0;
     right: 0;
 }
+
+#entryCategoryai_utilize, #entryCategoryexpansion, #entryCategoryarduino {
+    display: none;
+}

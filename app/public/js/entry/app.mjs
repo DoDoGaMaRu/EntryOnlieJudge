@@ -2,12 +2,19 @@ import { installPopup } from './popup/index.mjs';
 import { installListTool } from './listTool/index.mjs';
 import { installEntryEvent } from './event.mjs';
 import { installModalProgress } from './modalProgress/index.mjs';
-import { installIframeEvent } from './iframeEvent.mjs';
+import { initIframe } from './iframeEvent.mjs';
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    var initOption = {
-        // 서비스하시는 상대/절대 경로로 지정해주세요.
+    if (self !== top) {
+        initIframe((option) => {
+            initEntry(option);
+        });
+    }
+});
+
+function initEntry(initOption) {
+    var defaultOption = {
         libDir: '',
         type: 'workspace',
         baseUrl: '/',
@@ -15,23 +22,15 @@ document.addEventListener('DOMContentLoaded', () => {
         backpackDisable: true,
         exportObjectEnable: true,
         blockSaveImageEnable: false,
-        iframeDomAccess: 'none', //direct, message, 6none
+        iframeDomAccess: 'none',
     };
+    const option = Object.assign({}, defaultOption, initOption);
+
     Entry.creationChangedEvent = new Entry.Event(window);
-    Entry.init(document.getElementById('workspace'), initOption);
+    Entry.init(document.getElementById('workspace'), option);
     installPopup();
     installModalProgress();
     installListTool();
     installEntryEvent();
-    if (self !== top) {
-        installIframeEvent();
-    }
-    // const projectData = document.getElementById("projectData");
-    // const project = JSON.parse(projectData.value);
-    // projectData.parentNode.removeChild(projectData);
-    // Entry.loadProject(project);
-    
-    Entry.loadProject();
-});
-
+}
 

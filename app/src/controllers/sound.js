@@ -27,11 +27,12 @@ const toSound = async (file) => {
     };
 }
 
-function getCategories(req, res) {
+// API handlers
+export function getCategories(req, res) {
     res.send(aml.get('sound_category'));
 }
 
-function getSounds(req, res) {
+export function getSounds(req, res) {
     const { main_category, sub_category } = req.params;
 
     if (!main_category || !sub_category) {
@@ -46,7 +47,7 @@ function getSounds(req, res) {
     res.send(filteredSounds);
 }
 
-function getSoundsBySearchTerm(req, res) {
+export function getSoundsBySearchTerm(req, res) {
     const query = req.query.query;
 
     if (!query) {
@@ -60,7 +61,7 @@ function getSoundsBySearchTerm(req, res) {
     res.send(filteredSounds);
 }
 
-async function uploadSoundAsset(_req, res) {
+export async function uploadSoundAsset(_req, res) {
     try {
         let sounds = _req.files.map(toSound);
         sounds = await Promise.all(sounds);
@@ -74,4 +75,3 @@ async function uploadSoundAsset(_req, res) {
     }
 }
 
-export { getCategories, getSounds, getSoundsBySearchTerm, uploadSoundAsset };

@@ -9,8 +9,8 @@ const upload = multer({storage});
 
 
 router.get('/', );
-router.get('/:pid', );
-router.post('/', );
+router.get('/:pid', cont.getByKey);
+router.post('/', cont.update);
 router.post('/submit/:pid', cont.judge);
 
 export default router;

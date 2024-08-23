@@ -26,7 +26,9 @@ const extractTarFromBuffer = async (path, buffer) => {
     });
 }
 
-async function entUpload(req, res) {
+
+// API handlers
+export async function entUpload(req, res) {
     const { buffer } = req.file;
     const dir = path.join(BASE_PATH, createName());
     
@@ -34,6 +36,7 @@ async function entUpload(req, res) {
 
     let projectStr = fs.readFileSync(path.join(dir, 'temp', 'project.json'), 'utf-8');
     projectStr = projectStr.replaceAll('./bower_components/entry-js', '/@entrylabs/entry');
+    projectStr = projectStr.replaceAll('./bower_components/entryjs', '/@entrylabs/entry');
     projectStr = projectStr.replaceAll('/lib/entry-js', '/@entrylabs/entry');
     const project = JSON.parse(projectStr);
     
@@ -101,5 +104,3 @@ async function entUpload(req, res) {
     fs.rmSync(dir, { recursive: true, force: true });
     res.send({project});
 }
-
-export { entUpload };

@@ -1,12 +1,17 @@
 const frameEvent = {
     'loadDocument': loadDocument,
     'exportDocument': exportDocument,
-
 }
+
+export const event = {
+	LOAD_DOCUMENT: 'loadDocument',
+	EXPORT_DOCUMENT: 'exportDocument',
+}
+
 
 export function installIframeEvent() {
     window.addEventListener('message', (e) => {
-        // if (e.origin !== 'https://your-trusted-origin.com') {
+        // if (e.origin !== 'https://trusted-origin.com') {
         //     console.warn('Untrusted origin:', e.origin);
         //     return;
         // }

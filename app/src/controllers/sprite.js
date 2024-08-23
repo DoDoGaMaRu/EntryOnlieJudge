@@ -36,11 +36,12 @@ const toSprite = (file) => {
 }
 
 
-function getCategories(req, res) {
+// API handlers
+export function getCategories(req, res) {
     res.send(aml.get('sprite_category'))
 }
 
-function getSprites(req, res) {
+export function getSprites(req, res) {
     const { main_category, sub_category } = req.params;
 
     if (!main_category || !sub_category) {
@@ -55,7 +56,7 @@ function getSprites(req, res) {
     res.send(filteredSprites);
 }
 
-function getSpritesBySearchTerm(req, res) {
+export function getSpritesBySearchTerm(req, res) {
     const query = req.query.query;
 
     if (!query) {
@@ -69,7 +70,7 @@ function getSpritesBySearchTerm(req, res) {
     res.send(filteredSprites);
 }
 
-function uploadSpriteAsset(_req, res) {
+export function uploadSpriteAsset(_req, res) {
     try {
         const sprites = _req.files.map(toSprite);
         res.send({
@@ -80,5 +81,3 @@ function uploadSpriteAsset(_req, res) {
         res.sendStatus(400);
     }
 }
-
-export { getCategories, getSprites, getSpritesBySearchTerm, uploadSpriteAsset };
