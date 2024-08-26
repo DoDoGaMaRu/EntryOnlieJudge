@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+html {
+  background-color: #ddd;
+}
+
+html, body {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: fit-content;
+  overflow-x: hidden;
+}
+
+.main-container {
+  background-color: #fff;
+  font-family: 'Lato';
+  width: 485px;
+  margin: 0 auto;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
