@@ -1,22 +1,28 @@
+import _ from 'lodash';
+
 import Problem from '../models/problem.js';
 
 // API handlers
-export async function getByKey(req, res) {
+export async function getProblemByKey(req, res) {
     try {
-        const { pid } = req.params;
-        const prob = await Problem.findOne({key: pid}, {ansProjectJson: 0});
-        return res.send({problem: prob});
+        const { problemKey } = req.params;
+        const prob = await Problem.findOne({key: problemKey}, {ansProjectJson: 0});
+        const data = {}
+
+        data.problem = prob;
+        
+
+        return res.send(data);
     } catch (error) {
         console.log(error);
         return res.status(400).send(error);
     }
 }
 
-export async function update(req, res) { // 문제 수정도 이 함수에서 수행 예정
+export async function updateProblem(req, res) { // 문제 수정도 이 함수에서 수행 예정
     try {
         const {
             problemKey,
-            userId, // TODO 추후에 세션 적용하고 미들웨어로 가져올 예정 
             title,
             level,
             description,
@@ -24,6 +30,8 @@ export async function update(req, res) { // 문제 수정도 이 함수에서 �
             queProjectJson,
             ansProjectJson,
         } = req.body.problem;
+        const { userId } = req.session.user;
+
         const prob = new Problem();
 
         prob.ownerId = userId;
@@ -44,7 +52,42 @@ export async function update(req, res) { // 문제 수정도 이 함수에서 �
 }
 
 
-export function judge(req, res) {
-    console.log(req.body);
-    res.send(req.body);
+export async function judge(req, res) {
+    const { problemKey, project } = req.body;
+
+    const problem = await Problem.findOne({key: problemKey}).lean();
+
+    let ans = nomalization(problem.ansProjectJson);
+    let dest = nomalization(project);
+    let success = _.isEqual(ans,dest)
+    console.log
+    res.send({ans, dest, success});
+}
+
+function nomalization(project) {
+    for (let obj of project.objects) {
+        obj.script = JSON.parse(obj.script);
+    }
+    keyFilter(project, ['id', 'x', 'y', 'font', 'filename', 'fileurl'], true);
+    return project;
+}
+
+function keyFilter(obj, filter, negative=false) {
+    if (typeof obj !== 'object' || obj === null) {
+        return;
+    }
+
+    if (Array.isArray(obj)) {
+        for (let item of obj) {
+            keyFilter(item, filter, negative);
+        }
+    } else {
+        for (let key in obj) {
+            if (!filter.includes(key) ^ negative) {
+                delete obj[key];
+            } else {
+                keyFilter(obj[key], filter, negative);
+            }
+        }
+    }
 }

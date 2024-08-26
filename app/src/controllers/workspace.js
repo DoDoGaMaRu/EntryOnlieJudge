@@ -5,6 +5,8 @@ import Puid from 'puid';
 import * as tar from 'tar';
 import { Readable } from 'stream';
 
+import Workspace from '../models/workspace.js';
+
 const puid = new Puid();
 const BASE_PATH = 'TEMP';
 
@@ -103,4 +105,43 @@ export async function entUpload(req, res) {
     
     fs.rmSync(dir, { recursive: true, force: true });
     res.send({project});
+}
+
+export async function getSolutionWorkspace(req, res) {
+    try {
+        const { problemKey } = req.params;
+        const { userId } = req.session.user;
+
+        let workspace = await Workspace.findOne({ownerId: userId, key: problemKey, projectType: 'solution'}, {projectJson: 1});
+        return res.status(200).send({ workspace });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send(error);
+    }
+}
+
+export async function saveSolutionWorkspace(req, res) {
+    try {
+        const { problemKey, project } = req.body;
+        const { userId } = req.session.user;
+    
+        let workspace = await Workspace.findOne({ownerId: userId, key: problemKey, projectType: 'solution'});
+        if (workspace) {
+            workspace.projectJson = project;
+        }
+        else {
+            workspace = new Workspace({
+                ownerId: userId,
+                key: problemKey,
+                projectType: 'solution',
+                projectJson: project,
+            });
+        }
+    
+        await workspace.save();
+        return res.status(200).send();
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send(error);
+    }
 }

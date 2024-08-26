@@ -20,14 +20,13 @@ const editor = document.getElementById('editor').contentWindow;
 
 window.onload = () => {
 	init();
-
 	setUploadEvent();
 	setStepEvent();
 	setRollbackEvent();
 	setResetEvent();
 	setSubmitEvent();
 	setInfoPageEvent();
-}
+};
 
 const pages = [
 	{
@@ -214,7 +213,7 @@ function setUploadEvent() {
 
 
 		$.ajax({
-			url: '/api/workspaces',
+			url: '/api/workspaces/ent',
 			type: 'POST',
 			data: formData,
 			processData: false,
@@ -337,6 +336,7 @@ async function outAnsPage() {
 }
 
 async function inQuePage() {
+	$('#loadEnt').removeClass('d-none');
 	$('#rollbackEnt').removeClass('d-none');
 	if (!queProject) {
 		queProject = JSON.parse(JSON.stringify(ansProject));
@@ -345,6 +345,7 @@ async function inQuePage() {
 }
 
 async function outQuePage() {
+	$('#loadEnt').addClass('d-none');
 	$('#rollbackEnt').addClass('d-none');
 	const { project } = await postResponsiveMessage(entry, entryEvent.EXPORT_PROJECT, {}, '*');
 	queProject = project;

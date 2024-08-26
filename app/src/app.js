@@ -1,17 +1,44 @@
-import createError from 'http-errors';
-import cors from 'cors';
-import express from 'express';
-import path from 'path';
-import cookieParser from 'cookie-parser';
-import logger from 'morgan';
 import fs from 'fs';
-import AssetMetaLoader from './lib/AssetMetaLoader.js'
+import path from 'path';
+import cors from 'cors';
+import logger from 'morgan';
+import express from 'express';
+import session from 'express-session';
+import createError from 'http-errors';
+import cookieParser from 'cookie-parser';
+import memoryStoreFactory from 'memorystore';
 
+import AssetMetaLoader from './lib/AssetMetaLoader.js';
 
 const __dirname = path.resolve();
 
 const app = express();
 const aml = new AssetMetaLoader();
+
+// session setting
+const MemoryStore = memoryStoreFactory(session);
+const maxAge = 1000 * 60 * 10;
+const sessionObj = {
+  secret: 'testKey',
+  resave: false,
+  saveUninitialized: false,
+  store: new MemoryStore({ checkPeriod: maxAge }),
+  cookie: {
+    maxAge,
+  },
+};
+function addToSession(req, res, next) {
+  if (!req.session.user) {
+      req.session.user = {
+          username: 'guest',
+          role: 'guest'
+      };
+  }
+  req.session.lastAccess = Date.now();
+  next();
+}
+
+
 
 aml.caching('picture_category');
 aml.caching('picture');
@@ -25,6 +52,8 @@ aml.caching('table');
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+app.use(session(sessionObj));
+app.use(addToSession);
 app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
