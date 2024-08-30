@@ -10,10 +10,9 @@ const ProblemSchema = new Schema(
         title           : {type: String, required: true},
         level           : {type: Number, required: true},
         description     : {type: String, required: true},
-        categories      : {type: Array, required: true},
+        tags            : {type: Array, required: true},
         queProjectJson  : {type: Map, required: true},
         ansProjectJson  : {type: Map, required: true},
-        version         : {type: Number, default: 1}, // TODO findOneAndUpdate(...,{ $inc: { counter: 1 } }, ...) 와 조합
     },
     { timestamps: true },
 );

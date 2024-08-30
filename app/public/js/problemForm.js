@@ -6,25 +6,26 @@ import {
 import { event as entryEvent } from './entry/iframeEvent.mjs';
 import { event as editorEvent } from './ckeditor5/iframeEvent.mjs';
 
+const entry = document.getElementById('entry').contentWindow;
+const editor = document.getElementById('editor').contentWindow;
+
+const defaultDoc = '<figure class="table" style="width:95%;"><table class="ck-table-resized" style="background-color:hsl( 35, 100%, 80% );border:3px solid hsl( 35, 100%, 80% );"><colgroup><col style="width:100%;"></colgroup><tbody><tr><td><p>&nbsp;</p><h3 style="margin-left:40px;"><strong>설명</strong></h3><p style="margin-left:40px;">&nbsp;</p><p style="margin-left:40px;">&nbsp;</p></td></tr></tbody></table></figure><p>&nbsp;</p><figure class="table" style="width:95%;"><table class="ck-table-resized" style="background-color:hsl( 35, 100%, 80% );border:3px solid hsl( 35, 100%, 80% );"><colgroup><col style="width:100%;"></colgroup><tbody><tr><td><p style="margin-left:40px;">&nbsp;</p><h3 style="margin-left:40px;"><strong>동작 과정</strong></h3><ol><li>&nbsp;시작하기 클릭하기</li><li>&nbsp;</li></ol><p style="margin-left:40px;">&nbsp;</p></td></tr></tbody></table></figure><p>&nbsp;</p><figure class="table" style="width:95%;"><table class="ck-table-resized" style="background-color:hsl( 35, 100%, 80% );border:3px solid hsl( 35, 100%, 80% );"><colgroup><col style="width:100%;"></colgroup><tbody><tr><td><p style="margin-left:40px;"><span style="font-size:18px;"><strong>변수 설명</strong></span></p></td></tr><tr><td style="background-color:hsl(0, 0%, 100%);"><ul style="list-style-type:disc;"><li>변수 1</li></ul><p style="margin-left:40px;">설명</p><ul style="list-style-type:disc;"><li>변수 2</li></ul><p style="margin-left:40px;">설명</p></td></tr></tbody></table></figure><p>&nbsp;</p><figure class="table" style="width:95%;"><table class="ck-table-resized" style="background-color:hsl( 35, 100%, 80% );border:3px solid hsl( 35, 100%, 80% );"><colgroup><col style="width:47.3%;"><col style="width:52.7%;"></colgroup><tbody><tr><td><p style="margin-left:40px;"><span style="font-size:18px;"><strong>코딩 오브젝트</strong></span></p></td><td style="background-color:hsl(0, 0%, 100%);"><p style="text-align:center;">오브젝트 명</p></td></tr><tr><td style="background-color:hsl(0, 0%, 100%);" colspan="2"><h3 style="margin-left:40px;"><strong>지시 사항</strong></h3><ul style="list-style-type:disc;"><li>설명</li><li>&nbsp;</li></ul><p>&nbsp;</p><h3 style="margin-left:40px;"><strong>유의 사항</strong></h3><p style="margin-left:40px;">지시 사항에서 설명한 블록만 이용하십시오.</p><p style="margin-left:40px;">그렇지 않은 경우 채점 되지 않습니다.</p><p style="margin-left:40px;">지시 사항 이외의 블록을 변경하였을 경우 "<u>다시 풀기</u>" 버튼을 눌러서 초기화 후 문제를 푸시기 바랍니다.</p></td></tr></tbody></table></figure>';
 let step = 0;
 
 let ansProject = null;
 let queProject = null;
-let tags = {};
+let _tags = {};
 let tagIdx = 0;
-const defaultDoc = '<figure class="table" style="width:95%;"><table class="ck-table-resized" style="background-color:hsl( 35, 100%, 80% );border:3px solid hsl( 35, 100%, 80% );"><colgroup><col style="width:100%;"></colgroup><tbody><tr><td><p>&nbsp;</p><h3 style="margin-left:40px;"><strong>설명</strong></h3><p style="margin-left:40px;">&nbsp;</p><p style="margin-left:40px;">&nbsp;</p></td></tr></tbody></table></figure><p>&nbsp;</p><figure class="table" style="width:95%;"><table class="ck-table-resized" style="background-color:hsl( 35, 100%, 80% );border:3px solid hsl( 35, 100%, 80% );"><colgroup><col style="width:100%;"></colgroup><tbody><tr><td><p style="margin-left:40px;">&nbsp;</p><h3 style="margin-left:40px;"><strong>동작 과정</strong></h3><ol><li>&nbsp;시작하기 클릭하기</li><li>&nbsp;</li></ol><p style="margin-left:40px;">&nbsp;</p></td></tr></tbody></table></figure><p>&nbsp;</p><figure class="table" style="width:95%;"><table class="ck-table-resized" style="background-color:hsl( 35, 100%, 80% );border:3px solid hsl( 35, 100%, 80% );"><colgroup><col style="width:100%;"></colgroup><tbody><tr><td><p style="margin-left:40px;"><span style="font-size:18px;"><strong>변수 설명</strong></span></p></td></tr><tr><td style="background-color:hsl(0, 0%, 100%);"><ul style="list-style-type:disc;"><li>변수 1</li></ul><p style="margin-left:40px;">설명</p><ul style="list-style-type:disc;"><li>변수 2</li></ul><p style="margin-left:40px;">설명</p></td></tr></tbody></table></figure><p>&nbsp;</p><figure class="table" style="width:95%;"><table class="ck-table-resized" style="background-color:hsl( 35, 100%, 80% );border:3px solid hsl( 35, 100%, 80% );"><colgroup><col style="width:47.3%;"><col style="width:52.7%;"></colgroup><tbody><tr><td><p style="margin-left:40px;"><span style="font-size:18px;"><strong>코딩 오브젝트</strong></span></p></td><td style="background-color:hsl(0, 0%, 100%);"><p style="text-align:center;">오브젝트 명</p></td></tr><tr><td style="background-color:hsl(0, 0%, 100%);" colspan="2"><h3 style="margin-left:40px;"><strong>지시 사항</strong></h3><ul style="list-style-type:disc;"><li>설명</li><li>&nbsp;</li></ul><p>&nbsp;</p><h3 style="margin-left:40px;"><strong>유의 사항</strong></h3><p style="margin-left:40px;">지시 사항에서 설명한 블록만 이용하십시오.</p><p style="margin-left:40px;">그렇지 않은 경우 채점 되지 않습니다.</p><p style="margin-left:40px;">지시 사항 이외의 블록을 변경하였을 경우 "<u>다시 풀기</u>" 버튼을 눌러서 초기화 후 문제를 푸시기 바랍니다.</p></td></tr></tbody></table></figure>'
 
 
-const entry = document.getElementById('entry').contentWindow;
-const editor = document.getElementById('editor').contentWindow;
-
-window.onload = () => {
-	init();
+window.onload = async () => {
+	await init();
 	setUploadEvent();
 	setStepEvent();
 	setRollbackEvent();
 	setResetEvent();
 	setSubmitEvent();
+	setExitEvent();
 	setInfoPageEvent();
 };
 
@@ -49,10 +50,10 @@ const pages = [
 // functions
 function addTag(tagName) {
 	const removeTag = id => {
-		delete tags[id];
+		delete _tags[id];
 		$(`#${id}`).remove();
 
-		const tagList = $('#tagList').children()
+		const tagList = $('#tagList').children();
 		for (let i = 0; i < tagList.length; ++i) {
 			tagList[i].children[0].textContent = i + 1;
 		}
@@ -85,18 +86,35 @@ function addTag(tagName) {
 	tr.appendChild(tdRmv);
 
 	$('#tagList').append(tr);
-	tags[id] = tagName;
+	_tags[id] = tagName;
 }
 // functions end
 
 
 // Onloaded
-function init() {
-	// TODO 문제 수정 등 여기서 컨트롤 예정
-
+async function init() {
 	initResizer();
+
 	postMessage(entry, entryEvent.INITIALIZE, {}, '*');
-	postMessage(editor, editorEvent.LOAD_DOCUMENT, { document: defaultDoc }, '*');
+	if (problemKey!==null) {
+		try {
+			const probRes = await fetch(`/api/problems/${problemKey}`);
+			const { problem } = await probRes.json();
+			const { title, ansProjectJson, queProjectJson, description, tags, level } = problem;
+			
+			$('#inputTitle').val(title);
+			$('#inputLevel').val(level);
+			ansProject = ansProjectJson;
+			queProject = queProjectJson;
+			postMessage(editor, editorEvent.LOAD_DOCUMENT, { document: description }, '*');
+			tags.forEach(tagName => addTag(tagName));
+		} catch (error) {
+			alert(`${problemKey} 문제를 가져오는데 실패했습니다.`);
+		}
+	}
+	else {
+		postMessage(editor, editorEvent.LOAD_DOCUMENT, { document: defaultDoc }, '*');
+	}
 }
 
 function initResizer() {
@@ -153,46 +171,35 @@ function initResizer() {
 function setStepEvent() {
 	for (let idx = 0; idx < pages.length; idx++) {
 		$('.nav-indicator').append(`
-            <svg class="indicator" xmlns="http://www.w3.org/2000/svg" height="100%" width="100%" viewBox="0 0 24 24" fill="#999999">
-                <path d="M0 0h24v24H0z" fill="none"/>
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
-            </svg>
-        `);
+			<svg class="indicator" xmlns="http://www.w3.org/2000/svg" height="100%" width="100%" viewBox="0 0 24 24" fill="#999999">
+				<path d="M0 0h24v24H0z" fill="none"/>
+				<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+			</svg>
+		`);
 	}
 
-	function refrashIndicator() {
-		const indicators = document.getElementsByClassName('indicator');
-		for (let idx = 0; idx < pages.length; idx++) {
-			idx === step
-				? indicators[idx].classList.add('indicator-selected')
-				: indicators[idx].classList.remove('indicator-selected');
-		}
-	}
+  const pageChange = async (last, cur) => {
+    $('#navTitle').html(cur.title);
+    const indicators = document.getElementsByClassName('indicator');
+    for (let idx = 0; idx < pages.length; idx++) {
+      idx === step
+        ? indicators[idx].classList.add('indicator-selected')
+        : indicators[idx].classList.remove('indicator-selected');
+    }
 
-	refrashIndicator();
-	$('#navTitle').html(pages[step].title);
-	pages[step].pageIn();
+    await last.pageOut();
+    await cur.pageIn();
+  }
 
+  pageChange(pages[step], pages[step]);
 	$('#btnPrev').on('click', async () => {
 		if (step - 1 >= 0) {
-			const last = pages[step--];
-			const cur = pages[step];
-
-			$('#navTitle').html(cur.title);
-			refrashIndicator();
-			await last.pageOut();
-			await cur.pageIn();
+      pageChange(pages[step--], pages[step]);
 		}
 	});
 	$('#btnNext').on('click', async () => {
 		if (step + 1 < pages.length) {
-			const last = pages[step++];
-			const cur = pages[step];
-
-			$('#navTitle').html(cur.title);
-			refrashIndicator();
-			await last.pageOut();
-			await cur.pageIn();
+      pageChange(pages[step++], pages[step]);
 		}
 	});
 }
@@ -223,8 +230,8 @@ function setUploadEvent() {
 				postMessage(entry, entryEvent.LOAD_PROJECT, { project }, '*');
 			},
 			error: (xhr, status, err) => {
-				console.error('Error uploading file:', error);
-				alert('An error occurred while uploading the file.');
+				console.error('Error uploading file:', err);
+				alert('ent파일 업로드에 실패하였습니다');
 			}
 		});
 	});
@@ -253,28 +260,27 @@ function setSubmitEvent() {
 		await pages[step].pageIn();
 
 		if (confirm("문제를 등록합니다. 진행하시겠습니까?")) {
-			const userId = 'test';
 			const title = $('#inputTitle').val();
 			const level = parseInt($('#inputLevel').val());
 			const description = (await postResponsiveMessage(editor, editorEvent.EXPORT_DOCUMENT, null, '*')).document;
-			const categories = Object.values(tags);
+			const tags = Object.values(_tags);
 			const ansProjectJson = ansProject;
 			const queProjectJson = queProject;
 
-			const pass
-				= title === '' ? (alert('문제 이름을 작성해주세요.'), false)
-					: isNaN(level) ? (alert('난이도를 선택해주세요.'), false)
-						: ansProjectJson === null ? (alert('정답 프로젝트를 작성해주세요.'), false)
-							: queProjectJson === null ? (alert('문제 프로젝트를 작성해주세요.'), false)
-								: true;
+			const pass = 
+				title.trim() === '' 					? (alert('문제 이름을 작성해주세요.'), false): 
+				isNaN(level) 									? (alert('난이도를 선택해주세요.'), false):
+				ansProjectJson === null 			? (alert('정답 프로젝트를 작성해주세요.'), false): 
+				queProjectJson === null 			? (alert('문제 프로젝트를 작성해주세요.'), false): 
+				true;
 
 			if (pass) {
 				const problem = {
-					userId,
+					problemKey,
 					title,
 					level,
 					description,
-					categories,
+					tags,
 					ansProjectJson,
 					queProjectJson,
 				}
@@ -285,11 +291,19 @@ function setSubmitEvent() {
 					data: JSON.stringify({ problem }),
 					success: (res) => {
 						alert('문제가 등록되었습니다!');
-						// TODO
+						window.location.href = `/problems`;
 					},
 					error: (xhs, status, err) => { }
 				});
 			}
+		}
+	});
+}
+
+function setExitEvent() {
+	$('#btnExit').on('click', () => {
+		if (confirm('문제 작성(수정)을 취소하시겠습니까?')) {
+			window.location.href = `/problems`;
 		}
 	});
 }

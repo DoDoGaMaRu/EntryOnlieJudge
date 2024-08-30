@@ -6,18 +6,15 @@
 	}
 }
 
-html {
-	overflow: hidden;
-}
-
 body {
 	margin: 0;
+	overflow-x: hidden;
 }
 
 .main-container {
 	font-family: 'Lato';
-	width: fit-content;
-	margin: 0 auto;
+	min-width: 465px;
+	width: 100%;
 	height: 100%;
 }
 
@@ -27,12 +24,14 @@ body {
 	word-break: break-word;
 }
 
-.ck.ck-editor {
-	max-width: 500px;
-	min-width: 500px;
+.ck.ck-content.ck-editor__editable {
+	max-width: 465px;
+	min-width: 465px;
+	margin: 0 auto;
 }
-.ck-editor__editable {
-	height: 80%;
+
+#editor {
+	height: 100%;
 }
 
 p {

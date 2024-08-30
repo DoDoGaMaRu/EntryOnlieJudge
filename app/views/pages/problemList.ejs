@@ -1,9 +1,98 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>ProblemList</title>
+    <title>
+      <%= title %>
+    </title>
+    <link href="https://codersit.co.kr/theme/daontheme_business03/html/css_js/font.css" rel="stylesheet" type="text/css">
+    <link rel='stylesheet' href='https://codersit.co.kr/coders/mission/bootstrap/css/bootstrap.css' />
+    <script src="https://codersit.co.kr/coders/mission/jquery/jquery-3.4.1.min.js"></script>
+    <script src="https://codersit.co.kr/coders/mission/bootstrap/js/popper.min.js"></script>
+    <script src="https://codersit.co.kr/coders/mission/bootstrap/js/bootstrap.js"></script>
+    <script src="https://codersit.co.kr/coders/confetti_v2.js"></script>
+    <script type="module" src="/js/sessionSync.js"></script>
+    <script type="module" src="/js/problemList.js"></script>
+    <style>
+      body { font-size: 1rem; font-weight: normal; font-family: 'Noto Sans KR', sans-serif; }
+      .no-drag { user-select: none; }
+      th, td { text-align: center; padding: 0.3rem !important; }
+      input:focus { outline:none; }
+      #searchBox { margin: 0.5rem 0; box-sizing: border-box; height: 2rem; border-bottom: solid 2px #444444; padding-bottom: 0.2rem; transition: all 500ms; }
+      #searchBox:hover { border-bottom: solid 2px #4f80ff; }
+      #btnNewProb { height: 1.9rem; font-size: 0.9rem; font-weight: 500; border: none; border-radius: 0.4rem; background-color: #29c45c; color: #FEFEFE;  transition: all 0.2s; }
+      #btnNewProb:hover { background-color: #FEFEFE; color: #555555; }
+      .btn-tag {height: 1.5rem; margin: 0 0.1rem; font-size: 0.8rem; font-weight: 500; color: #EFEFEF; border: none; border-radius: 1rem; background-color: #4f80ff; transition: all 0.2s;}
+      .btn-tag:hover { background-color: #29c45c; }
+    </style>
   </head>
   <body>
-    <%- include("../organisms/problemTable") -%>
+    <div class="d-flex flex-low justify-content-center h-100 w-100">
+      <div class="container d-flex flex-column">
+        <div class="row" style="margin: 1rem 0;">
+          <!-- 검색 등 유틸 -->
+          <div class="col-lg-9">
+
+          </div>
+          <div class="col-lg-3" style="padding: 0;">
+            <div class="low">
+              <div id="searchBox" class="d-flex">
+                <svg xmlns="http://www.w3.org/2000/svg" height="1.6rem" width="1.6rem" viewBox="0 0 24 24" fill="#666666">
+                  <path d="M0 0h24v24H0z" fill="none"/>
+                  <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                </svg>
+                <input id="inputSearch" class="flex-grow-1 ml-1" type="search" style="border: none; height: 1.6rem;" autocomplete='off'/>
+              </div>
+            </div>
+            
+            <div class="low" style="text-align: end; font-size: 0.9rem;">
+              <span>총 </span>
+              <span id="probCount" style="font-weight: bold;"></span> 
+              <span>개의 문제를 찾았습니다.</span>
+            </div>
+          </div>
+
+          <!-- /검색 등 유틸 -->
+        </div>
+        
+        <div class="row">
+          <!-- 테이블 -->
+
+          <div class="col">
+            <table class="table table-striped table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th style="width: 8%;">번호</th>
+                  <th style="width: 32%;">제목</th>
+                  <th style="width: 10%;">난이도</th>
+                  <th style="width: 50%;">분류</th>
+                </tr>
+              </thead>
+              <tbody id="probTable">
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- /테이블 -->
+        </div>
+        
+        <% if (role === 'admin') {%>
+        <div class="low d-flex justify-content-end">
+          <button id="btnNewProb" class="nav-button no-drag">새문제</button>
+        </div>
+        <% } %>
+
+        <div class="row">
+          
+          <!-- pagination navigation -->
+          <nav aria-label="Page navigation" class="w-100">
+            <ul id="pagination" class="pagination justify-content-center">
+
+            </ul>
+          </nav>
+          <!-- /pagination navigation -->
+
+        </div>
+      </div>  
+    </div>
   </body>
 </html>

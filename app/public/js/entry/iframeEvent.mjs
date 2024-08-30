@@ -4,28 +4,12 @@ export const event = {
 	EXPORT_PROJECT: 'exportProject',
 }
 
-export function initIframe(initCallback) {
-    const initializer = (e) => {
-        const { type, payload } = e.data;
-        if (type === event.INITIALIZE) {
-            window.removeEventListener('message', initializer);
-            initCallback(payload);
-            installIframeEvent();
-        }
-        else {
-            console.error('잘못된 요청! IFRAME이 초기화되지 않았습니다.');
-        }
-    };
-    window.addEventListener('message', initializer);
-}
-
-
 const frameEvent = {
     'loadProject': loadProject,
     'exportProject': exportProject,
 }
 
-function installIframeEvent() {
+export function installIframeEvent() {
     window.addEventListener('message', (e) => {
         // if (e.origin !== 'https://your-trusted-origin.com') {
         //     console.warn('Untrusted origin:', e.origin);

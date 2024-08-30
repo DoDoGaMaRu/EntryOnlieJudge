@@ -9,7 +9,7 @@ const PracticeSchema = new Schema(
         ownerId         : {type: String, required: true},
         title           : {type: String, required: true},
         description     : {type: String, required: true},
-        categories      : {type: Array, required: true},
+        tags            : {type: Array, required: true},
         projectJson     : {type: Map, required: true},
     },
     { timestamps: true },

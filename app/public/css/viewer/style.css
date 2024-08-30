@@ -4,20 +4,21 @@ html {
   background-color: #ddd;
 }
 
-html, body {
+html,
+body {
   padding: 0;
   margin: 0;
-  height: 100%;
   width: fit-content;
   overflow-x: hidden;
+  scrollbar-width: thin;
 }
+
 
 .main-container {
   background-color: #fff;
   font-family: 'Lato';
-  width: 485px;
+  width: 465px;
   margin: 0 auto;
-  height: 100%;
-  overflow-y: auto;
   overflow-x: hidden;
 }
+

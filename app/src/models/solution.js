@@ -5,8 +5,7 @@ const SolutionSchema = new Schema(
 		ownerId: { type: String, required: true },
 		key: { type: Number, required: true },
 		projectJson: { type: Map, required: true },
-		state: { type: Number, required: true },
-		problemVersion: { type: Number, required: true },
+		clear: { type: Boolean, required: true },
 	},
 	{ timestamps: true },
 );

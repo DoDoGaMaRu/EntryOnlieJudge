@@ -10,12 +10,22 @@ let viewerClosed = true;
 let queProject = null;
 const entry = document.getElementById('entry').contentWindow;
 const viewer = document.getElementById('viewer').contentWindow;
+const clearSvg = `
+		<svg class="mt-1" xmlns="http://www.w3.org/2000/svg" height="1rem" width="1rem" viewBox="0 0 24 24" fill="#29c45c">
+			<path d="M12 2C6.47 3 3 6.47 3 12s4.47 9 9 9 9-4.47 9-9S17.53 3 12 2z" fill="#EFEFEF"/>
+			<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+		</svg>
+	`;
+
 
 window.onload = async () => {
 	await init();
 	setResetEvent();
 	setSaveEvent();
 	setSubmitEvent();
+	setModifyEvent();
+	setDeleteEvent();
+	setExitEvent();
 };
 
 // Onloaded
@@ -34,7 +44,7 @@ async function init() {
 
 	try {
 		const probRes = await fetch(`/api/problems/${problemKey}`);
-		const { problem } = await probRes.json();
+		const { problem, clear } = await probRes.json();
 		const { title, queProjectJson, description } = problem;
 		
 		const wsRes = await fetch(`/api/workspaces/solution/${problemKey}`);
@@ -44,6 +54,8 @@ async function init() {
 		const project = workspace? workspace.projectJson:queProjectJson;
 
 		$('#navTitle').html(title);
+		if (clear) $('#navTitle').after(clearSvg);
+
 		postMessage(entry, entryEvent.INITIALIZE, entryOption, '*');
 		postMessage(entry, entryEvent.LOAD_PROJECT, {project: project}, '*');
 		postMessage(viewer, viewerEvent.LOAD_DOCUMENT, {document: description}, '*');
@@ -51,6 +63,7 @@ async function init() {
 		alert(`${problemKey} 문제를 가져오는데 실패했습니다.`);
 	}
 }
+
 
 function initResizer() {
 	const resizer = document.getElementById('resizer');
@@ -84,8 +97,8 @@ function initResizer() {
 			rightSide.style.pointerEvents = 'none';
 	
 			const newLeftWidth = ((leftWidth + dx) * 100) / resizer.parentNode.getBoundingClientRect().width;
-			leftSide.style.width = `${newLeftWidth < 5 ? 0:newLeftWidth}%`;
-			rightSide.style.width = `${newLeftWidth < 5 ? 100:99.3-newLeftWidth}%`;
+			leftSide.style.width = `${newLeftWidth<5 ? 0:newLeftWidth}%`;
+			rightSide.style.width = `${newLeftWidth<5 ? 100:99.3-newLeftWidth}%`;
 			// viewerClosed = newLeftWidth < 5;
 	};
 	
@@ -131,8 +144,8 @@ function setSaveEvent() {
 				type: 'POST',
 				contentType: 'application/json',
 				data: JSON.stringify({ problemKey, project }),
-				success: (res) => {},
-				error: (xhs, status, err) => { }
+				success: (res) => {  },
+				error: (xhs, status, err) => {  }
 			});
 		}
 	});
@@ -149,12 +162,48 @@ function setSubmitEvent() {
 					headers: {'Content-Type': 'application/json'},
 					body: JSON.stringify({ problemKey, project })
 				});
-				const {ans, dest, success} = await res.json();
-				alert(success);
-				console.log({ans, dest, success});
+				const {ans, dest, clear} = await res.json();
+				if (clear) {
+					alert('정답입니다!');
+			    window.location.href = '/problems';
+				}
+				else {
+					alert('오답입니다!');
+					console.log({ans, dest, clear});
+				}
 			} catch (error) {
 				console.log(error)
 			}
+		}
+	});
+}
+
+function setModifyEvent() {
+	$('#btnModify').on('click', () => {
+		if (confirm('문제를 수정하시겠습니까?')) {
+			window.location.href = `/problems/modify/${problemKey}`;
+		}
+	});
+}
+
+function setDeleteEvent() {
+	$('#btnDelete').on('click', async () => {
+		if (confirm('정말 문제를 삭제하시겠습니까?')) {
+			try {
+				await fetch(`/api/problems/${problemKey}`, {method: 'DELETE'});
+				alert(`${problemKey}번 문제가 삭제되었습니다`);
+				window.location.href = `/problems`;
+			} catch (error) {
+				alert(`${problemKey}번 문제의 삭제에 실패했습니다`);
+			}
+		}
+	});
+}
+
+function setExitEvent() {
+	$('#btnExit').on('click', async () => {
+		if (confirm('저장하지 않은 변경사항은 사라집니다. 계속하시겠습니까?')) {
+			window.location.href = `/problems`;
 		}
 	});
 }

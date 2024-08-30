@@ -6,6 +6,7 @@
 		<%= title %>
 	</title>
 
+	<link href="https://codersit.co.kr/theme/daontheme_business03/html/css_js/font.css" rel="stylesheet" type="text/css">
 	<link rel='stylesheet' href='https://codersit.co.kr/coders/mission/bootstrap/css/bootstrap.css' />
 	<script src="https://codersit.co.kr/coders/mission/jquery/jquery-3.4.1.min.js"></script>
 	<script src="https://codersit.co.kr/coders/mission/bootstrap/js/popper.min.js"></script>
@@ -13,60 +14,22 @@
 	<script src="https://codersit.co.kr/coders/confetti_v2.js"></script>
 	<script type="module" src="/js/sessionSync.js"></script>
 	<script type="module" src="/js/problemForm.js"></script>
+	<script>
+		const problemKey = <%- problemKey %>;
+	</script>
 	<style>
-		html,
-		body {
-			height: 100%;
-			overflow: hidden;
-		}
-
-		.svg-button {
-			cursor: pointer;
-			transition: fill 0.2s;
-			margin: 0 0.3rem;
-		}
-
-		.svg-button:hover {
-			fill: #999999;
-		}
-
-		.indicator {
-			margin: 0 0.4rem;
-		}
-
-		.indicator-selected {
-			fill: #FAFAFA;
-		}
-
-		.no-drag {
-			user-select: none;
-		}
-
-		#btnSubmit {
-			height: 1.5rem;
-			font-size: 0.8rem;
-			font-weight: 600;
-			color: #555555;
-			border: none;
-			border-radius: 1rem;
-			background-color: #FEFEFE;
-			transition: background-color 0.2s;
-		}
-
-		#btnSubmit:hover {
-			background-color: #29c45c;
-			color: #FEFEFE;
-		}
-
-		label {
-			font-size: 1.2rem;
-			font-weight: bold;
-		}
-
-		table {
-			font-size: 1rem;
-			white-space: nowrap;
-		}
+		html, body { height: 100%; overflow: hidden; font-family: 'Noto Sans KR', sans-serif; }
+		.svg-button { cursor: pointer; transition: fill 0.2s; margin: 0 0.3rem; }
+		.svg-button:hover { fill: #999999; }
+		.indicator { margin: 0 0.4rem; }
+		.indicator-selected { fill: #FAFAFA; }
+		.no-drag { user-select: none; }
+		#btnSubmit { height: 1.5rem; font-size: 0.8rem; font-weight: 600; color: #555555; border: none; border-radius: 1rem; background-color: #FEFEFE; transition: all 0.2s; }
+		#btnSubmit:hover { background-color: #29c45c; color: #FEFEFE; }
+		#btnExit { height: 1.5rem; font-size: 0.8rem; font-weight: 600; color: #555555; border: none; border-radius: 1rem; background-color: #FEFEFE; transition: all 0.2s; }
+		#btnExit:hover { background-color: #e25555; color: #FEFEFE; }
+		label { font-size: 1.2rem; font-weight: bold; }
+		table { font-size: 1rem; white-space: nowrap; }
 	</style>
 </head>
 
@@ -76,24 +39,30 @@
 
 			<div class="top-nav d-flex flex-row justify-content-between align-items-center"
 				style="height: 3rem; padding: 0.3rem 0; background-color: #4f80ff;">
-				<div class="top-nav-left w-25 d-flex flex-row justify-content-between" style="padding: 0 0.3rem;">
-					<svg id="btnPrev" class='svg-button' xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24"
-						height="1.5rem" viewBox="0 0 24 24" width="1.5rem" fill="#FEFEFE">
-						<g>
-							<rect fill="none" height="24" width="24" />
-						</g>
-						<g>
-							<path
-								d="M2,12c0,5.52,4.48,10,10,10s10-4.48,10-10c0-5.52-4.48-10-10-10C6.48,2,2,6.48,2,12z M12,11l4,0v2l-4,0l0,3l-4-4l4-4L12,11 z" />
-						</g>
+				
+				<!-- 좌측 네비게이터 -->
+				<div class="top-nav-left w-25 d-flex flex-row justify-content-start" style="padding: 0 0.3rem;">
+					<svg id="btnPrev" class='svg-button' xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="1.5rem" viewBox="0 0 24 24" width="1.5rem" fill="#FEFEFE">
+						<g><rect fill="none" height="24" width="24" /></g>
+						<g><path d="M2,12c0,5.52,4.48,10,10,10s10-4.48,10-10c0-5.52-4.48-10-10-10C6.48,2,2,6.48,2,12z M12,11l4,0v2l-4,0l0,3l-4-4l4-4L12,11 z" /></g>
 					</svg>
+
+					<div style="border-right: 1px solid #FAFAFA; height: 1rem; margin: auto 0.5rem"></div>
+					<button id="btnExit" class="no-drag">Cancel</button>
+
 				</div>
+				<!-- /좌측 네비게이터 -->
+
+				<!-- 중앙 네비게이터 -->
 				<div class="top-nav-mid w-50 d-flex flex-column align-items-center h-100">
 					<div class="nav-title h-75 d-flex flex-column justify-content-center pb-1">
 						<span id="navTitle" class="no-drag" style="font-size: 1.2rem; color: #FFFFFF; font-weight: 600;"></span>
 					</div>
 					<div class="nav-indicator h-25 d-flex flex-row justify-content-between"></div>
 				</div>
+				<!-- /중앙 네비게이터 -->
+
+				<!-- 우측 네비게이터 -->
 				<div class="top-nav-right w-25 d-flex flex-row justify-content-end" style="padding: 0 0.3rem;">
 					<div class="util-box d-flex flex-row">
 
@@ -147,9 +116,13 @@
 						</g>
 					</svg>
 				</div>
+				<!-- /우측 네비게이터 -->
+				 
 			</div>
 
 			<div class="flex-grow-1 no-drag">
+				
+				<!-- 문제 정보 편집 페이지 -->
 				<div id="infoEditor" class="h-100">
 
 					<div style="height: 2.4rem; background-color: #4f80ff;"></div>
@@ -159,7 +132,7 @@
 
 							<label for="inputTitle" class="col-12">문제 이름</label>
 							<div class="col-md-8">
-								<input type="text" class="form-control" id="inputTitle">
+								<input type="text" class="form-control" id="inputTitle" autocomplete='off'>
 							</div>
 							<div class="col-md-4">
 								<select class="form-control" id="inputLevel">
@@ -175,7 +148,7 @@
 
 								<div class="input-group mb-3">
 									<input id="inputAddTag" type="text" class="form-control" placeholder="태그 이름을 입력해주세요"
-										aria-describedby="button-addon2">
+										aria-describedby="button-addon2" autocomplete='off'>
 									<button id="btnAddTag" class="btn btn-outline-secondary" type="button">추가</button>
 								</div>
 
@@ -199,9 +172,16 @@
 					</div>
 
 				</div>
+				<!-- /문제 정보 편집 페이지 -->
+
+				<!-- 엔트리 -->
 				<iframe id="entry" src="/component/workspace" frameborder="0" class="h-100 w-100"></iframe>
+				<!-- /엔트리 -->
+
 			</div>
 		</div>
+
+		<!-- 리사이저 -->
 		<div id="resizer" class="h-100"
 			style="background-color: #FAFAFA; border: #DDDDDD solid 1px; cursor: col-resize; min-width: 16px; max-width: 16px;">
 			<svg xmlns="http://www.w3.org/2000/svg" width="80%" height="100%" viewBox="0 0 24 24" fill="#AAAAAA">
@@ -209,10 +189,15 @@
 				<rect x="17" y="5" width="3" height="32" rx="1" stroke="#AAAAAA" stroke-linecap="round" />
 			</svg>
 		</div>
+		<!-- /리사이저 -->
+
 		<div id="right" class="d-flex flex-grow-1" style="background-color: #dddddd; overflow: hidden">
+			<!-- 에디터 -->
 			<div class="h-100 w-100 no-drag">
 				<iframe id="editor" src="/component/documentEditor" frameborder="0" class="h-100 w-100"></iframe>
 			</div>
+			<!-- /에디터 -->
+
 		</div>
 	</div>
 </body>

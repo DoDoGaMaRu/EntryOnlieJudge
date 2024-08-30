@@ -17,7 +17,7 @@ const aml = new AssetMetaLoader();
 
 // session setting
 const MemoryStore = memoryStoreFactory(session);
-const maxAge = 1000 * 60 * 10;
+const maxAge = 1000 * 60 * 60;
 const sessionObj = {
   secret: 'testKey',
   resave: false,

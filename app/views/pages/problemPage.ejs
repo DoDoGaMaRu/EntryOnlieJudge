@@ -6,6 +6,7 @@
 		<%= title %>
 	</title>
 
+	<link href="https://codersit.co.kr/theme/daontheme_business03/html/css_js/font.css" rel="stylesheet" type="text/css">
 	<link rel='stylesheet' href='https://codersit.co.kr/coders/mission/bootstrap/css/bootstrap.css' />
 	<script src="https://codersit.co.kr/coders/mission/jquery/jquery-3.4.1.min.js"></script>
 	<script src="https://codersit.co.kr/coders/mission/bootstrap/js/popper.min.js"></script>
@@ -17,7 +18,7 @@
 		const problemKey = <%= problemKey %>
 	</script>
 	<style>
-		html, body { height: 100%; overflow: hidden; }
+		html, body { height: 100%; overflow: hidden; font-family: 'Noto Sans KR', sans-serif;}
 		.no-drag { user-select: none; }
 		.svg-button { cursor: pointer; transition: fill 0.2s; margin: 0 0.3rem; }
 		.svg-button:hover { fill: #999999; }
@@ -26,6 +27,10 @@
 		#btnSubmit:hover { background-color: #FEFEFE; color: #555555; }
 		#btnReset { background-color: #FEFEFE; color: #555555; transition: background-color 0.2s; }
 		#btnReset:hover { background-color: #e25555; color: #FEFEFE; }
+		#btnModify { background-color: #FEFEFE; color: #555555; transition: background-color 0.2s; }
+		#btnModify:hover { background-color: #f1ad19; color: #FEFEFE; }
+		#btnDelete { background-color: #FEFEFE; color: #555555; transition: background-color 0.2s; margin-left: 1rem;}
+		#btnDelete:hover { background-color: #e25555; color: #FEFEFE; }
 		label { font-size: 1.2rem; font-weight: bold; }
 		table { font-size: 1rem; white-space: nowrap; }
 	</style>
@@ -33,20 +38,28 @@
 
 <body>
 	<div class="d-flex flex-column h-100 w-100">
+
 		<div class="top-nav d-flex flex-row justify-content-between align-items-center"
 		style="height: 3rem; padding: 0.3rem 0; background-color: #4f80ff;">
 			<div class="top-nav-left w-25 ml-3 d-flex flex-row justify-content-start" style="padding: 0 0.3rem;">
 				
-				<svg id="replyBtn" class="svg-button" xmlns="http://www.w3.org/2000/svg" height="1.9rem" width="1.9rem" viewBox="0 0 24 24" fill="#FEFEFE"><path d="M0 0h24v24H0z" fill="none"/><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+				<svg id="btnExit" class="svg-button" xmlns="http://www.w3.org/2000/svg" height="1.9rem" width="1.9rem" viewBox="0 0 24 24" fill="#FEFEFE"><path d="M0 0h24v24H0z" fill="none"/><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
 
 				<div style="border-right: 1px solid #FAFAFA; height: 1.3rem; margin: auto 1.3rem"></div>
-				
 				<button id="btnReset" class="nav-button no-drag">다시풀기</button>
 
+				<% if (role === 'admin') {%>
+				<div style="border-right: 1px solid #FAFAFA; height: 1.3rem; margin: auto 1.3rem"></div>
+				<button id="btnModify" class="nav-button no-drag">문제수정</button>
+
+				<button id="btnDelete" class="nav-button no-drag">문제삭제</button>
+				<% } %>
+
 			</div>
-			<div class="top-nav-mid w-50 d-flex flex-column align-items-center h-100">
-				<div class="nav-title h-75 d-flex flex-column justify-content-center pb-1">
-					<span id="navTitle" class="no-drag" style="font-size: 1.2rem; color: #FFFFFF; font-weight: 600;"></span>
+			<div class="top-nav-mid w-50 h-100 d-flex flex-column align-items-center">
+				<div class="nav-title w-100 h-75 d-flex flex-row justify-content-center align-items-center pb-1">
+					<span id="navTitle" class="no-drag d-block" style="font-size: 1.2rem; color: #FFFFFF; font-weight: 600;"></span>
+
 				</div>
 			</div>
 			<div class="top-nav-right w-25 mr-3 d-flex flex-row justify-content-end" style="padding: 0 0.3rem;">
@@ -63,7 +76,7 @@
 
 		
 		<div class="d-flex flex-row flex-grow-1 w-100">
-			<div id="left" class="d-flex flex-column" style="background-color: #dddddd; overflow: hidden; max-width: 485px; width: 485px;">
+			<div id="left" class="d-flex flex-column" style="background-color: #dddddd; overflow: hidden; max-width: 475px; width: 475px;">
 				<iframe id="viewer" src="/component/documentViewer" frameborder="0" class="h-100 w-100"></iframe>
 			</div>
 
@@ -78,6 +91,7 @@
 
 
 			<div id="right" class="d-flex flex-column flex-grow-1" style="min-width: 1024px;">
+
 				<div class="flex-grow-1 no-drag">
 					<iframe id="entry" src="/component/workspace" frameborder="0" class="h-100 w-100"></iframe>
 				</div>

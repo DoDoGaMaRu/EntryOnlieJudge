@@ -1,8 +1,5 @@
 import express from 'express';
 
-import Problem from '../../models/problem.js';
-import Practice from '../../models/practice.js';
-
 const router = express.Router();
 
 
