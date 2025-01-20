@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>
+    <%= title %>
+  </title>
+  <link rel="stylesheet" href="/rookie/css/common.css">
+
+  <link href="https://codersit.co.kr/theme/daontheme_business03/html/css_js/font.css" rel="stylesheet" type="text/css">
+	<link rel='stylesheet' href="https://codersit.co.kr/coders/research/bootstrap/css2/bootstrap.css" />	
+	<script src="https://codersit.co.kr/coders/research/jquery/jquery-3.4.1.min.js"></script>	
+	<script src="https://codersit.co.kr/coders/research/bootstrap/js2/bootstrap.bundle.min.js"></script>
+  <script> 
+    const problemKey = '<%= problemKey %>' 
+  </script>
+	<style>
+    body { font-size: 1rem; font-weight: normal; font-family: 'Noto Sans KR', sans-serif; }
+    th, td { text-align: center; padding: 0.3rem !important; }
+    input:focus { outline:none; }
+    #searchBox { margin: 0.5rem 0; box-sizing: border-box; height: 2rem; border-bottom: solid 2px #444444; padding-bottom: 0.2rem; transition: all 500ms; }
+    #searchBox:hover { border-bottom: solid 2px #4f80ff; }
+
+    
+    /* 테이블 관련 css */
+    tbody tr:hover {background-color: rgba(0, 0, 0, 0.05);}
+    th, td { text-align: center; padding: 0.3rem !important; }
+    th {border-bottom: 1px solid #c8c7d4; font-size: 0.8rem; color: #888888;}
+    td {border-top: 1px solid #c8c7d4;}
+    .table-wraper {border: solid 1px #c8c7d4; background-color: rgba(255, 255, 255, 0.7); border-radius: 0.5rem; overflow: hidden; }
+    .btn-view-solution { cursor: pointer; text-decoration: underline; }
+    .btn-view-solution:hover { font-weight: 500; }
+    .btn-edit {height: 1.4rem; margin-right: 0.2rem; font-size: 0.8rem; font-weight: 500; border: none; border-radius: 0.5rem; background-color: #4f80ff; color: #ffffff; transition: all 0.2s;}
+    .btn-edit:hover { background-color: #DADADA; color: #666666; }
+    .btn-mypage { cursor: pointer; }
+    .btn-mypage:hover { font-weight: 500; }
+	</style>
+</head>
+<body>
+  <%- include('./components/header') %>
+  <script>setCurrentNav('solutions');</script>
+    
+  <%- include('./components/sidebg') %>
+
+  <div class="container fadein mb-5">
+    <div class="row" style="margin: 1rem 0;">
+      <!-- 검색 등 유틸 -->
+      <div class="col-lg-9">
+        <div class="h-100 d-flex flex-column justify-content-end align-items-start">
+          <div style="text-align: start; font-size: 1rem; margin-right: 0.2rem;">
+            <span>총 </span>
+            <span id="solutionCount" style="font-weight: bold;"></span> 
+            <span>개의 솔루션을 찾았어요!</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3" style="padding: 0;">
+        <div id="searchBox" class="d-flex">
+          <svg xmlns="http://www.w3.org/2000/svg" height="1.6rem" width="1.6rem" viewBox="0 0 24 24" fill="#666666">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+          </svg>
+          <input id="inputSearch" class="flex-grow-1 ms-1" type="search" style="border: none; height: 1.6rem;" placeholder="아이디" autocomplete='off'/>
+        </div>
+      </div>
+
+      <!-- /검색 등 유틸 -->
+    </div>
+    
+    <div class="row">
+      <!-- 테이블 -->
+
+      <div class="col">
+        <div class="table-wraper w-100 mb-4">
+          <table class="w-100">
+            <thead>
+              <tr>
+                <th style="width: 8%;">제출번호</th>
+                <th style="width: 8%;">문제번호</th>
+                <th style="width: 34%;">제출자</th>
+                <th style="width: 15%;">상태</th>
+                <th style="width: 10%;">-</th>
+                <th style="width: 25%;">제출시간</th>
+              </tr>
+            </thead>
+            <tbody id="solutionTableBody">
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- /테이블 -->
+    </div>
+
+    <div class="row">
+      
+      <!-- pagination navigation -->
+      <nav aria-label="Page navigation" class="w-100">
+        <ul id="pagination" class="pagination justify-content-center">
+
+        </ul>
+      </nav>
+      <!-- /pagination navigation -->
+
+    </div>
+  </div>  
+
+  
+  <!-- footer -->
+  <%- include('./components/footer') %>
+  <!-- /footer -->
+</body>
+<script>
+  window.onload = async () => {
+    await init();
+    setSearchEvent();
+  }
+
+  async function init() {
+    await loadPage(1, '');
+  }
+
+  function setSearchEvent() {
+    let delayedSearch;
+    $('#inputSearch').on('input', () => {
+      clearTimeout(delayedSearch);
+      delayedSearch = setTimeout(async () => {
+        const query = $('#inputSearch').val();
+        await loadPage(1, query);
+        
+      }, 400);
+    });
+  }
+
+  async function loadPage(page, query) {
+    try {
+      const params = new URLSearchParams();
+      if (query) params.append('query', query);
+      if (page) params.append('page', page);
+      if (problemKey) params.append('problemKey', problemKey);
+
+      const res = await fetch(`/rookie/api/solutions?${params.toString()}`);
+      const { meta, solutions } = await res.json();
+
+      $('#solutionCount').text(meta.totalPost);
+      if (solutions.length > 0) {
+        setSolutionTable(solutions);
+        setPagination(meta, query);
+      }
+      else {
+        $('#solutionTableBody').empty();
+        $('#pagination').empty();
+      }
+
+      
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
+  function setSolutionTable(solutions) {
+    $('#solutionTableBody').empty();
+
+    for (let sol of solutions) {
+      const tr = document.createElement('tr');
+      
+      const tdKey = document.createElement('td');
+      const tdProbKey = document.createElement('td');
+      const tdUserId = document.createElement('td');
+      const tdStatus = document.createElement('td');
+      const tdEdit = document.createElement('td');
+      const tdTime = document.createElement('td');
+
+      const date = new Date(sol.createdAt);
+      const formattedDate = date.toLocaleString('ko-KR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+
+
+      tdKey.textContent = sol.key;
+      tdProbKey.textContent = sol.problemKey;
+      tdUserId.textContent = sol.ownerId;
+      tdUserId.classList.add('btn-mypage');
+      tdUserId.onclick = () => {window.location.href=`/rookie/users/${sol.ownerId}`}
+      if (sol.viewable) {
+        tdStatus.classList.add('btn-view-solution');
+        tdStatus.onclick = () => window.open(`/rookie/solutions/${sol.key}`, '_blank');
+      }
+      if (sol.editable) {
+        const params = new URLSearchParams();
+        params.append('solutionKey', sol.key);
+        const btnEdit = document.createElement('button');
+        btnEdit.textContent = '수정하기';
+        btnEdit.classList.add('btn-edit');
+        btnEdit.onclick = () => window.open(`/rookie/problems/ws/${sol.problemKey}?${params.toString()}`, '_blank');
+        tdEdit.appendChild(btnEdit);
+      }
+      tdStatus.textContent = sol.clear? '맞았습니다':'틀렸습니다';
+      tdStatus.style.color = sol.clear? 'blue':'red';
+      tdTime.textContent = formattedDate;
+
+      tr.appendChild(tdKey);
+      tr.appendChild(tdProbKey);
+      tr.appendChild(tdUserId);
+      tr.appendChild(tdStatus);
+      tr.appendChild(tdEdit);
+      tr.appendChild(tdTime);
+
+      $('#solutionTableBody').append(tr);
+    }
+  }
+
+  function setPagination(meta, query) {
+    $('#pagination').empty();
+
+    function getPageItem(innerHtml, clickEvent) {
+      const li = document.createElement('li'); li.classList.add('page-item');
+      const a = document.createElement('a'); a.classList.add('page-link');
+      li.append(a);
+      a.innerHTML = innerHtml;
+      a.onclick = clickEvent;
+      return li;
+    }
+
+    let temp = meta.currentPage-meta.maxPage;
+    const laquo = getPageItem(`<span aria-hidden="true">&laquo;</span>`, () => {
+      loadPage(temp>0 ? temp:1, query);
+    });
+    
+    temp = meta.currentPage+meta.maxPage;
+    const raquo = getPageItem(`<span aria-hidden="true">&raquo;</span>`, () => {
+      loadPage(temp<=meta.totalPage? temp:meta.totalPage, query);
+    });
+
+    $('#pagination').append(laquo);
+    for (let page=meta.startPage; page<=meta.endPage; page++) {
+      const p = getPageItem(page, () => {loadPage(page, query);});
+      if (page === meta.currentPage) p.classList.add('active');
+      $('#pagination').append(p);
+    }
+
+    $('#pagination').append(raquo);
+  }
+
+</script>
+</html>

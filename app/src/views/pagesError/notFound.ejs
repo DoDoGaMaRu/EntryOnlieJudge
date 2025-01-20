@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      404 | 코더스아이티 루키
+    </title>
+    <link rel="stylesheet" href="/rookie/css/common.css">
+  
+    <link href="https://codersit.co.kr/theme/daontheme_business03/html/css_js/font.css" rel="stylesheet" type="text/css">
+    <link rel='stylesheet' href="https://codersit.co.kr/coders/research/bootstrap/css2/bootstrap.css" />	
+    <script src="https://codersit.co.kr/coders/research/jquery/jquery-3.4.1.min.js"></script>	
+    <script src="https://codersit.co.kr/coders/research/bootstrap/js2/bootstrap.bundle.min.js"></script>
+    <style>
+      body { font-size: 1rem; font-weight: normal; font-family: 'Noto Sans KR', sans-serif; }
+
+    </style>
+  </head>
+  <body>
+    <%
+      _user = {role: 1}
+      _ROLE = {GUEST: 1}
+    %>
+    <%- include('../pages/components/header') %>
+    
+    <%- include('../pages/components/sidebg') %>
+
+    <div class="container fadein d-flex flex-column">
+      
+      <div class="mt-5 w-50 mx-auto pe-2">
+        <img class="w-100" src="/rookie/media/image/404.gif">
+      </div>
+      <div class="mx-auto">
+        <p class="h2">요청한 페이지를 찾을수 없어요</p>
+      </div>
+
+    </div>
+
+    <!-- footer -->
+    <%- include('../pages/components/footer') %>
+    <!-- /footer -->
+  </body>
+</html>

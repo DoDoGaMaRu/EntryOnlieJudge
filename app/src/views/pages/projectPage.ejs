@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      작품 | 코더스아이티 루키
+    </title>
+    <link rel="stylesheet" href="/rookie/css/common.css">
+  
+    <link href="https://codersit.co.kr/theme/daontheme_business03/html/css_js/font.css" rel="stylesheet" type="text/css">
+    <link rel='stylesheet' href="https://codersit.co.kr/coders/research/bootstrap/css2/bootstrap.css" />	
+    <script src="https://codersit.co.kr/coders/research/jquery/jquery-3.4.1.min.js"></script>	
+    <script src="https://codersit.co.kr/coders/research/bootstrap/js2/bootstrap.bundle.min.js"></script>
+    <script>
+      const workspaceOid = '<%-workspaceOid%>'
+    </script>
+    <style>
+      html {overflow: auto !important;}
+      body { font-size: 1rem; font-weight: normal; font-family: 'Noto Sans KR', sans-serif; height: fit-content !important;}
+      .divider {width: 100%; margin: 1rem 0; border-bottom: solid 1px rgba(0,0,0,0.12); }
+      
+      .mini-profile {position: relative; height: 13rem;}
+      .mini-profile-float {
+        position: absolute; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center;
+      }
+
+      .profile-background {
+        border: solid 0.3rem #EFEFEF; 
+        box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5); 
+        margin-top: 2rem; 
+        height: 11rem; 
+        width: 100%; 
+        overflow: hidden; 
+        border-radius: 1rem; 
+        object-fit: cover;
+      }
+      .profile-img {
+        background-color: #FFFFFF;
+        height: 6rem;
+        width: 6rem;
+        border: solid 0.3rem #EFEFEF;
+        border-radius: 100%;
+        box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+      }
+      .user-id {
+        color: #FFFFFF;
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
+      .user-rank {
+        color: #EFEFEF;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
+      
+      .entryPopup {
+        top: 0 !important;
+      }
+
+
+      .tab-nav {
+        position: relative;
+        display: flex;
+        justify-content: start;
+      }
+      .tab-nav-item {
+        font-size: 1.5rem;
+        font-weight: 500;
+        width: 8rem;
+        text-align: center;
+        color: #888888;
+        cursor: pointer;
+        border-bottom: 4px solid rgba(0, 0, 0, 0.13);
+      }
+      .tab-nav-item:hover {
+        color: #333333;
+      }
+      .tab-nav-item.selected {
+        color: #333333;
+      }
+      .tab-item {
+        background-color: rgba(0, 0, 0, 0.03);
+        color: #000000;
+        border: none;
+        resize: none;
+        border-radius: 0 0.5rem 0.5rem 0.5rem;
+        padding: 1.5rem 1.8rem;
+        min-height: 10rem;
+        width: 100%;
+      }
+      #tabNavSelect {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        background-color: #4f80ff;
+        width: 8rem;
+        height: 4px;
+        transition: all 300ms ease;
+      }
+    </style>
+  </head>
+  <body>
+    <%- include('./components/header') %>
+    <script>setCurrentNav('mypage');</script>
+    
+    <%- include('./components/sidebg') %>
+
+    <div class="container mb-5 d-flex flex-column">   
+
+      <div class="row">
+        
+        <!-- 왼쪽 -->
+        <div class="col-9">
+
+          <!-- 타이틀 -->
+          <div class="row">
+            <div class="col">
+              <div class="pt-2 ps-2">
+                <div class="title-wrap">
+                  <span id="title" style="font-size: 2.2rem; font-weight: 600;"></span>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span id="modifyDate" style="font-size: 0.8rem;"></span>
+                  
+                  <% if (_user.userId===user.userId || [_ROLE.TEACHER, _ROLE.ADMIN].includes(_user.role)) { %>
+                  <div class="d-flex">
+                    <div id="publicState" style="margin-right: 0.4rem; font-size: 0.9rem;"></div>
+                    <div class="form-check form-switch">
+                      <input id="swPublicChange" class="form-check-input" type="checkbox" role="switch">
+                    </div>
+                  </div>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- // 타이틀 -->
+
+          <div class="divider" style="margin-top: 0.5rem;"></div>
+
+          <!-- 엔트리 플레이어 -->
+          <%- include('./components/entryPlayer') %>
+          <!-- // 엔트리 플레이어 -->
+
+          <div class="row mt-3">
+            <div class="col d-flex justify-content-between">
+              <div class="tab-nav">
+                <div class="tab-nav-item selected" data-idx="0">작품소개</div>
+                <div class="tab-nav-item" data-idx="1">사용법</div>
+                <div id="tabNavSelect"></div>
+              </div>
+              
+              <% if (_user.userId === user.userId) { %>
+              <button
+                class="btn btn-secondary" style="font-size: 0.8rem; height: 2rem;"
+                onclick="window.location.href='/rookie/users/<%-user.userId%>/gallery/<%-workspaceOid%>/edit'"
+              >
+                설명수정
+              </button>
+              <% } %>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div id="tabIntroduction" class="tab-item" disabled></div>
+              <div id="tabDescription" class="tab-item d-none" disabled></div>
+            </div>
+          </div>
+          
+        </div>
+        <!-- // 왼쪽 -->
+
+        <!-- 오른쪽 -->
+        <div class="col-3">
+          <div class="row">
+            <div class="col">
+              <div class="mini-profile">
+                <img class="profile-background" 
+                  <% if (user.profileBackground) { %>
+                  src="/rookie/<%- user.profileBackground %>"
+                  <% } else { %>
+                  src="/rookie/media/image/defaultBackground.png"
+                  <% } %>
+                >
+                <div class="mini-profile-float">
+
+                  <div class="profile-img mb-3">
+                    <% if (user.profileImage) {%>
+                    <img style="width: 100%; height: 100%; object-fit: cover;" src="/rookie/<%-user.profileImage%>" alt="">
+                    <% } else { %>
+                    <img style="width: 100%; height: 100%; object-fit: cover;" src="/rookie/media/image/guest.png" alt="">
+                    <% } %>
+                  </div>
+                  <div class="user-info-wrap pb-1" style="text-align: center; background: #4f80ff; width: 100%;">
+                    <div class="user-id no-wrap">
+                      <%- user.userId %>
+                    </div>
+                    <div class="user-rank no-wrap">
+                      점수: <%- user.score %>점 (랭킹 <%- user.rank %>, 상위 <%- user.percentile %>%)
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="divider"></div>
+
+          <!-- 이 유저의 작품 -->
+          <div class="row mt-4 mb-2">
+            <div class="col no-wrap">
+              <span class="no-wrap" style="font-size: 1rem; font-weight: 500;"><%-user.userId%></span>
+              <span class="no-wrap" style="font-size: 1rem; font-weight: 400;">님의 다른 작품</span>
+            </div>
+          </div>
+
+          <% for (const ws of workspaces) { %>
+          <div class="row mb-3" style="height: 4.5rem; cursor: pointer;"
+            onclick="window.location.href='/rookie/users/<%-ws.ownerId%>/gallery/<%-ws._id%>'"
+          >
+            <div class="col-5 ps-2 pe-0 h-100">
+              <img style="height: 100%; width: 100%; object-fit: cover; border-radius: 0.3rem; border: 1px solid #DDDDDD" src="/rookie/<%-ws.thumbnail%>" alt="">
+            </div>
+            <div class="col-7 d-flex flex-column justify-content-center">
+              <div class="w-100" style="overflow: hidden; text-overflow: ellipsis;">
+                <span class="no-wrap" style="font-size: 1rem; font-weight: 500;"><%-ws.title%></span>
+                <br>
+                <span class="no-wrap" style="font-size: 0.8rem; font-weight: 400; color: #888888;"><%-ws.ownerId%></span>
+              </div>
+            </div>
+          </div>
+          <% } %>
+
+          <div class="row">
+            <div class="col" style="text-align: center;">
+              <a 
+                class="no-wrap"
+                href="/rookie/users/<%-user.userId%>/gallery"
+                style="color: #444444; text-decoration: none;"
+              >
+              더보기 &raquo;
+              </a>
+            </div>
+          </div>
+          <!-- // 이 유저의 작품 -->
+          
+
+          <div class="divider"></div>
+          
+
+          <!-- 최근 업데이트된 작품 -->
+          <div class="row mt-4 mb-2">
+            <div class="col">
+              <span class="no-wrap" style="font-size: 1rem; font-weight: 400;">최근 업데이트된 작품</span>
+            </div>
+          </div>
+          
+          <% for (const ws of recentWorkspaces) { %>
+          <div class="row mb-3" style="height: 4.5rem; cursor: pointer;"
+            onclick="window.location.href='/rookie/users/<%-ws.ownerId%>/gallery/<%-ws._id%>'"
+          >
+            <div class="col-5 ps-2 pe-0 h-100">
+              <img style="height: 100%; width: 100%; object-fit: cover; border-radius: 0.3rem; border: 1px solid #DDDDDD" src="/rookie/<%-ws.thumbnail%>" alt="">
+            </div>
+            <div class="col-7 d-flex flex-column justify-content-center">
+              <div class="w-100" style="overflow: hidden; text-overflow: ellipsis;">
+                <span class="no-wrap" style="font-size: 1rem; font-weight: 500;"><%-ws.title%></span>
+                <br>
+                <span class="no-wrap" style="font-size: 0.8rem; font-weight: 400; color: #888888;"><%-ws.ownerId%></span>
+              </div>
+            </div>
+          </div>
+          <% } %>
+          <!-- // 최근 업데이트된 작품 -->
+        </div>
+        <!-- // 오른쪽 -->
+      </div>
+    </div>
+
+    <!-- footer -->
+    <%- include('./components/footer') %>
+    <!-- /footer -->
+
+
+    <!-- modals -->
+    <%- include('../modals/alert') %>
+    <%- include('../modals/confirm') %>
+    <!-- // modals -->
+  </body>
+  <script>
+    window.onload = async () => {
+      await init();
+      setPublicChangeEvent();
+      setDeleteEvent();
+      setTabEvent();
+    }
+
+    // Onloaded
+    async function init() {
+      let project = null;
+      if (workspaceOid) {
+        try {
+          const res = await fetch(`/rookie/api/workspaces/${workspaceOid}`);
+          if (!res.ok) {
+            throw new Error(res.status);
+          }
+          const { workspace } = await res.json();
+
+          
+          const date = new Date(workspace.updatedAt);
+          const formattedDate = date.toLocaleString('ko-KR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          });
+
+          $('#title').text(workspace.title);
+          $('#modifyDate').text(`마지막 수정일: ${formattedDate}`);
+          $('#publicState').text(workspace.isPublic? '공개':'비공개');
+          $('#swPublicChange').prop('checked', workspace.isPublic);
+
+          $('#tabIntroduction').html(workspace.introduction.replace(/\n/g, '<br>'));
+          $('#tabDescription').html(workspace.description.replace(/\n/g, '<br>'));
+          project = workspace.projectJson;
+        } catch (error) {
+          console.error(error);
+          await _alert('작품 불러오기에 실패했어요');
+          window.close();
+        }
+      }
+      Entry.loadProject(project);
+    }
+
+    function setPublicChangeEvent() {
+      $('#swPublicChange').on('change', async function() {
+        try {
+          const isPublic = $(this).is(':checked');
+          $('#publicState').text(isPublic? '공개':'비공개');
+
+          const res = await fetch(`/rookie/api/workspaces/${workspaceOid}/public`, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ isPublic })
+          });
+          if (!res.ok) {
+            throw new Error(res.status);
+          }
+        } catch (error) {
+          console.log(error);
+          await _alert('공개상태 변경에 실패했어요');
+          window.location.reload();
+        }
+      })
+    }
+
+    function setDeleteEvent() {
+      $('#btnDelete').on('click', async () => {
+        if (await _confirm('정말 작품을 삭제하시겠습니까?')) {
+          try {
+            const res = await fetch(`/rookie/api/workspaces/${workspaceOid}`, {method: 'DELETE'});
+            if (!res.ok) {
+              throw new Error(res.status);
+            }
+            await _alert(`작품이 삭제되었습니다`);
+            window.location.href = `/rookie/users/<%-_user.userId%>/gallery`;
+          } catch (error) {
+            console.log(error);
+            await _alert(`작품의 삭제에 실패했습니다`);
+          }
+        }
+      });
+    }
+
+    function setTabEvent() {
+      const tabNavItemWidth = 8;
+      const tabNavSelect = document.getElementById('tabNavSelect');
+      $('.tab-nav-item').on('click', function () {
+        const target = $(this).data('target');
+        const idx = $(this).data('idx');
+        
+        const navItems = $('.tab-nav-item');
+        const items = $('.tab-item');
+        tabNavSelect.style.left = `${tabNavItemWidth*idx}rem`
+        
+        for (let i=0; i<navItems.length; ++i) {
+          if (idx === i) {
+            navItems[i].classList.add('selected');
+            items[i].classList.remove('d-none');
+          }
+          else {
+            navItems[i].classList.remove('selected');
+            items[i].classList.add('d-none');
+          }
+        }
+      });
+    }
+    // Onloaded End
+
+  </script>
+</html>

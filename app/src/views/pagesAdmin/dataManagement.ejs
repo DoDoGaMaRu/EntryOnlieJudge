@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>코더스아이티 루키</title>
+  <link rel="stylesheet" href="/rookie/css/common.css">
+
+  <link href="https://codersit.co.kr/theme/daontheme_business03/html/css_js/font.css" rel="stylesheet" type="text/css">
+  <link rel='stylesheet' href="https://codersit.co.kr/coders/research/bootstrap/css2/bootstrap.css" />
+  <script src="https://codersit.co.kr/coders/research/jquery/jquery-3.4.1.min.js"></script>
+  <script src="https://codersit.co.kr/coders/research/bootstrap/js2/bootstrap.bundle.min.js"></script>
+
+  <style>
+    body { font-size: 1rem; font-weight: normal; font-family: 'Noto Sans KR', sans-serif; }
+    input:focus { outline:none; }
+    #searchBox { margin: 0.5rem 0; box-sizing: border-box; height: 2rem; border-bottom: solid 2px #444444; padding-bottom: 0.2rem; transition: all 500ms; }
+    #searchBox:hover { border-bottom: solid 2px #4f80ff; }
+
+    /* 테이블 관련 css */
+    tbody tr:hover {background-color: rgba(0, 0, 0, 0.05);}
+    th, td { text-align: center; padding: 0.3rem !important; }
+    th {border-bottom: 1px solid #c8c7d4; font-size: 0.8rem; color: #888888;}
+    td {border-top: 1px solid #c8c7d4;}
+    .table-wraper {border: solid 1px #c8c7d4; background-color: rgba(255, 255, 255, 0.7); border-radius: 0.5rem; overflow: hidden; }
+
+  </style>
+</head>
+
+<body>
+  <div class="row w-100">
+    <div class="col-xl-2 col-md-3">
+      <%- include('./components/sidebar')%>
+      <script>setCurrentNav('data')</script>
+    </div>
+    <div class="col-xl-10 col-md-9">
+      <div class="container my-5">
+        <div class="row mb-5">
+          <h2>데이터관리</h2>
+        </div>
+        <div class="row mb-3">
+          <div class="col">
+            
+            <div class="row mb-2">
+              <div class="col">
+                <h5>데이터 정보</h5>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-5">
+                <div class="input-group mb-3">
+                  <span class="input-group-text" id="uploads-addon">./uploadsWs</span>
+                  <span id="uploadsSize" class="form-control" aria-describedby="uploads-addon" style="text-align: end;"> 
+                    <%-uploadsSize%>
+                  </span>
+                </div>
+              </div>
+              <div class="col-3">
+                <button id="btnRemoveDereference" class="btn btn-primary">
+                  <span id="btnRdSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                  <span id="btnRdText">사용되지 않는 데이터 제거</span>
+                </button>
+              </div>
+              <div class="col-12">
+                <p>
+                  생성된지 1일 이상 지난 데이터 중, 참조되지 않는 데이터를 삭제합니다.
+                </p>
+              </div>  
+            </div>
+            
+            <hr>
+
+            <div class="row mb-2">
+              <div class="col">
+                <h5>삭제된 데이터</h5>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <textarea id="deletedFiles" class="w-100" style="min-height: 30rem; font-size: 0.8rem;" disabled></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+</body>
+<script>
+  window.onload = async () => {
+    setRemoveDereferenceEvent();
+  }
+
+  function setRemoveDereferenceEvent() {
+    $('#btnRemoveDereference').on('click', async function() {
+      try {
+        $(this).prop('disabled', true);
+        $('#btnRdSpinner').removeClass('d-none');
+        $('#btnRdText').text('삭제 중...');
+
+        const res = await fetch('/rookie/api/admin/data/uploads', {method: 'DELETE'});
+        if (!res.ok) {
+          throw new Error(res.status);
+        }
+        const { deleted, uploadsSize } = await res.json();
+        $('#uploadsSize').text(uploadsSize);
+        $('#deletedFiles').val(deleted.join('\n'));
+      } catch (error) {
+        console.log(error);
+        alert('사용되지 않는 데이터의 삭제에 실패했습니다.')
+      } finally {
+        $(this).prop('disabled', false);
+        $('#btnRdSpinner').addClass('d-none');
+        $('#btnRdText').text('사용되지 않는 데이터 제거');
+      }
+    });
+  }
+</script>
+</html>

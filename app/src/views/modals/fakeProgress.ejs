@@ -1,0 +1,95 @@
+<div 
+  id="_progressWrap" class="no-drag d-none fade h-100 w-100 d-flex justify-content-center align-items-center" 
+>
+  <div id="_progressModal">
+
+    <div class="row mb-3">
+      <div class="col">
+        <img id="_imgProgress" alt="">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div id="_progress" class="progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+          <div id="_progressBar" class="progress-bar" style="width: 0%;">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col" style="text-align: center;">
+        <p id="_textInfo"></p>
+      </div>
+    </div>    
+  </div>
+</div>
+
+<style>
+  #_progressModal {
+    height: fit-content;
+    width: fit-content;
+    padding-bottom: 5rem;
+  }
+  #_progressWrap {
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  #_progress {
+    border-radius: 0.5rem;
+  }
+  #_imgProgress {
+    object-fit: cover;
+  }
+  #_textInfo {
+    color: #FFFFFF;
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
+</style>
+
+<script>
+  const _getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+  const _delayMs = (ms) => new Promise(resolve=>setTimeout(()=>{resolve()}, ms));
+
+  const _progressWrap = document.getElementById('_progressWrap');
+  const _progressBar = document.getElementById('_progressBar');
+  const _textInfo = document.getElementById('_textInfo');
+  const _imgProgress = document.getElementById('_imgProgress');
+  
+  function _progress(text, clear) {
+    return new Promise(async (resolve) => {
+      _textInfo.textContent = text;
+      _imgProgress.src = `/rookie/media/image/loading/loading-0${_getRandomInt(1, 6)}.gif`;
+      _progressWrap.classList.remove('d-none');
+      await _delayMs(100);
+      _progressWrap.classList.add('show');
+
+      const repeat = _getRandomInt(3, 6);
+      let progress = 0;
+      _progressBar.style.backgroundColor = '#4f80ff';
+      for (let i=0; i<repeat; ++i) {
+        progress += _getRandomInt(60/repeat, 100/repeat);
+        _progressBar.style.width = `${progress}%`;
+        _progressBar.innerText = `${progress}%`;
+        await _delayMs(_getRandomInt(500, 900));
+      }
+      if (clear) {
+        _progressBar.style.width = `100%`;
+        _progressBar.innerText = `100%`;
+      }
+      else {
+        _progressBar.style.backgroundColor = '#DC3545';
+      }
+      await _delayMs(1000);
+
+      _progressWrap.classList.remove('show');
+      await _delayMs(100);
+      _progressWrap.classList.add('d-none');
+      _progressBar.style.width = `0%`;
+      return resolve();
+    });    
+  }
+</script>

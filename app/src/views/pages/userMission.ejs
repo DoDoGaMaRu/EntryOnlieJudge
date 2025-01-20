@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      미션 | 코더스아이티 루키
+    </title>
+    <link rel="stylesheet" href="/rookie/css/common.css">
+  
+    <link href="https://codersit.co.kr/theme/daontheme_business03/html/css_js/font.css" rel="stylesheet" type="text/css">
+    <link rel='stylesheet' href="https://codersit.co.kr/coders/research/bootstrap/css2/bootstrap.css" />	
+    <script src="https://codersit.co.kr/coders/research/jquery/jquery-3.4.1.min.js"></script>	
+    <script src="https://codersit.co.kr/coders/research/bootstrap/js2/bootstrap.bundle.min.js"></script>
+    <style>
+      body { font-size: 1rem; font-weight: normal; font-family: 'Noto Sans KR', sans-serif; }
+
+      .workspace-box {
+        background-color: #FAFAFA;
+        height: 12rem;
+        cursor: pointer;
+        box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
+        margin-bottom: 2rem;
+        border-radius: 0.7rem;
+        transition: all 300ms;
+      }
+      .workspace-box:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 1rem rgba(0, 0, 0, 0.4);
+        margin-bottom: 2rem;
+        border-radius: 0.7rem;
+      }
+      
+    
+      /* 테이블 관련 css */
+      tbody tr:hover {background-color: rgba(0, 0, 0, 0.05);}
+      th, td { text-align: center; padding: 0.3rem !important; }
+      th {border-bottom: 1px solid #c8c7d4; font-size: 0.8rem; color: #888888;}
+      td {border-top: 1px solid #c8c7d4;}
+      .table-wraper {border: solid 1px #c8c7d4; background-color: rgba(255, 255, 255, 0.7); border-radius: 0.5rem; overflow: hidden; }
+      .td-btn {cursor: pointer;}
+      .td-btn:hover {font-weight: 500;}
+    </style>
+  </head>
+  <body>
+    <%- include('./components/header') %>
+    <script>setCurrentNav('mypage');</script>
+    
+    <%- include('./components/sidebg') %>
+
+    <div class="container mb-5">
+      <!-- 유저 정보 -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <%- include('./components/profile') %>
+          <script>setCurrentProfileNav('mission')</script>
+        </div>
+      </div>
+      <!-- // 유저 정보  -->
+      <div class="row">
+        <div class="col">
+
+          <div class="row mb-2">
+            <div class="col-6 d-flex justify-content-start align-items-end">
+              <span style="margin-left: 0.8rem; font-size: 1.8rem; font-weight: 600;">미션</span>
+              <% if (missionProgress) { %>
+              <a class="ms-2" href="/rookie/users/<%-user.userId%>/missions" style="height: fit-content;">
+                <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="2rem" viewBox="0 0 24 24" width="2rem" fill="#999999">
+                  <g>
+                    <rect fill="none" height="24" width="24"/></g><g><path d="M2,12c0,5.52,4.48,10,10,10s10-4.48,10-10c0-5.52-4.48-10-10-10C6.48,2,2,6.48,2,12z M12,11l4,0v2l-4,0l0,3l-4-4l4-4L12,11 z"/>
+                  </g>
+                </svg>
+              </a>
+              <% } %>
+            </div>
+            <div class="col-6">
+              <% if (missionProgress) { %>
+              <div class="me-2 mt-3" style="text-align: end;">
+                <span class="h4"><%-missionProgress.mission.title%></span>
+                <span class="h6">(<%-missionProgress.mission.tag%>)</span>
+              </div>
+              <% } %>
+            </div>
+          </div>
+          <div class="row fadein mb-3">
+            <div class="col">
+              <% if (missionProgresses.length) { %>
+              <!-- 미션 테이블 -->
+
+              <div class="table-wraper">
+                <table class="w-100">
+                  <thead>
+                    <tr>
+                      <th style="width: 10%;">상태</th>
+                      <th style="width: 50%;">미션이름</th>
+                      <th style="width: 20%;">태그</th>
+                      <th style="width: 7%;">진행상황</th>
+                      <th style="width: 13%;">생성일</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% for (const mp of missionProgresses) { %>
+                    <%
+                      const { mission } = mp
+                      const date = new Date(mp.activedAt);
+                      const formattedDate = date.toLocaleString('ko-KR', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      });
+                    %>
+                    <tr>
+                      <td>
+                        <div class="mx-auto py-1 btn-<%-mp.clear? 'success':'danger'%>" style="font-size: 0.8rem; border-radius: 0.5rem; white-space: nowrap; width: 3rem;">
+                          <%-mp.clear? '완료':'진행중'%>
+                        </div>
+                      </td>
+                      <td class="td-btn" style="text-align: start;" onclick="window.location.href='/rookie/users/<%-user.userId%>/missions?missionOid=<%-mp.mission._id%>'">
+                        <%-mission.title%>
+                      </td>
+                      <td><%-mission.tag%></td>
+                      <td><%-mp.subtasks.filter(e=>e.clear).length%>/<%-mp.subtasks.length%> 개</td>
+                      <td><%-formattedDate%></td>
+                    </tr>
+                    <% } %>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- // 미션 테이블 -->
+              <% } else if (missionProgress) {%>
+              <!-- 미션 서브태스크 -->
+              <div class="table-wraper">
+                <table class="w-100">
+                  <thead>
+                    <tr>
+                      <th style="width: 5%;">#</th>
+                      <th style="width: 8%;">상태</th>
+                      <th style="width: 7%;">타입</th>
+                      <th style="width: 10%;">번호</th>
+                      <th style="width: 70%;">이름</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% const subtasks = missionProgress.subtasks %>
+                    <% 
+                      const subtaskTypeText = {
+                        'ProblemSubtask': '문제',
+                        'PracticeSubtask': '실습'
+                      }
+                      const subtaskTypeUrl = {
+                        'ProblemSubtask': '/rookie/problems/ws',
+                        'PracticeSubtask': '/rookie/practices/ws'
+                      }
+                    %>
+                    <% for (let idx=1; idx<=subtasks.length; idx++) { %>
+                    <%  const { subtask, clear } = subtasks[idx-1] %>
+                    <tr>
+                      <td><%-idx%></td>
+                      <td>
+                        <div class="mx-auto py-1 btn-<%-clear? 'success':'danger'%>" style="font-size: 0.8rem; border-radius: 0.5rem; white-space: nowrap; width: 3rem;">
+                          <%-clear? '완료':'진행중'%>
+                        </div>
+                      </td>
+                      <td><%-subtaskTypeText[subtask.subtaskType]%></td>
+                      <td><%-subtask.key%></td>
+                      <td class="td-btn" style="text-align: left; cursor: pointer;" 
+                        <% if (_user.userId === user.userId) { %>
+                        onclick="window.open('<%-subtaskTypeUrl[subtask.subtaskType]%>/<%-subtask.key%>', '_blank')"
+                        <% } %>
+                      >
+                        <%-subtask.title%>
+                      </td>
+                    </tr>
+                    <% } %>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- // 미션 서브태스크 -->  
+              <% } else { %>
+              <!-- 미션 없음 -->
+
+                <div class="table-wraper py-5 h1" style="text-align: center; background-color: rgba(0, 0, 0, 0.03); color: #555555;">
+                  진행중인 미션이 없어요!
+                </div>
+
+              <!-- // 미션 없음 -->
+              <% } %>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- footer -->
+    <%- include('./components/footer') %>
+    <!-- /footer -->
+  </body>
+</html>

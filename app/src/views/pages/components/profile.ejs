@@ -1,0 +1,174 @@
+<div id="profile">
+  <div id="profile-bg">
+    <% if (user.profileBackground) {%>
+    <img style="width: 100%; height: 100%; object-fit: cover;" src="/rookie/<%-user.profileBackground%>" alt="">
+    <% } else { %>
+    <img style="width: 100%; height: 100%; object-fit: cover;" src="/rookie/media/image/defaultBackground.png" alt="">
+    <% } %>
+  </div>
+
+  <div id="profile-img">
+    <% if (user.profileImage) {%>
+    <img style="width: 100%; height: 100%; object-fit: cover;" src="/rookie/<%-user.profileImage%>" alt="">
+    <% } else { %>
+    <img style="width: 100%; height: 100%; object-fit: cover;" src="/rookie/media/image/guest.png" alt="">
+    <% } %>
+  </div>
+  <div id="profile-info" class="no-drag">
+    <div class="row mb-2">
+      <div class="col-9">
+        <div style="padding-top:0.8rem">
+          <span style="font-size: 1.7rem; font-weight: 800; margin-right: 0.3rem;"><%- user.userId %></span>
+          <span style="font-size: 0.85rem; font-weight: 500;">점수: <%- user.score %>점 (랭킹 <%- user.rank %>, 상위 <%- user.percentile %>%)</span>
+        </div>
+      </div>
+      <% if (_user.userId === user.userId) { %>
+      <div class="col-3 d-flex justify-content-end pe-3">
+        <button id="btnUploadBackground" class="btn-util mx-1">배경수정</button>
+        <input id="backgroundFileInput" class="d-none" type="file" name="file" accept=".jpg, .png" />
+    
+        <button id="btnUploadProfile" class="btn-util mx-1">프로필수정</button>
+        <input id="profileFileInput" class="d-none" type="file" name="file" accept=".jpg, .png" />
+      </div>
+      <% } %>
+    </div>
+  </div>
+  <div class="pt-3 ps-2 mypage-nav">
+    <a 
+      id="info"
+      class="btn btn-light mypage-nav-btn" style="font-size: 0.8rem;" 
+      href="/rookie/users/<%-user.userId%>"
+    >
+      기록
+    </a>
+    <a 
+      id="gallery"
+      class="btn btn-light mypage-nav-btn" style="font-size: 0.8rem;" 
+      href="/rookie/users/<%-user.userId%>/gallery"
+    >
+      작품
+    </a>
+    <a 
+      id="group"
+      class="btn btn-light mypage-nav-btn" style="font-size: 0.8rem;" 
+      href="/rookie/users/<%-user.userId%>/groups"
+    >
+      그룹
+    </a>
+    <a 
+      id="mission"
+      class="btn btn-light mypage-nav-btn" style="font-size: 0.8rem;" 
+      href="/rookie/users/<%-user.userId%>/missions"
+    >
+      미션
+    </a>
+  </div>
+</div>
+
+<style>
+  #profile {
+    position: relative;
+  }
+
+  #profile-bg {
+    height: 12.5rem;
+    border: solid 0.4rem #EFEFEF;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: inset 0 0 0.8rem rgba(0, 0, 0, 0.4),
+      0 0 0.8rem rgba(0, 0, 0, 0.5);
+    background-color: #AEAEAE;
+  }
+
+  #profile-img {
+    position: absolute;
+    background-color: #FFFFFF;
+    top: 8.5rem;
+    left: 3rem;
+    height: 8rem;
+    width: 8rem;
+    border: solid 0.3rem #EFEFEF;
+    border-radius: 100%;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+  }
+
+  #profile-info {
+    padding-top: 0.4rem;
+    padding-left: 12rem;
+  }
+
+  .btn-util {border-radius: 0.5rem; border: none; font-size: 0.9rem; margin: 0.5rem 0; color: #FFFFFF; background-color: #4f80ff; transition: all 0.2s;}
+  .btn-util:hover { background-color: #555555; }
+  
+  .mypage-nav-btn {background-color: #EEEEEE;}
+  .mypage-nav-btn:hover {background-color: #DDDDDD;}
+  .mypage-nav-btn.selected {background-color: #666666; color: #FFFFFF;}
+</style>
+
+<script>
+
+  function setCurrentProfileNav(id) {
+    const navItems = document.getElementsByClassName('mypage-nav-btn');
+    for (const navItem of navItems) {
+      if (navItem.id === id) {
+        navItem.classList.add('selected');
+        break;
+      }
+    }
+  }
+
+  $('#btnUploadBackground').on('click', () => { $('#backgroundFileInput').click() });
+  $('#backgroundFileInput').on('change', async (event) => {
+		event.preventDefault();
+		const file = event.target.files[0];
+
+    if (!file) {
+			alert('select a file')
+			return;
+		}
+		const formData = new FormData();
+		formData.append('file', file);
+    
+    try {
+      const res = await fetch(`/rookie/api/user/upload/background`, {
+        method: 'POST',
+        body: formData
+      });
+      if (!res.ok) {
+        throw new Error(`서버 응답 오류: ${res.status}`);
+      }
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+  		alert(`배경 이미지 업로드에 실패했습니다.`);
+    }
+  })
+
+  $('#btnUploadProfile').on('click', () => { $('#profileFileInput').click() });
+  $('#profileFileInput').on('change', async (event) => {
+		event.preventDefault();
+		const file = event.target.files[0];
+
+    if (!file) {
+			alert('select a file')
+			return;
+		}
+		const formData = new FormData();
+		formData.append('file', file);
+
+    try {
+      const res = await fetch(`/rookie/api/user/upload/profile`, {
+        method: 'POST',
+        body: formData
+      });
+      if (!res.ok) {
+        throw new Error(`서버 응답 오류: ${res.status}`);
+      }
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+  		alert(`프로필 이미지 업로드에 실패했습니다.`);
+    }
+  })
+</script>

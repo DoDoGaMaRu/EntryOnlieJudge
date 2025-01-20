@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      마이페이지 | 코더스아이티 루키
+    </title>
+    <link rel="stylesheet" href="/rookie/css/common.css">
+  
+    <link href="https://codersit.co.kr/theme/daontheme_business03/html/css_js/font.css" rel="stylesheet" type="text/css">
+    <link rel='stylesheet' href="https://codersit.co.kr/coders/research/bootstrap/css2/bootstrap.css" />	
+    <script src="https://codersit.co.kr/coders/research/jquery/jquery-3.4.1.min.js"></script>	
+    <script src="https://codersit.co.kr/coders/research/bootstrap/js2/bootstrap.bundle.min.js"></script>
+    <style>
+      body { font-size: 1rem; font-weight: normal; font-family: 'Noto Sans KR', sans-serif; }
+
+      .default-box {min-height: 3rem; padding: 0.8rem 1.3rem;}
+      .s-title {margin-left: 0.5rem; font-weight: 500; font-size: 1.3rem;}
+      .problem { display: inline-block; width: 2.3rem; text-align: center; text-decoration: none; margin: 0.5rem 0.7rem; font-weight: 500;}
+      .problem:hover { font-weight: 600; color: #555555; }
+
+      /* 테이블 관련 css */
+      tbody tr:hover { background-color: rgba(0, 0, 0, 0.05); }
+      th, td { text-align: center; padding: 0.3rem !important; }
+      th { border-bottom: 1px solid #c8c7d4; font-size: 0.8rem; color: #888888; }
+      td { border-top: 1px solid #c8c7d4; }
+      #solutionTable { border: solid 1px #c8c7d4; background-color: rgba(255, 255, 255, 0.7); border-radius: 0.5rem; overflow: hidden; }
+      .problem-title { text-align: left; margin-left: 0.1rem; cursor: pointer; }
+      .problem-title:hover { font-weight: 500; }
+      .btn-edit {height: 1.4rem; margin-right: 0.2rem; font-size: 0.8rem; font-weight: 500; border: none; border-radius: 0.5rem; background-color: #4f80ff; color: #ffffff; transition: all 0.2s;}
+      .btn-edit:hover { background-color: #DADADA; color: #666666; }
+    </style>
+  </head>
+  <body>
+    <%- include('./components/header') %>
+    <script>setCurrentNav('mypage');</script>
+    
+    <%- include('./components/sidebg') %>
+
+    <div class="container d-flex flex-column">
+      <!-- 유저 정보 -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <%- include('./components/profile') %>
+          <script>setCurrentProfileNav('info')</script>
+        </div>
+      </div>
+      <!-- /유저 정보 -->
+
+      <!-- 문제 정보 (지금까지 푼 맞/틀 문제) -->
+      <%
+        const clears = [];
+        const fails = [];
+        for (const { problemKey, level, clear } of user.triedProblems) {
+          (clear? clears:fails).push({ key: problemKey, level: level });
+        }
+      %>
+      <div id="section-wrap" class="row">
+        <div class="col-12 mb-2">
+          <span class="s-title">성공한 문제 (<%-clears.length%>)</span>
+        </div>
+        <div class="col-12 mb-4">
+          <div class="default-box no-drag">
+
+            <% for (const { key, level } of clears) {%>
+            <a class="problem lv-<%-level%>" href="/rookie/problems/ws/<%-key%>" target="_blank">
+              <%-key%>
+            </a>
+            <% } %>
+            
+            
+          </div>
+        </div>
+        
+        <div class="col-12 mb-2">
+          <span class="s-title">시도했지만 성공하지 못한 문제 (<%-fails.length%>)</span>
+        </div>
+        <div class="col-12 mb-4">
+          <div class="default-box no-drag">
+
+            <% for (const { key, level } of fails) {%>
+            <a class="problem lv-<%-level%>" href="/rookie/problems/ws/<%-key%>" target="_blank">
+              <%-key%>
+            </a>
+            <% } %>
+
+          </div>
+        </div>
+        
+        <div class="col-12 mb-2">
+          <span class="s-title">최근 제출</span>
+        </div>
+        <div class="col-12 mb-4">
+          <div id="solutionTable" class="w-100 mb-4">
+            <table class="w-100">
+              <thead>
+                <tr>
+                  <th style="width: 5%;">상태</th>
+                  <th style="width: 10%;">제출번호</th>
+                  <th style="width: 8%;">문제번호</th>
+                  <th style="width: 30%;">문제이름</th>
+                  <th style="width: 9%;">-</th>
+                  <th style="width: 10%;">난이도</th>
+                  <th style="width: 30%;">제출시간</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% 
+                  const dateFormet = {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                  }
+                %>
+                <% for (const {key, clear, problemKey, title, level, createdAt} of user.resentSolutions) {%>
+                  <% const date = new Date(createdAt) %>
+                  <tr>
+                    
+                    <td>
+                      <% if (clear) { %>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="1.4rem" width="1.4rem" viewBox="0 0 24 24" fill="#4f80ff">
+                          <path d="M12 2C6.47 3 3 6.47 3 12s4.47 9 9 9 9-4.47 9-9S17.53 3 12 2z" fill="#EFEFEF"/>
+                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                      <% } else { %>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="1.4rem" width="1.4rem" viewBox="0 0 24 24" fill="#DF381B">
+                          <path d="M12 2C6.47 3 3 6.47 3 12s4.47 9 9 9 9-4.47 9-9S17.53 3 12 2z" fill="#EFEFEF"/>
+                          <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></svg>
+                      <% } %>
+                    </td>
+
+                    <td>
+                      <%- key %>
+                    </td>
+
+                    <td>
+                      <%- problemKey %>
+                    </td>
+
+                    <td class="problem-title" onclick="window.open(`/rookie/solutions/<%-key%>`, '_blank')">
+                      <%- title %>
+                    </td>
+
+                    <td>
+                      <% if (_user.userId === user.userId) { %>
+                        <% 
+                          const params = new URLSearchParams();
+                          params.append('solutionKey', key);
+                        %>
+                        <button class="btn-edit" onclick="window.open(`/rookie/problems/ws/<%-problemKey%>?<%-params.toString()%>`, '_blank')">수정하기</button>
+                      <% } %>
+                    </td>
+                    
+                    <td class="lv-<%- level %>" style="font-weight: 500;">
+                      LV. <%- level %>
+                    </td>
+
+                    <td>
+                      <%- date.toLocaleString('ko-KR', dateFormet) %>
+                    </td>
+
+                  </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!-- /문제 정보 (지금까지 푼 맞/틀 문제) -->
+
+    </div>
+
+    <!-- footer -->
+    <%- include('./components/footer') %>
+    <!-- /footer -->
+  </body>
+  
+</html>

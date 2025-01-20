@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>랭킹 | 코더스아이티 루키</title>
+  <link rel="stylesheet" href="/rookie/css/common.css">
+
+  <link href="https://codersit.co.kr/theme/daontheme_business03/html/css_js/font.css" rel="stylesheet" type="text/css">
+  <link rel='stylesheet' href="https://codersit.co.kr/coders/research/bootstrap/css2/bootstrap.css" />
+  <script src="https://codersit.co.kr/coders/research/jquery/jquery-3.4.1.min.js"></script>
+  <script src="https://codersit.co.kr/coders/research/bootstrap/js2/bootstrap.bundle.min.js"></script>
+
+  <style>
+    body {
+      font-size: 1rem;
+      font-weight: normal;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    /* 테이블 관련 css */
+    tbody tr:hover { background-color: rgba(0, 0, 0, 0.05); }
+    th, td { text-align: center; padding: 0.3rem !important; }
+    th { border-bottom: 1px solid #c8c7d4; font-size: 0.8rem; color: #888888; }
+    td { border-top: 1px solid #c8c7d4; }
+    #rankTable { border: solid 1px #c8c7d4; background-color: rgba(255, 255, 255, 0.7); border-radius: 0.5rem; overflow: hidden; }
+    .rank-userId { text-align: left; margin-left: 0.1rem; cursor: pointer; }
+    .rank-userId:hover { font-weight: 500; }
+
+    .rank-1 {color: #9F0D7F;}
+    .rank-2 {color: #E02401;}
+    .rank-3 {color: #F78812;}
+    .rank-4 {color: #51050F;}
+  </style>
+
+
+</head>
+
+<body>
+    <%- include('./components/header') %>
+    <script>setCurrentNav('ranking');</script>
+
+    <%- include('./components/sidebg') %>
+
+    <!-- content -->
+    <div class="container fadein h-100">
+      
+      <div class="row mx-5">
+        <!-- 테이블 -->
+
+        <div class="col">
+          <div id="rankTable" class="w-100 mb-4">
+            <table class="w-100">
+              <thead>
+                <tr>
+                  <th style="width: 8%;">순위</th>
+                  <th style="width: 16%;">아이디</th>
+                  <th style="width: 56%;">-</th>
+                  <th style="width: 10%;">점수</th>
+                  <th style="width: 10%;">성공한 문제</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for (let rank=1; rank<=users.length; rank++) { %>
+                <% const {userId, score, clearCount, profileThumbnail} = users[rank-1] %>
+                <tr class="rank-<%-parseInt(rank/20+1)%>">
+                  <td><%-rank%></td>
+                  <td class="rank-userId flex-row" onclick="window.location.href='/rookie/users/<%-userId%>'">
+                    <img 
+                      class="no-drag me-1" style="height: 1.5rem; width: 1.5rem; background-color: #000000; border-radius: 100%;"
+                      src="<%-profileThumbnail? `/rookie/${profileThumbnail}`:'/rookie/media/image/guestThumb.png'%>" 
+                      alt=""
+                    >
+                    <span><%-userId%></span>
+                  </td>
+                  <td>-</td>
+                  <td><%-score%></td>
+                  <td><%-clearCount%></td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- /테이블 -->
+      </div>
+    </div>
+    <!-- /content -->
+
+    <!-- footer -->
+    <%- include('./components/footer') %>
+    <!-- /footer -->
+</body>
+
+</html>

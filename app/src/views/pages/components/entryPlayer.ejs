@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="/rookie/css/entry/styles.css" />
+<link href="/rookie/@entrylabs/entry/dist/entry.css" rel="stylesheet" />
+<link href="/rookie/@entrylabs/modal/dist/entry/entry-modal.css" rel="stylesheet" />
+<link href="/rookie/entry-cdn/lib/entry-lms/dist/assets/app.css" rel="stylesheet"/>
+
+<div id="EntryPlayer"></div>
+
+<script src="/rookie/@entrylabs/entry/extern/lang/ko.js?v=240725-185631"></script>
+<script src="/rookie/@entrylabs/entry/extern/util/static.js?v=240725-185631"></script>
+
+<script src="/rookie/entry-cdn/lib/lodash/dist/lodash.min.js?v=240725-185631"></script>
+<script src="/rookie/entry-cdn/js/react18/react.production.min.js?v=240725-185631"></script>
+<script src="/rookie/entry-cdn/js/react18/react-dom.production.min.js?v=240725-185631"></script>
+<script src="/rookie/entry-cdn/lib/PreloadJS/lib/preloadjs-0.6.0.min.js?v=240725-185631"></script>
+<script src="/rookie/entry-cdn/lib/EaselJS/lib/easeljs-0.8.0.min.js?v=240725-185631"></script>
+<script src="/rookie/entry-cdn/lib/SoundJS/lib/soundjs-0.6.0.min.js?v=240725-185631"></script>
+<script src="/rookie/entry-cdn/lib/SoundJS/lib/flashaudioplugin-0.6.0.min.js?v=240725-185631"></script>
+<script src="/rookie/entry-cdn/lib/jquery/jquery.min.js?v=240725-185631"></script>
+<script src="/rookie/entry-cdn/lib/jquery-ui/ui/minified/jquery-ui.min.js?v=240725-185631"></script>
+<script src="/rookie/entry-cdn/lib/velocity/velocity.min.js?v=240725-185631"></script>
+<script src="/rookie/entry-cdn/lib/codemirror/lib/codemirror.js?v=240725-185631"></script>
+<script src="/rookie/entry-cdn/lib/codemirror/addon/hint/show-hint.js?v=240725-185631"></script>
+<script src="/rookie/entry-cdn/lib/codemirror/addon/lint/lint.js?v=240725-185631"></script>
+<script src="/rookie/entry-cdn/lib/codemirror/addon/selection/active-line.js?v=240725-185631"></script>
+<script src="/rookie/entry-cdn/lib/codemirror/mode/javascript/javascript.js?v=240725-185631"></script>
+<script src="/rookie/entry-cdn/lib/codemirror/addon/hint/javascript-hint.js?v=240725-185631"></script>
+<script src="/rookie/entry-cdn/js/ws/jshint.js?v=240725-185631"></script>
+<script src="/rookie/entry-cdn/lib/fuzzy/lib/fuzzy.js?v=240725-185631"></script>
+<script src="/rookie/entry-cdn/js/ws/python.js?v=240725-185631"></script>
+<!--<script src="/rookie/entry-cdn/lib/socket.io-client/socket.io.js?v=240725-185631"></script>-->
+<script src="/rookie/entry-cdn/lib/components-webfontloader/webfontloader.js?v=240725-185631"></script>
+<script src="/rookie/entry-cdn/lib/entry-lms/dist/assets/app.js?v=240725-185631"></script>
+<script src="/rookie/@entrylabs/tool/dist/entry-tool.js?v=240725-185631"></script>
+<script src="/rookie/entry-cdn/lib/entry-paint/dist/static/js/entry-paint.js?v=240725-185631"></script>
+<script src="/rookie/entry-cdn/external/sound/sound-editor.js?v=240430-174210"></script>
+
+<script src="/rookie/@entrylabs/entry/extern/util/filbert.js?v=240725-185631"></script>
+<script src="/rookie/@entrylabs/entry/extern/util/CanvasInput.js?v=240725-185631"></script>
+<script src="/rookie/@entrylabs/entry/extern/util/ndgmr.Collision.js?v=240725-185631"></script>
+<script src="/rookie/@entrylabs/entry/extern/util/handle.js?v=240725-185631"></script>
+<script src="/rookie/@entrylabs/entry/extern/util/bignumber.min.js?v=240725-185631"></script>
+<script src="/rookie/@entrylabs/legacy-video/dist/index.js"></script>
+<script src="/rookie/@entrylabs/entry/dist/entry.js"></script>
+
+<script src="/rookie/@entrylabs/modal/dist/entry-modal.js"></script>
+
+<style>
+  #EntryPlayer {
+    padding-top: 0;
+    max-width: 100% !important;
+    min-width: 100% !important;
+    max-height: fit-content !important;
+    position: relative;
+    height: fit-content !important;
+    border: solid 1px rgba(0, 0, 0, 0.2);
+    border-radius: 0.3rem;
+    overflow: hidden;
+  }
+
+  #entryCanvasWrapper {
+    position: relative;
+  }
+  .minimize .entryCanvasWorkspace {
+    width: 100.3%;
+  }
+  .entryRunButtonBigMinimizeCurtain {
+    position: absolute;
+    top: 0%;
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    z-index: 0;
+  }
+  .entryRunButtonBigMinimize {
+    background-image: url('/rookie/@entrylabs/entry/images/minimize/play_big.svg');
+    position: absolute;
+    top: calc(50% - 55px);
+    left: calc(50% - 56px);
+    width: 111px;
+    height: 111px;
+    border: none;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    cursor: pointer;
+    z-index: 1;
+    background-color: unset;
+  }
+  .entryMouseViewMinimize {
+    color: #555555;
+    font-size: 9pt;
+    margin: 0px auto;
+    width: 40%;
+    line-height: 52px;
+    text-align: center;
+  }
+
+  .entryEngineMinimize {
+    padding-left: 30px;
+  }
+
+  .entryEngineButtonMinimize {
+    border: none;
+    background-color: white;
+    position: relative;
+    margin-top: 16px;
+    margin-right: 24px;
+    float: left;
+    outline: none;
+    font-weight: 600;
+    color: #333333;
+  }
+
+  .entryStopButtonMinimize {
+    padding-left: 28px;
+    background-image: none;
+  }
+  .entryStopButtonMinimize::before {
+    background-image: url('/rookie/@entrylabs/entry/images/minimize/stop.svg');
+    position: absolute;
+    left: 0;
+    width: 1rem;
+    height: 1rem;
+    margin-top: 0.25rem;
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    background-size: 1rem auto;
+    content: "";
+  }
+
+  .entryPauseButtonMinimize {
+    padding-left: 30px;
+  }
+  
+  .entryPauseButtonMinimize::before {
+    background-image: url('/rookie/@entrylabs/entry/images/minimize/pause.svg');
+    position: absolute;
+    left: 0;
+    width: 1rem;
+    height: 1rem;
+    margin-top: 0.25rem;
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    background-size: 1rem auto;
+    content: "";
+  }
+
+  .entryCoordinateButtonMinimize {
+    background-image: url('/rookie/@entrylabs/entry/images/minimize/grid.svg');
+    width: 16px;
+    height: 16px;
+    border: 0;
+    background-color: #fff;
+    float: right;
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    background-size: 16px;
+  }
+  .entryMaximizeButtonMinimize {
+    background-image: url('/rookie/@entrylabs/entry/images/minimize/fullscreen.svg');
+    width: 16px;
+    height: 16px;
+    border: 0;
+    background-color: #fff;
+    float: right;
+    margin-right: 18px;
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    background-size: 15px;
+  }
+  .entryPopupWindow .entryMaximizeButtonMinimize {
+    background-image: url('/rookie/@entrylabs/entry/images/minimize/reduce.svg') !important;
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const option = {
+      type: "minimize",
+      // useWebGL: true,
+      device: "desktop", // TODO 이후에 수정 
+      fullScreenEnable: true,
+      libDir: "/rookie",
+      baseUrl: "/rookie",
+      textCodingEnable: false,
+      backpackDisable: true,
+      exportObjectEnable: false,
+      blockSaveImageEnable: false,
+      iframeDomAccess: "none",
+    };
+
+    Entry.creationChangedEvent = new Entry.Event(window);
+    Entry.init(document.getElementById("EntryPlayer"), option);
+  });
+
+</script>

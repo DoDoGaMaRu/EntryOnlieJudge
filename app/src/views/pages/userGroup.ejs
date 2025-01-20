@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      그룹 | 코더스아이티 루키
+    </title>
+    <link rel="stylesheet" href="/rookie/css/common.css">
+  
+    <link href="https://codersit.co.kr/theme/daontheme_business03/html/css_js/font.css" rel="stylesheet" type="text/css">
+    <link rel='stylesheet' href="https://codersit.co.kr/coders/research/bootstrap/css2/bootstrap.css" />	
+    <script src="https://codersit.co.kr/coders/research/jquery/jquery-3.4.1.min.js"></script>	
+    <script src="https://codersit.co.kr/coders/research/bootstrap/js2/bootstrap.bundle.min.js"></script>
+    <style>
+      body { font-size: 1rem; font-weight: normal; font-family: 'Noto Sans KR', sans-serif; }
+
+      .workspace-box {
+        background-color: #FAFAFA;
+        height: 12rem;
+        cursor: pointer;
+        box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
+        margin-bottom: 2rem;
+        border-radius: 0.7rem;
+        transition: all 300ms;
+      }
+      .workspace-box:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 1rem rgba(0, 0, 0, 0.4);
+        margin-bottom: 2rem;
+        border-radius: 0.7rem;
+      }
+      
+      .group-box {
+        background-color: #FAFAFA;
+        height: 10rem;
+        cursor: pointer;
+        box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
+        margin-bottom: 2rem;
+        border-radius: 0.7rem;
+        transition: all 300ms;
+      }
+      .group-box:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 1rem rgba(0, 0, 0, 0.4);
+        margin-bottom: 2rem;
+        border-radius: 0.7rem;
+      }
+    
+      /* 테이블 관련 css */
+      tbody tr:hover {background-color: rgba(0, 0, 0, 0.05);}
+      th, td { text-align: center; padding: 0.3rem !important; }
+      th {border-bottom: 1px solid #c8c7d4; font-size: 0.8rem; color: #888888;}
+      td {border-top: 1px solid #c8c7d4;}
+      .table-wraper {border: solid 1px #c8c7d4; background-color: rgba(255, 255, 255, 0.7); border-radius: 0.5rem; overflow: hidden; }
+      .td-btn {cursor: pointer;}
+      .td-btn:hover {font-weight: 500;}
+    </style>
+  </head>
+  <body>
+    <%- include('./components/header') %>
+    <script>setCurrentNav('mypage');</script>
+    
+    <%- include('./components/sidebg') %>
+
+    <div class="container mb-5">
+      <!-- 유저 정보 -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <%- include('./components/profile') %>
+          <script>setCurrentProfileNav('group')</script>
+        </div>
+      </div>
+      <!-- // 유저 정보  -->
+      
+      <div class="row">
+        <div class="col">
+
+          <div class="row mb-2">
+            <div class="col-6 d-flex justify-content-start align-items-end">
+              <span style="margin-left: 0.8rem; font-size: 1.8rem; font-weight: 600;">그룹</span>
+              
+              <% if (group) { %>
+              <a class="ms-2" href="/rookie/users/<%-user.userId%>/groups" style="height: fit-content;">
+                <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="2rem" viewBox="0 0 24 24" width="2rem" fill="#999999">
+                  <g>
+                    <rect fill="none" height="24" width="24"/></g><g><path d="M2,12c0,5.52,4.48,10,10,10s10-4.48,10-10c0-5.52-4.48-10-10-10C6.48,2,2,6.48,2,12z M12,11l4,0v2l-4,0l0,3l-4-4l4-4L12,11 z"/>
+                  </g>
+                </svg>
+              </a>
+              <% } %>
+            </div>
+            
+            <div class="col-6">
+              <% if (group) { %>
+              <div class="me-2 mt-3" style="text-align: end;">
+                <span class="h4"><%-group.name%></span>
+                <span class="h6">(<%-group.users.length%>명)</span>
+              </div>
+              <% } %>
+            </div>
+          </div>
+          <div class="row fadein mb-3">
+            
+            <div class="col">
+              <% if (group) { %>
+    
+              <!-- // 그룹 미션 진행도 -->
+              <div class="table-wraper">
+                <table class="w-100">
+                  <thead>
+                    <tr>
+                      <th rowspan="2" style="width: 10rem; border-right: 1px solid #c8c7d4;">아이디</th>
+                      <th colspan="<%-group.missions.length%>">미션</th>
+                    </tr>
+                    <tr>
+                      <% for (let idx=1; idx<=group.missions.length; idx++) { %>
+                      <th><%-idx%></th>
+                      <% } %>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% 
+                      group.users.sort((a, b) => {
+                        return (
+                          Object.values(b.missionProgress).filter(e=>e.clear).length
+                          - Object.values(a.missionProgress).filter(e=>e.clear).length
+                        );
+                      }) 
+                    %>
+                    <% for (const user of group.users) { %>
+                    <tr>
+                      <td 
+                        class="td-btn ps-2" style="border-right: 1px solid #c8c7d4; text-align: start;" 
+                        onclick="window.location.href='/rookie/users/<%-user.userId%>'"
+                      >
+                        <img 
+                          class="no-drag me-1" style="height: 1.5rem; width: 1.5rem; background-color: #000000; border-radius: 100%;"
+                          src="<%-user.profileThumbnail? `/rookie/${user.profileThumbnail}`:'/rookie/media/image/guestThumb.png'%>" 
+                          alt=""
+                        >
+                        <span><%-user.userId%></span>
+                      </td>
+                      <% for (const mission of group.missions) { %>
+                        <% 
+                          const mp = user.missionProgress[mission._id];
+                        %>
+                      <td 
+                      <% if (mp.active && mp.clear) { %>
+                        style="background-color: #b0f4b0;"
+                      <% } %>  
+                      >
+                        <% if (mp.active) { %>
+                        <%-mp.subtasks.filter(e=>e.clear).length%>/<%-mp.subtasks.length%>
+                        <% } else { %>
+                        -
+                        <% } %>
+                      </td>
+                      <% } %>
+                    </tr>
+                    <% } %>
+                  </tbody>
+                </table>
+              </div>
+              <!-- // 그룹 미션 진행도 -->
+              
+              <% } else if (groups.length) { %>
+              
+              <!-- 내 그룹 -->
+              <div class="default-box">
+                <div class="row" style="padding: 1.5rem;">
+                  
+                  <% for (const g of groups) { %>
+                  <%
+                    const date = new Date(g.createdAt);
+                    const formattedDate = date.toLocaleString('ko-KR', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    });
+                  %>
+                  <div class="col-md-4 col-sm-6">
+                    <div 
+                      class="group-box fadein" style="position: relative; overflow: hidden;"
+                      onclick="window.location.href='/rookie/users/<%-_user.userId%>/groups?groupOid=<%-g._id%>'"
+                    >
+                      <img style="position: absolute; top: 0; left: 0; z-index: -1; width: 100%; height: 100%; object-fit: cover;" src="<%-g.backgroundImage%>" alt="">
+                      <div style="height: 75%;">
+                        <div class="row px-3 py-2">
+                          <div class="col-12">
+                            <span style="color: #FFFFFF; font-weight: 500; font-size: 1.5rem;"><%-g.name%></span>
+                          </div>
+                          <div class="col-12">
+                            <span style="color: #FFFFFF; font-weight: 400; font-size: 0.8rem;">구성원: <%-g.users.length%> 명 / </span>
+                            <span style="color: #FFFFFF; font-weight: 400; font-size: 0.8rem;">미션: <%-g.missions.length%> 개</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div style="height: 25%; background-color: #FFFFFF;">
+                        <div class="row px-2 pb-1">
+                          <div class="col" style="text-align: end;">
+                            <span style="font-weight: 400; font-size: 0.8rem;">생성일: <%-formattedDate.toString()%></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <% } %>
+      
+                </div>
+              </div>
+              <!-- // 내 그룹 -->
+              
+              <% } else { %>
+              <!-- 그룹 없음 -->
+    
+                <div class="table-wraper py-5 h1" style="text-align: center; background-color: rgba(0, 0, 0, 0.03); color: #555555;">
+                  소속된 그룹이 없어요!
+                </div>
+    
+              <!-- // 그룹 없음 -->
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- footer -->
+    <%- include('./components/footer') %>
+    <!-- /footer -->
+  </body>
+</html>

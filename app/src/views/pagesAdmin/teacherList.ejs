@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>코더스아이티 루키</title>
+  <link rel="stylesheet" href="/rookie/css/common.css">
+
+  <link href="https://codersit.co.kr/theme/daontheme_business03/html/css_js/font.css" rel="stylesheet" type="text/css">
+  <link rel='stylesheet' href="https://codersit.co.kr/coders/research/bootstrap/css2/bootstrap.css" />
+  <script src="https://codersit.co.kr/coders/research/jquery/jquery-3.4.1.min.js"></script>
+  <script src="https://codersit.co.kr/coders/research/bootstrap/js2/bootstrap.bundle.min.js"></script>
+
+  <style>
+    body { font-size: 1rem; font-weight: normal; font-family: 'Noto Sans KR', sans-serif; }
+    input:focus { outline:none; }
+    #searchBox { margin: 0.5rem 0; box-sizing: border-box; height: 2rem; border-bottom: solid 2px #444444; padding-bottom: 0.2rem; transition: all 500ms; }
+    #searchBox:hover { border-bottom: solid 2px #4f80ff; }
+
+    /* 테이블 관련 css */
+    tbody tr:hover {background-color: rgba(0, 0, 0, 0.05);}
+    th, td { text-align: center; padding: 0.3rem !important; }
+    th {border-bottom: 1px solid #c8c7d4; font-size: 0.8rem; color: #888888;}
+    td {border-top: 1px solid #c8c7d4;}
+    .table-wraper {border: solid 1px #c8c7d4; background-color: rgba(255, 255, 255, 0.7); border-radius: 0.5rem; overflow: hidden; }
+
+  </style>
+</head>
+
+<body>
+  <div class="row w-100">
+    <div class="col-xl-2 col-md-3">
+      <%- include('./components/sidebar')%>
+      <script>setCurrentNav('teachers')</script>
+    </div>
+    <div class="col-xl-10 col-md-9">
+      <div class="container my-5">
+        <div class="row mb-5">
+          <h2>교사 관리</h2>
+        </div>
+        <div class="row mb-3">
+          <div class="row mb-2">
+            <h5>교사 목록</h5>
+          </div>
+          <div class="row">
+            <!-- 교사 테이블 -->
+            <div class="col">
+              <div class="table-wraper w-100 mb-4">
+                <table class="w-100">
+                  <thead>
+                    <tr>
+                      <th style="width: 8%;">#</th>
+                      <th style="width: 20%;">아이디</th>
+                      <th style="width: 15%;">이름</th>
+                      <th style="width: 37%;">권한</th>
+                      <th style="width: 20%;">-</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <%
+                      const roleText = {
+                        1: '-',
+                        2: 'USER',
+                        3: '-',
+                        4: 'TEACHER',
+                        5: 'ADMIN'
+                      } 
+                    %>
+                    <% for (let idx=1; idx<=teachers.length; idx++) { %>
+                    <% const teacher = teachers[idx-1] %>
+                    <tr>
+                      <td><%-idx%></td>
+                      <td><%-teacher.userId%></td>
+                      <td><%-teacher.userName%></td>
+                      <td><%-roleText[teacher.role]%></td>
+                      <td>
+                        <button class="role-user-btn btn btn-danger" data-value="<%-teacher.userId%>">
+                          권한삭제
+                        </button>
+                      </td>
+                    </tr>
+                    <% } %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- /교사 테이블 -->
+
+          </div>
+        </div>
+        <div class="row">
+          <div class="row mb-2">
+            <div class="col-9">
+              <h5>유저 목록</h5>
+            </div>
+            <div class="col-3">
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="아이디/이름" aria-describedby="btnSearch" id="inputSearch">
+                <button class="btn btn-outline-secondary" type="button" id="btnSearch">검색</button>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+
+            <!-- 유저 테이블 -->
+            <div class="col">
+              <div class="table-wraper w-100 mb-4">
+                <table class="w-100">
+                  <thead>
+                    <tr>
+                      <th style="width: 8%;">#</th>
+                      <th style="width: 20%;">아이디</th>
+                      <th style="width: 15%;">이름</th>
+                      <th style="width: 37%;">권한</th>
+                      <th style="width: 20%;">-</th>
+                    </tr>
+                  </thead>
+                  <tbody class="fadein">
+                    <% for (let idx=1; idx<=users.length; idx++) { %>
+                    <% const user = users[idx-1] %>
+                    <tr>
+                      <td><%-idx%></td>
+                      <td><%-user.userId%></td>
+                      <td><%-user.userName%></td>
+                      <td><%-roleText[user.role]%></td>
+                      <td>
+                        <button class="role-teacher-btn btn btn-success" data-value="<%-user.userId%>">
+                          교사등록
+                        </button>
+                      </td>
+                    </tr>
+                    
+                    <% } %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- /유저 테이블 -->
+
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+</body>
+<script>
+  window.onload = async () => {
+    setSearchEvent();
+    setRoleUserEvent();
+    setRoleTeacherEvent();
+  }
+
+  function setSearchEvent() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const query = urlParams.get('query');
+    $('#inputSearch').val(query);
+
+    $('#btnSearch').on('click', () => {
+			const query = $('#inputSearch').val();
+      const params = new URLSearchParams();
+      if (query) params.append('query', query);
+      window.location.href = `/rookie/admin/teachers?${params.toString()}`;
+    });
+  }
+
+  function setRoleTeacherEvent() {
+    $('.role-teacher-btn').on('click', async function() {
+      var userId = $(this).data('value');
+      if (confirm(`${userId}의 권한을 교사로 변경합니다.`)) {
+        try {
+          const res = await fetch(`/rookie/api/admin/users/${userId}/role`, {
+            method:'PUT',
+						headers: {'Content-Type': 'application/json'},
+						body: JSON.stringify({ role: 'teacher' }),
+          });
+          if (!res.ok) {
+            throw new Error(`서버 응답 오류: ${res.status}`);
+          }
+					alert('교사 등록에 성공하였습니다.');
+					window.location.reload();
+        } catch (error) {
+					console.log(error);
+					alert('교사 등록에 실패했습니다.');
+        }
+      }
+    })
+  }
+
+  function setRoleUserEvent() {
+    $('.role-user-btn').on('click', async function() {
+      let userId = $(this).data('value');
+      if (confirm(`${userId}의 교사권한을 제거합니다.`)) {
+        try {
+          const res = await fetch(`/rookie/api/admin/users/${userId}/role`, {
+            method:'PUT',
+						headers: {'Content-Type': 'application/json'},
+						body: JSON.stringify({ role: 'user' }),
+          });
+          if (!res.ok) {
+            throw new Error(`서버 응답 오류: ${res.status}`);
+          }
+					alert('권한변경에 성공하였습니다.');
+					window.location.reload();
+        } catch (error) {
+					console.log(error);
+					alert('권한변경에 실패했습니다.');
+        }
+      }
+    })
+  }
+</script>
+</html>
