@@ -1,0 +1,73 @@
+
+<nav>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xl-2 col-md-3 sidebar fixed-top">
+        <!-- sidebar -->
+        <a class="navbar-brand d-block mx-auto px-2 py-3 mb-4 bottom-border" href="/rookie/main" style="overflow: hidden;">
+          <img src="https://codersit.co.kr/theme/daontheme_business03/html/image/top_logo2.png" alt="로고" title="" style="transform: translate(-16%);">
+        </a>
+        <ul class="navbar-nav flex-column mt-4">
+          <li id="users" class="nav-item">
+            <a href="/rookie/teacher/users" class="nav-link text-white p-3 mb-2 sidebar-link">
+              학생관리
+            </a>
+          </li>
+          <li id="groups" class="nav-item">
+            <a href="/rookie/teacher/groups" class="nav-link text-white p-3 mb-2 sidebar-link">
+              그룹관리
+            </a>
+          </li>
+          <li id="practices" class="nav-item">
+            <a href="/rookie/teacher/practices" class="nav-link text-white p-3 mb-2 sidebar-link">
+              실습관리
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+<style>
+  .sidebar {
+    height: 100vh;
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9));
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    box-shadow: 0.3rem 0.5rem 1.2rem #999;
+    font-weight: 500;
+  }
+  .bottom-border {
+    border-bottom: 2px groove #eee;
+  }
+  .sidebar-link {
+    transition: all 400ms;
+  }
+  .sidebar-link:hover {
+    background-color: #333;
+    border-radius: 0.3rem;
+  }
+  .selected a {
+    background-color: #2f89fc;
+    border-radius: 0.4rem;
+    box-shadow: 2px 5px 10px #111;
+  }
+  .selected:hover a {
+    background-color: #4495ff;
+    border-radius: 0.4rem;
+    box-shadow: 2px 5px 20px #111;
+    transform: translateX(-1px);
+  }
+</style>
+<script>
+  function setCurrentNav(id) {
+    const navItems = document.getElementsByClassName('nav-item');
+    for (const navItem of navItems) {
+      if (navItem.id === id) {
+        navItem.classList.add('selected');
+        break;
+      }
+    }
+  }
+</script>

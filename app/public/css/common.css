@@ -1,0 +1,92 @@
+.container { 
+  width: 1140px !important; 
+  max-width: 90% !important;
+}
+.no-drag { 
+  user-select: none; 
+}
+.no-wrap {
+  white-space: nowrap;
+}
+.no-highlight {
+  outline: none !important;
+}
+
+.no-highlight:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* box styles */
+.dotted-box {
+  border: dashed 7px rgba(0, 0, 0, 0.15);
+  border-radius: 1rem;
+  min-height: 2rem;
+}
+.default-box {
+  border: solid 1px #c8c7d4;
+  background-color: rgba(255,255,255,0.7);
+  border-radius: 0.8rem;
+  min-height: 2rem;
+}
+
+
+button{
+  white-space: nowrap;
+}
+td, th{
+  white-space: nowrap;
+}
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+}
+a {
+  text-decoration: none;
+  color: #000000;
+}
+table {
+  table-layout:fixed;
+}
+
+.hidden-nowrap {
+  white-space: nowrap; overflow: hidden;
+}
+
+.lv-1 { color: #51050F; }
+.lv-2 { color: #AB6D23; }
+.lv-3 { color: #F78812; }
+.lv-4 { color: #E02401; }
+.lv-5 { color: #EA1179; }
+.lv-6 { color: #9F0D7F; }
+.lv-7 { color: #241468; }
+
+
+/* animations */
+.fadein {
+  animation: fadein 500ms ease;
+  -moz-animation: fadein 500ms ease; /* Firefox */
+  -webkit-animation: fadein 500ms ease; /* Safari and Chrome */
+  -o-animation: fadein 500ms ease; /* Opera */
+  animation-fill-mode: forwards;
+}
+
+
+@keyframes fadein {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@-moz-keyframes fadein { /* Firefox */
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@-webkit-keyframes fadein { /* Safari and Chrome */
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@-o-keyframes fadein { /* Opera */
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

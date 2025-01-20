@@ -1,0 +1,63 @@
+<!-- 그룹 정보 -->
+<div class="row mb-2">
+  <div class="col-3">
+    <h5>그룹 정보</h5>
+  </div>
+  <div class="col-9 d-flex flex-row justify-content-end">
+    <button id="btnDeleteGroup" class="btn btn-danger">그룹 삭제</button>
+  </div>
+</div>
+
+<div class="row mb-2">
+  <div class="col">
+    <div class="input-group">
+      <span class="input-group-text">그룹이름</span>
+      <input class="form-control" type="text" placeholder="그룹 이름" aria-describedby="group-name-addon" value="<%-group.name%>" style="background-color: #fff;" readonly>
+    </div>
+  </div>
+</div>
+<div class="row mb-2">
+  <div class="col">
+    <div class="input-group">
+      <span class="input-group-text">그룹설명</span>
+      <textarea class="form-control" style="min-height: 7rem; max-height: 7rem; background-color: #fff;" readonly><%-group.description%></textarea>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <ul class="navbar-nav flex-row px-3">
+    <li class="nav-item">
+      <a class="nav-link text-white p-2 me-3" style="background-color: #4f80ff;" href="/rookie/teacher/groups/<%-group._id%>/missions">미션 관리</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link text-white p-2 me-3" style="background-color: #4f80ff;" href="/rookie/teacher/groups/<%-group._id%>/users">구성원 관리</a>
+    </li>
+  </ul>
+</div>
+<!-- /그룹 정보 -->
+
+<script>
+  setDeleteGroupEvent();
+
+  function setDeleteGroupEvent() {
+    $('#btnDeleteGroup').on('click', async function() {
+      try {
+        if (confirm(`그룹을 삭제합니다. 계속하시겠습니까?`)) {
+          const res = await fetch(`/rookie/api/teacher/groups`, {
+            method:'DELETE',
+						headers: {'Content-Type': 'application/json'},
+						body: JSON.stringify({ 
+              groupOid: '<%-group._id%>' 
+            }),
+          });
+          if (!res.ok) {
+            throw new Error(`서버 응답 오류: ${res.status}`);
+          }
+          window.location.href = `/rookie/teacher/groups`;
+        }
+      } catch (error) {
+					console.log(error);
+      }
+    })
+  }
+</script>

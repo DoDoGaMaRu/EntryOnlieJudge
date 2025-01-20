@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>코더스아이티 루키</title>
+  <link rel="stylesheet" href="/rookie/css/common.css">
+
+  <link href="https://codersit.co.kr/theme/daontheme_business03/html/css_js/font.css" rel="stylesheet" type="text/css">
+  <link rel='stylesheet' href="https://codersit.co.kr/coders/research/bootstrap/css2/bootstrap.css" />
+  <script src="https://codersit.co.kr/coders/research/jquery/jquery-3.4.1.min.js"></script>
+  <script src="https://codersit.co.kr/coders/research/bootstrap/js2/bootstrap.bundle.min.js"></script>
+
+  <style>
+    body {
+      font-size: 1rem;
+      font-weight: normal;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    .btn-left,
+    .btn-right {
+      position: relative;
+      width: 50%;
+      margin: 0.8rem;
+      border-radius: 0.5rem;
+      overflow: hidden;
+      transition: all 300ms ease;
+      text-decoration: none;
+      color: #FFFFFF;
+      font-weight: 600;
+      font-size: 2rem;
+    }
+
+    .btn-left {
+      background-color: #fdad0d;
+    }
+    .btn-right {
+      background-color: #ef780b;
+    }
+
+    .btn-left:hover,
+    .btn-right:hover {
+      color: #FFFFFF;
+      font-size: 2.5rem;
+      margin: 0.3rem;
+      width: calc(50% + 1.5rem);
+      box-shadow: 0 0 1.2rem rgba(0, 0, 0, 0.4);
+    }
+
+    .btn-left img {
+      height: 120%;
+      left: -2%;
+      bottom: -43%;
+    }
+    .btn-right img {
+      height: 122%;
+      left: -5%;
+      bottom: -50%;
+    }
+
+
+    .btn-left svg, 
+    .btn-right svg {
+      position: absolute;
+      right: 6%;
+      bottom: 8%;
+      z-index: 2;
+    }
+    .btn-left:hover svg,
+    .btn-right:hover svg {
+      animation: arrow-move 2.5s infinite ease-in-out;
+    }
+
+    .btn-left:hover img,
+    .btn-right:hover img {
+      animation: entry-move 4s infinite ease-in-out;
+    }
+
+    .btn-left::before,
+    .btn-right::before {
+      content: '';
+      position: absolute;
+      opacity: 0.1;
+      background-color: rgba(0, 0, 0, 0.03);
+      bottom: 0;
+      left: 0;
+      height: 100%;
+      width: 0%;
+      z-index: 1;
+      transition: all 1.5s ease;
+    }
+
+    .btn-left:hover::before,
+    .btn-right:hover::before {
+      width: 100%;
+      opacity: 1;
+    }
+
+    @keyframes entry-move {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05) rotate(-4deg); }
+      100% { transform: scale(1); }
+    }
+    @keyframes arrow-move {
+      0% { transform: translateX(0%); }
+      50% { transform: translateX(14%); }
+      100% { transform: translateX(0%); }
+    }
+
+    .group-box {
+      background-color: #FAFAFA;
+      height: 10rem;
+      cursor: pointer;
+      box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
+      margin-bottom: 2rem;
+      border-radius: 0.7rem;
+      transition: all 300ms;
+    }
+    .group-box:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 1rem rgba(0, 0, 0, 0.4);
+      margin-bottom: 2rem;
+      border-radius: 0.7rem;
+    }
+    
+    /* 테이블 관련 css */
+    tbody tr:hover {background-color: rgba(0, 0, 0, 0.05);}
+    th, td { text-align: center; padding: 0.3rem !important; }
+    th {border-bottom: 1px solid #c8c7d4; font-size: 0.8rem; color: #888888;}
+    td {border-top: 1px solid #c8c7d4;}
+    .table-wraper {border: solid 1px #c8c7d4; background-color: rgba(255, 255, 255, 0.7); border-radius: 0.5rem; overflow: hidden; }
+    .td-btn {cursor: pointer;}
+    .td-btn:hover {font-weight: 500;}
+  </style>
+
+
+</head>
+
+<body>
+    <%- include('./components/header') %>
+    <script>setCurrentNav('mainpage');</script>
+
+    <%- include('./components/sidebg') %>
+
+    <!-- content -->
+    <div class="container mb-5">
+      <div class="row pt-3">
+        <div class="col-md-3">
+
+          <!-- userInfo -->
+          <div class="w-100 p-2">
+            <div class="no-drag mb-2 mx-auto mx-md-0" style="height: 10rem; width: 10rem; border: solid 4px #EFEFEF; border-radius: 100%; overflow: hidden; box-shadow: inset 0 0 0.8rem rgba(0, 0, 0, 0.4), 0 0 0.8rem rgba(0, 0, 0, 0.5);">
+              <% if (user.profileImage) {%>
+                <img style="width: 100%; height: 100%; object-fit: cover;" src="/rookie/<%-user.profileImage%>" alt="">
+              <% } else { %>
+                <img style="width: 100%; height: 100%; object-fit: cover;" src="/rookie/media/image/guest.png" alt="">
+              <% } %>
+            </div>
+            <div style="font-size: 1.7rem; font-weight: bold;">
+              <% if (_user.role !==  _ROLE.GUEST) { %>
+                <%- _user.userId %>
+              <% } else { %>
+                GUEST
+              <% } %>
+            </div>
+            <div class="no-wrap" style="font-size: 0.8rem; font-weight: bold; padding-bottom: 0.5rem; overflow: hidden; text-overflow: ellipsis;">
+              <% if (_user.role ===  _ROLE.GUEST) { %>
+                로그인하면 다양한 기능을 이용할 수 있어요!
+              <% } %>
+            </div>
+            <div style="width: 100%; display: flex; justify-content: space-between; text-align: end; font-size: 1.3rem;">
+              <span>문제해결 </span>
+              <div>
+                <span id="probCount" style="font-weight: bold;"><%- clearCount %></span>
+                <span>문제</span>
+              </div>
+            </div>
+          </div>
+          <!-- /userInfo -->
+
+        </div>
+        <div class="col-md-9" style="min-height: 15rem;">
+          <!-- 문제집/내작품 버튼 박스 -->
+          <div class="dotted-box h-100 d-flex no-drag">
+            <a class="btn-left" href="/rookie/problems">
+              <span style="position: absolute; top: 4%; left: 5%; z-index: 2;">문제 풀러 가기</span>
+              <img src="/rookie/media/image/main/idea_entrybot.png" alt="" style="position: absolute; z-index: 2;">
+              <svg xmlns="http://www.w3.org/2000/svg" height="3rem" width="3rem" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+            </a>
+            <a class="btn-right"
+              <% if (_user.role !==  _ROLE.GUEST) {%>
+              href="/rookie/users/<%-_user.userId%>/gallery"
+              <% } else { %>
+              href="/bbs/login.php?url=/rookie/main"
+              <% } %>
+            >
+              <span style="position: absolute; top: 4%; left: 8%; z-index: 2;">작품 만들기</span>
+              <img src="/rookie/media/image/main/star_entrybot.png" alt="" style="position: absolute; z-index: 2;">
+              <svg xmlns="http://www.w3.org/2000/svg" height="3rem" width="3rem" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+            </a>
+          </div>
+          <!-- /문제집/내작품 버튼 박스 -->
+
+        </div>
+      </div>
+
+      <hr>
+
+      <% if (_user.role !== _ROLE.GUEST) { %>
+      <div class="row mb-2">
+        <div class="col-6 d-flex justify-content-start align-items-end">
+          <span style="margin-left: 0.8rem; font-size: 1.8rem; font-weight: 600;">나의 미션</span>
+        </div>
+      </div>
+      <div class="row fadein mb-4">
+        <div class="col">
+          <% if (missionProgresses.length) { %>
+          <!-- 미션 테이블 -->
+
+          <div class="table-wraper">
+            <table class="w-100">
+              <thead>
+                <tr>
+                  <th style="width: 10%;">상태</th>
+                  <th style="width: 50%;">미션이름</th>
+                  <th style="width: 20%;">태그</th>
+                  <th style="width: 7%;">진행상황</th>
+                  <th style="width: 13%;">생성일</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for (const mp of missionProgresses) { %>
+                <%
+                  const { mission } = mp
+                  const date = new Date(mp.activedAt);
+                  const formattedDate = date.toLocaleString('ko-KR', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  });
+                %>
+                <tr>
+                  <td>
+                    <div class="mx-auto py-1 btn-<%-mp.clear? 'success':'danger'%>" style="font-size: 0.8rem; border-radius: 0.5rem; white-space: nowrap; width: 3rem;">
+                      <%-mp.clear? '완료':'진행중'%>
+                    </div>
+                  </td>
+                  <td class="td-btn" style="text-align: start;" onclick="window.location.href='/rookie/users/<%-_user.userId%>/missions?missionOid=<%-mp.mission._id%>'"><%-mission.title%></td>
+                  <td><%-mission.tag%></td>
+                  <td><%-mp.subtasks.filter(e=>e.clear).length%>/<%-mp.subtasks.length%> 개</td>
+                  <td><%-formattedDate%></td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- // 미션 서브태스크 -->  
+          <% } else { %>
+          <!-- 미션 없음 -->
+
+            <div class="table-wraper py-5 h1" style="text-align: center; background-color: rgba(0, 0, 0, 0.03); color: #555555;">
+              진행중인 미션이 없어요!
+            </div>
+
+          <!-- // 미션 없음 -->
+          <% } %>
+        </div>
+
+      </div>
+
+      <hr>
+
+      <div class="row mb-2">
+        <div class="col-6 d-flex justify-content-start align-items-end">
+          <span style="margin-left: 0.8rem; font-size: 1.8rem; font-weight: 600;">나의 그룹</span>
+        </div>
+      </div>
+      <div class="row fadein mb-3">
+        <div class="col">
+          
+          <% if (user.groups.length) { %>
+          
+          <!-- 내 그룹 -->
+          <div class="default-box">
+            <div class="row" style="padding: 1.5rem;">
+              
+              <% for (const g of user.groups) { %>
+              <%
+                const date = new Date(g.createdAt);
+                const formattedDate = date.toLocaleString('ko-KR', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                });
+              %>
+              <div class="col-md-4 col-sm-6">
+                <div 
+                  class="group-box fadein" style="position: relative; overflow: hidden;"
+                  onclick="window.location.href='/rookie/users/<%-_user.userId%>/groups?groupOid=<%-g._id%>'"
+                >
+                  <img style="position: absolute; top: 0; left: 0; z-index: -1; width: 100%; height: 100%; object-fit: cover;" src="<%-g.backgroundImage%>" alt="">
+                  <div style="height: 75%;">
+                    <div class="row px-3 py-2">
+                      <div class="col-12">
+                        <span style="color: #FFFFFF; font-weight: 500; font-size: 1.5rem;"><%-g.name%></span>
+                      </div>
+                      <div class="col-12">
+                        <span style="color: #FFFFFF; font-weight: 400; font-size: 0.8rem;">구성원: <%-g.users.length%> 명 / </span>
+                        <span style="color: #FFFFFF; font-weight: 400; font-size: 0.8rem;">미션: <%-g.missions.length%> 개</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="height: 25%; background-color: #FFFFFF;">
+                    <div class="row px-2 pb-1">
+                      <div class="col" style="text-align: end;">
+                        <span style="font-weight: 400; font-size: 0.8rem;">생성일: <%-formattedDate.toString()%></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <% } %>
+  
+            </div>
+          </div>
+          <!-- // 내 그룹 -->
+          
+          <% } else { %>
+          <!-- 그룹 없음 -->
+
+          <div class="table-wraper py-5 h1" style="text-align: center; background-color: rgba(0, 0, 0, 0.03); color: #555555;">
+            소속된 그룹이 없어요!
+          </div>
+
+          <!-- // 그룹 없음 -->
+          <% } %>
+        </div>
+      </div>
+      <% } %>
+    </div>
+    <!-- /content -->
+
+    <!-- footer -->
+    <%- include('./components/footer') %>
+    <!-- /footer -->
+</body>
+
+</html>

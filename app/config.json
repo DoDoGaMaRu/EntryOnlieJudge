@@ -1,0 +1,5 @@
+{
+  "PORT": 9080,
+  "DB_URI": "mongodb://coders-mongodb:27017/coders-rookie",
+  "SECRET_KEY": ""
+}

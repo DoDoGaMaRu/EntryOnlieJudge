@@ -1,0 +1,145 @@
+
+<header>
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top d-flex flex-column border-bottom pb-0 no-drag">
+    <div id="fixedNav" class="container mb-2">
+      <a class="navbar-brand" href="/rookie/main" style="width: 32%;">
+        <img src="https://codersit.co.kr/theme/daontheme_business03/html/image/top_logo3.png" alt="로고" title="" style="transform: translate(-16%);">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="d-flex w-100 justify-content-end">
+          <!-- <div class="input-group w-50">
+            <input id="inputNavSearch" type="text" class="form-control" placeholder="친구들의 작품을 검색해요" 
+              style="border-radius: 2rem 0 0 2rem;" autocomplete='off' 
+              onkeydown="if(event.key === 'Enter') document.getElementById('btnNavSearch').click();"
+            >
+            <button id="btnNavSearch" class="btn btn-primary" type="button" style="border-radius: 0 2rem 2rem 0;">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1.5rem" viewBox="2 2 22 22" width="1.5rem" fill="#e8eaed">
+                <path d="M0 0h24v24H0z" fill="none"/>
+                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+              </svg>
+            </button>
+          </div> -->
+
+          <div class="d-flex justify-content-end" style="width: 11rem; height: 2rem; float: right;">
+            <% if (_user.role === _ROLE.GUEST) {%>
+              <button type="button" class="btn btn-primary" onclick="window.location.href = `/bbs/login.php?url=${window.location.pathname}`" style="border-radius: 2rem; font-size: 0.8rem;">로그인</button>
+            <% } else { %>
+              <button type="button" class="btn btn-secondary" onclick="window.location.href = `/bbs/logout.php?url=${window.location.pathname}`" style="border-radius: 2rem; font-size: 0.8rem;">로그아웃</button>
+            <% } %>
+
+            <button id="btnCoders" type="button" onclick="window.location.href = `/`">
+              <img src="https://codersit.co.kr/theme/daontheme_business03/html/image/top_logo2.png" alt="로고" title="">
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="scrollNav" class="container" style="height: 5.2rem; overflow: hidden;">
+      <div class="d-flex justify-content-center align-items-end" style="width: 100%; height: inherit;">
+        <a id="mainpage" class="nav-item" href="/rookie/main">
+          <div class="flex-grow-1 overflow-hidden"><img src="/rookie/media/image/nav-icon/mainpage.png"></div>
+          <span>학습</span>
+        </a>
+        <a id="problems" class="nav-item" href="/rookie/problems">
+          <div class="flex-grow-1 overflow-hidden"><img src="/rookie/media/image/nav-icon/problems.png"></div>
+          <span>문제집</span>
+        </a>
+        <a id="solutions" class="nav-item" href="/rookie/solutions">
+          <div class="flex-grow-1 overflow-hidden"><img src="/rookie/media/image/nav-icon/solutions.png"></div>
+          <span>채점현황</span>
+        </a>
+        <a id="ranking" class="nav-item" href="/rookie/ranking">
+          <div class="flex-grow-1 overflow-hidden"><img src="/rookie/media/image/nav-icon/ranking.png"></div>
+          <span>랭킹</span>
+        </a>
+        <% if (_user.role !==  _ROLE.GUEST) {%>
+        <a id="mypage" class="nav-item" href="/rookie/users/<%-_user.userId%>">
+          <div class="flex-grow-1 overflow-hidden"><img src="/rookie/media/image/nav-icon/mypage.png"></div>
+          <span>마이페이지</span>
+        </a>
+        <% } %>
+        <% if ([_ROLE.ADMIN, _ROLE.TEACHER].includes(_user.role)) {%>
+          <a id="teacher" class="nav-item" href="/rookie/teacher/users">
+            <div class="flex-grow-1 overflow-hidden"><img src="/rookie/media/image/nav-icon/teacher.png"></div>
+            <span>학생관리</span>
+          </a>
+        <% } %>
+        <% if ([_ROLE.ADMIN].includes(_user.role)) {%>
+          <a id="admin" class="nav-item" href="/rookie/admin/teachers">
+            <div class="flex-grow-1 overflow-hidden"><img src="/rookie/media/image/nav-icon/admin.png"></div>
+            <span>관리자</span>
+          </a>
+        <% } %>
+      </div>
+    </div>
+  </nav>
+</header>
+
+
+<style>
+  header {padding-bottom: 11rem;}
+  nav { background-color: #FFFFFF; }
+  #btnCoders {border: solid 0.12rem #6c757d; border-radius: 2rem; background-color: #FFF; margin-left: 0.7rem; height: 2rem; width: 2rem; transition: all 500ms ease; overflow: hidden;}
+  #btnCoders:hover {background-color: #6c757d; width: 5.4rem;}
+  #btnCoders img { height: 80%; transform: translate(-16%, -5%); }
+
+  #scrollNav {transition: all 300ms ease-in-out;}
+  .nav-item { height: 100%; font-weight: 500; display: flex; flex-direction: column; justify-content: end; align-items: center; color: #333333; text-decoration: none; width: 5.4rem; text-align: center; position: relative; padding-bottom: 3px; transition: all 200ms ease-in-out;}
+  .nav-item::before {content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; transition: all 200ms ease-in-out; z-index: -1;}
+  .nav-item:nth-child(1)::before { background-color: #ed335d; }
+  .nav-item:nth-child(2)::before { background-color: #ef780b; }
+  .nav-item:nth-child(3)::before { background-color: #fd9f28; }
+  .nav-item:nth-child(4)::before { background-color: #5cc4bf; }
+  .nav-item:nth-child(5)::before { background-color: #18a8f1; }
+  .nav-item:nth-child(6)::before { background-color: #12887a; }
+  .nav-item:nth-child(7)::before { background-color: #00501b; }
+  .nav-item:nth-child(8)::before { background-color: #666666; }
+  .nav-item:hover {color: #FFFFFF; }
+  .nav-item:hover::before { height: 100%; }
+  .nav-item img { height: 75%; margin-top: 25%; opacity: 0.5; transition: all 300ms ease-in-out;}
+  .nav-item:hover img { height: 82%; margin-top: 18%; opacity: 1; }
+
+  .nav-item.selected { color: #FFFFFF; }
+  .nav-item.selected::before { height: 100%; }
+  .nav-item.selected img { height: 82%; margin-top: 18%; opacity: 1; }
+
+  .no-drag { user-select: none; }
+</style>
+<script>
+  let lastScrollTop = 0;
+  const scrollNav = document.getElementById('scrollNav');
+  const btnCoders = document.getElementById('btnCoders');
+  
+  function setCurrentNav(id) {
+    const navItems = document.getElementsByClassName('nav-item');
+    for (const navItem of navItems) {
+      if (navItem.id === id) {
+        navItem.classList.add('selected');
+        break;
+      }
+    }
+  }
+
+  window.addEventListener('scroll', () => {
+    let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+    
+    if (currentScroll > lastScrollTop) {
+      btnCoders.classList.add('d-none');
+      scrollNav.style.height = '0';
+    } else {
+      btnCoders.classList.remove('d-none');
+      scrollNav.style.height = '5.2rem';
+    }
+    lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+  });
+
+  $('#btnNavSearch').on('click', () => {
+    const query = $('#inputNavSearch').val();
+    const params = new URLSearchParams();
+    if (query) params.append('query', query);
+    window.location.href = `/rookie/main/search?${params.toString()}`;
+  });
+</script>

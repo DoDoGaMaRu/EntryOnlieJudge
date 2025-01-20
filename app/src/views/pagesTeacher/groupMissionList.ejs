@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>코더스아이티 루키</title>
+  <link rel="stylesheet" href="/rookie/css/common.css">
+
+  <link href="https://codersit.co.kr/theme/daontheme_business03/html/css_js/font.css" rel="stylesheet" type="text/css">
+  <link rel='stylesheet' href="https://codersit.co.kr/coders/research/bootstrap/css2/bootstrap.css" />
+  <script src="https://codersit.co.kr/coders/research/jquery/jquery-3.4.1.min.js"></script>
+  <script src="https://codersit.co.kr/coders/research/bootstrap/js2/bootstrap.bundle.min.js"></script>
+
+  <style>
+    body { font-size: 1rem; font-weight: normal; font-family: 'Noto Sans KR', sans-serif; }
+    input:focus { outline:none; }
+    #searchBox { margin: 0.5rem 0; box-sizing: border-box; height: 2rem; border-bottom: solid 2px #444444; padding-bottom: 0.2rem; transition: all 500ms; }
+    #searchBox:hover { border-bottom: solid 2px #4f80ff; }
+
+    /* 테이블 관련 css */
+    tbody tr:hover {background-color: rgba(0, 0, 0, 0.05);}
+    th, td { text-align: center; padding: 0.3rem !important; }
+    th {border-bottom: 1px solid #c8c7d4; font-size: 0.8rem; color: #888888;}
+    td {border-top: 1px solid #c8c7d4;}
+    .table-wraper {border: solid 1px #c8c7d4; background-color: rgba(255, 255, 255, 0.7); border-radius: 0.5rem; overflow: hidden; }
+    .btn-table {font-size: 0.8rem;}
+    .mission-title {color: black; text-decoration: none; display: block;}
+    .mission-title:hover {color: black; font-weight: 500;}
+  </style>
+</head>
+
+<body>
+  <div class="row w-100">
+    <div class="col-xl-2 col-md-3">
+      <%- include('./components/sidebar')%>
+      <script>setCurrentNav('groups')</script>
+    </div>
+    <div class="col-xl-10 col-md-9">
+      <div class="container my-5">
+        <div class="row mb-5">
+          <h2>그룹 관리</h2>
+        </div>
+        <!-- 그룹 정보 -->
+        <%-include('./components/groupInfo')%>
+        <!-- /그룹 정보 -->
+        <hr>
+
+        <div class="row mb-2">
+          <div class="col-6">
+            <h5>미션 목록</h5>
+          </div>
+          <div class="col-6 d-flex flex-row justify-content-end">
+            <button id="btnNewMission" class="btn btn-primary" style="font-size: 0.8rem;">새 미션</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col" style="overflow-x: auto;">
+            <!-- 미션 리스트 -->
+
+            <div class="table-wraper" style="width: fit-content;">
+              <table style="width: inherit;">
+                <thead style="width: inherit;">
+                  <tr>
+                    <th style="width: 5rem;">이름</th>
+                    <th style="width: 7rem;">아이디</th>
+                    <% for (const mission of group.missions) { %>
+                      <th style="width: 8rem; font-size: 1rem;">
+                        <a href="/rookie/teacher/missions/<%-mission._id%>">
+                          <%-mission.title%>
+                        </a>
+                      </th>
+                    <% } %>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% for (const user of group.users) { %>
+                  <tr>
+                    <td><%-user.userName%></td>
+                    <td><%-user.userId%></td>
+                    <% for (const mission of group.missions) { %>
+                      <% 
+                        const mp = user.missionProgress[mission._id];
+                        const active = mp.active;
+                      %>
+                    <td>
+                      <a 
+                        class="no-drag me-1" style="font-size: 0.9rem; font-weight: bold;" 
+                        href="/rookie/teacher/users/<%-user.userId%>/missions/<%-mission._id%>"
+                      >
+                        <%-mp.subtasks.filter(e=>e.clear).length%>/<%-mp.subtasks.length%>
+                      </a>
+                      <button 
+                        class="btn btn-<%-active? 'danger':'success'%> <%-active? 'btn-deactive-mission':'btn-active-mission'%>" 
+                        style="font-size: 0.7rem;"
+                        data-mission-oid="<%-mission._id%>" 
+                        data-user-id="<%-user.userId%>"
+                      >
+                        <%-active? '취소':'등록'%>
+                      </button>
+                    </td>
+                    <% } %>
+                  </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- /미션 리스트 -->
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+</body>
+<script>
+  const groupOid = '<%-group._id%>'
+  window.onload = async () => {
+    setNewMissionEvent();
+    setAciveMissionEvent();
+  }
+
+  function setNewMissionEvent() {
+    $('#btnNewMission').on('click', function() {
+      const params = new URLSearchParams();
+      params.append('groupOid', groupOid);
+      
+      window.location.href = `/rookie/teacher/missions/new?${params.toString()}`;
+    });
+  }
+
+  function setAciveMissionEvent() {
+    $('.btn-active-mission').on('click', async function() {
+      const userId = $(this).data('user-id');
+      const missionOid = $(this).data('mission-oid');
+      await missionActive(userId, missionOid, true);
+    });
+    $('.btn-deactive-mission').on('click', async function() {
+      const userId = $(this).data('user-id');
+      const missionOid = $(this).data('mission-oid');
+      await missionActive(userId, missionOid, false);
+    });
+  }
+
+  async function missionActive(userId, missionOid, active) {
+    const data = {
+      userId: userId,
+      missionOid: missionOid,
+      active: active
+    }
+    const res = await fetch('/rookie/api/teacher/missions/active', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    })
+    if (!res.ok) {
+      console.log(res.status);
+      alert('미션 등록/제거에 실패했습니다.');
+    }
+    window.location.reload();
+  } 
+</script>
+
+</html>

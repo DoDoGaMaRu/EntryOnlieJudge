@@ -1,0 +1,74 @@
+<div id="sidebg-left" class="no-drag">
+  <img class="sidebg-item l-cloud-1" src="/rookie/media/image/side-bg/cloud2.png" alt="">
+  <img class="sidebg-item l-cloud-2" src="/rookie/media/image/side-bg/cloud1.png" alt="">
+  <img class="sidebg-item l-cloud-3" src="/rookie/media/image/side-bg/cloud3.png" alt="">
+  <img class="sidebg-item l-cloud-4" src="/rookie/media/image/side-bg/cloud2.png" alt="">
+  <img class="sidebg-item airplane" src="/rookie/media/image/side-bg/airplane.gif" alt="">
+</div>
+<div id="sidebg-right" class="no-drag">
+  <img class="sidebg-item r-cloud-1" src="/rookie/media/image/side-bg/cloud1.png" alt="">
+  <img class="sidebg-item r-cloud-2" src="/rookie/media/image/side-bg/cloud2.png" alt="">
+  <img class="sidebg-item r-cloud-3" src="/rookie/media/image/side-bg/cloud3.png" alt="">
+  <img class="sidebg-item r-cloud-4" src="/rookie/media/image/side-bg/cloud2.png" alt="">
+  <img class="sidebg-item r-cloud-5" src="/rookie/media/image/side-bg/cloud3.png" alt="">
+  <img class="sidebg-item rainbow" src="/rookie/media/image/side-bg/rainbow.gif" alt="">
+</div>
+
+<style>
+  #sidebg-left { position: fixed; left: 50%; margin-left: -890px; bottom: 5%; height: 80%; width: 18rem; z-index: -1;}
+  #sidebg-right { position: fixed; right: 50%; margin-right: -890px; bottom: 5%; height: 80%; width: 18rem; z-index: -1;}
+
+  .sidebg-item { position: absolute; }
+
+  .l-cloud-1 { top: 2%; left: 30%; width: 20%; animation: horizontalMove2 18s infinite linear; }
+  .l-cloud-2 { top: 20%; left: 20%; width: 22%; animation: horizontalMove3 30s infinite linear; }
+  .l-cloud-3 { top: 37%; left: 60%; width: 22%; animation: horizontalMove2 25s infinite ease-in-out; }
+  .l-cloud-4 { top: 70%; left: 0%; width: 26%; animation: horizontalMove3 17s infinite ease-in-out; }
+  .airplane { left: 38%; width: 25%; animation: airplane 30s infinite linear; z-index: -1; }
+
+  .r-cloud-1 { top: 14%; left: 70%; width: 20%; animation: horizontalMove1 16s infinite ease; }
+  .r-cloud-2 { top: 40%; left: 14%; width: 25%; animation: horizontalMove2 15s infinite ease; }
+  .r-cloud-3 { top: 57%; left: 40%; width: 20%; animation: horizontalMove3 17s infinite linear; }
+  .r-cloud-4 { top: 80%; left: 40%; width: 20%; animation: horizontalMove1 20s infinite linear; }
+  .r-cloud-5 { top: 83%; left: 10%; width: 20%; animation: horizontalMove2 30s infinite ease; }
+  .rainbow { top: 23%; left: 60%; width: 35%; animation: rainbow 7s infinite linear; opacity: 0.8; z-index: -1; }
+
+  @keyframes horizontalMove1 {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(-300%); }
+    100% { transform: translateX(0); }
+  }
+
+  @keyframes horizontalMove2 {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(130%); }
+    75% { transform: translateX(-130%); }
+    100% { transform: translateX(0%); }
+  }
+
+  @keyframes horizontalMove3 {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(250%); }
+    100% { transform: translateX(0); }
+  }
+
+  @keyframes airplane {
+    0% { top: 150%; opacity: 1; }
+    30% { top: 150%; }
+    55% { top: -50%; opacity: 1;}
+    56% { opacity: 0; }
+    100% { top: 150%; opacity: 0;}
+  }
+  @keyframes rainbow {
+    0% { transform: translateX(0) translateY(0) rotate(-7deg); }
+    25% { transform: translateX(-15%) translateY(10%) rotate(-16deg); }
+    50% { transform:  translateX(-20%) translateY(20%) rotate(-24deg); }
+    75% { transform: translateX(-15%) translateY(10%) rotate(-16deg); }
+    100% { transform: translateX(0) translateY(0) rotate(-7deg); }
+  }
+
+  @media (max-width: 1400px) {
+    #sidebg-left { display: none; }
+    #sidebg-right { display: none; }
+  }
+</style>

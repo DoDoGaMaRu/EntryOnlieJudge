@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      <%= title %>
+    </title>
+    <link rel="stylesheet" href="/rookie/css/common.css">
+  
+    <link href="https://codersit.co.kr/theme/daontheme_business03/html/css_js/font.css" rel="stylesheet" type="text/css">
+    <link rel='stylesheet' href="https://codersit.co.kr/coders/research/bootstrap/css2/bootstrap.css" />	
+    <script src="https://codersit.co.kr/coders/research/jquery/jquery-3.4.1.min.js"></script>	
+    <script src="https://codersit.co.kr/coders/research/bootstrap/js2/bootstrap.bundle.min.js"></script>
+    <style>
+      body { font-size: 1rem; font-weight: normal; font-family: 'Noto Sans KR', sans-serif; }
+      .no-drag { user-select: none; }
+      input:focus { outline:none; }
+      #searchBox { margin: 0.5rem 0; box-sizing: border-box; height: 2rem; border-bottom: solid 2px #444444; padding-bottom: 0.2rem; transition: all 500ms; }
+      #searchBox:hover { border-bottom: solid 2px #4f80ff; }
+      #btnNewProb { height: 1.9rem; font-size: 0.9rem; font-weight: 500; border: none; border-radius: 0.4rem; background-color: #4f80ff; color: #FEFEFE;  transition: all 0.2s; }
+      #btnNewProb:hover { background-color: #29c45c; }
+
+      /* 테이블 관련 css */
+      tbody tr:hover {background-color: rgba(0, 0, 0, 0.05);}
+      th, td { text-align: center; padding: 0.3rem !important; }
+      th {border-bottom: 1px solid #c8c7d4; font-size: 0.8rem; color: #888888;}
+      td {border-top: 1px solid #c8c7d4;}
+      .table-wraper {border: solid 1px #c8c7d4; white-space : nowrap; background-color: rgba(255, 255, 255, 0.7); border-radius: 0.5rem; overflow: hidden; }
+      .tr-title { margin-left: 0.1rem; cursor: pointer; width: 100%; }
+      .tr-title:hover { font-weight: 500; }
+      .btn-tag {height: 1.4rem; margin-right: 0.2rem; font-size: 0.7rem; font-weight: 500; border: none; border-radius: 0.5rem; background-color: #EAEAEA; color: #999999; transition: all 0.2s;}
+      .btn-tag:hover { background-color: #DADADA; color: #666666; }
+
+    </style>
+  </head>
+  <body>
+    <%- include('./components/header') %>
+    <script>setCurrentNav('problems');</script>
+    
+    <%- include('./components/sidebg') %>
+
+    <div class="container fadein mb-5">
+      <div class="row" style="margin: 1rem 0;">
+        <!-- 검색 등 유틸 -->
+        <div class="col-lg-7">
+          <div class="h-100 d-flex flex-column justify-content-end align-items-start">
+
+            <div style="text-align: start; font-size: 1rem; margin-right: 0.2rem;">
+              <span>총</span>
+              <span id="probCount" style="font-weight: bold;"></span>
+              <span>개의 문제를 찾았어요!</span>
+            </div>
+            
+          </div>
+        </div>
+
+        <div class="col-lg-5">
+          <div class="h-100 d-flex justify-content-end">
+            <select id="inputLevel" class="form-select me-3 no-drag" style="width: 6rem; height: 2.4rem;">
+              <option selected>난이도</option>
+              <option class="lv-1" value="1">LV. 1</option>
+              <option class="lv-2" value="2">LV. 2</option>
+              <option class="lv-3" value="3">LV. 3</option>
+              <option class="lv-4" value="4">LV. 4</option>
+              <option class="lv-5" value="5">LV. 5</option>
+              <option class="lv-6" value="6">LV. 6</option>
+              <option class="lv-7" value="7">LV. 7</option>
+            </select>
+
+            <div id="searchBox" class="d-flex">
+              <svg xmlns="http://www.w3.org/2000/svg" height="1.6rem" width="1.6rem" viewBox="0 0 24 24" fill="#666666">
+                <path d="M0 0h24v24H0z" fill="none"/>
+                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+              </svg>
+              <input id="inputSearch" class="flex-grow-1 ms-1" type="search" style="border: none; height: 1.6rem;" autocomplete='off'/>
+            </div>
+          </div>
+        </div>
+
+        <!-- /검색 등 유틸 -->
+      </div>
+      
+      <div class="row">
+        <!-- 테이블 -->
+        <div class="col">
+          <div class="table-wraper w-100 mb-4">
+            <table class="w-100">
+              <thead>
+                <tr>
+                  <th style="width: 8%;">번호</th>
+                  <th style="width: 10%;">상태</th>
+                  <th style="width: 46%;">제목</th>
+                  <th style="width: 8%;">난이도</th>
+                  <th style="width: 8%;">완료한 사람</th>
+                  <th style="width: 10%;">정답률</th>
+                </tr>
+              </thead>
+              <tbody id="probTable">
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- /테이블 -->
+      </div>
+            
+      <% if ([_ROLE.ADMIN, _ROLE.TEACHER].includes(_user.role)) {%>
+      <div class="d-flex justify-content-end">
+        <button id="btnNewProb" class="nav-button no-drag">새문제</button>
+      </div>
+      <% } %>
+      <div class="row">
+        
+        <!-- pagination navigation -->
+        <nav aria-label="Page navigation" class="w-100" style="background: none;">
+          <ul id="pagination" class="pagination justify-content-center">
+
+          </ul>
+        </nav>
+        <!-- /pagination navigation -->
+
+      </div>
+    </div>  
+
+    <!-- footer -->
+    <%- include('./components/footer') %>
+    <!-- /footer -->
+  </body>
+
+<script>
+  const clearIcon = `
+		<svg xmlns="http://www.w3.org/2000/svg" height="2.5rem" width="2.5rem" viewBox="0 0 24 24" fill="#4f80ff" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="성공한 문제에요!">
+			<path d="M12 2C6.47 3 3 6.47 3 12s4.47 9 9 9 9-4.47 9-9S17.53 3 12 2z" fill="#EFEFEF"/>
+			<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+		</svg>
+	`;
+  const failIcon = `
+    <svg xmlns="http://www.w3.org/2000/svg" height="2.5rem" width="2.5rem" viewBox="0 0 24 24" fill="#fd9f28" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="이 문제를 시도했지만, 아직 성공하지 못했어요!">
+      <path d="M12 2C6.47 3 3 6.47 3 12s4.47 9 9 9 9-4.47 9-9S17.53 3 12 2z" fill="#EFEFEF"/>
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+    </svg>
+  `;
+
+
+  window.onload = async () => {
+    await init();
+    setSearchEvent();
+    setNewProbEvent();
+
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+  }
+
+  async function init() {
+    const params = new URLSearchParams(window.location.search);
+    const page = params.get('page')?? 1;
+    const query = params.get('query')?? '';
+    const level = params.get('level')?? undefined;
+    $('#inputSearch').val(query);
+    await loadPage(page, query, level);
+  }
+
+  function setSearchEvent() {
+    let delayedSearch;
+    $('#inputSearch').on('input', () => {
+      clearTimeout(delayedSearch);
+      delayedSearch = setTimeout(async () => {
+        const level = parseInt($('#inputLevel').val());
+        const query = $('#inputSearch').val();
+        await loadPage(1, query, level);
+        
+      }, 400);
+    });
+
+    $('#inputLevel').on('change', async (e) => {
+      const level = parseInt($('#inputLevel').val());
+      const query = $('#inputSearch').val();
+
+      await loadPage(1, query, level);
+    })
+
+    window.addEventListener('popstate', async function(event) {
+      const urlParams = new URLSearchParams(window.location.search);
+
+      const page = urlParams.get('page');
+      const query = urlParams.get('query');
+      const level = urlParams.get('level');
+      
+      if (page) {
+        $('#inputSearch').val(query);
+        await loadPage(page, query, level, false);
+      }
+    });
+  }
+
+  function setNewProbEvent() {
+    $('#btnNewProb').on('click', () => {
+      window.location.href = '/rookie/problems/new';
+    });
+  }
+
+  async function loadPage(page, query, level, historyPush=true) {
+    try {
+      const params = new URLSearchParams();
+      if (page) params.append('page', page);
+      if (query) params.append('query', query);
+      if (level) params.append('level', level);
+
+      const res = await fetch(`/rookie/api/problems?${params.toString()}`);
+      const { meta, problems } = await res.json();
+
+      if (historyPush) history.pushState(null, '', `/rookie/problems?${params.toString()}`);
+
+      $('#probCount').text(meta.totalPost);
+      if (problems.length > 0) {
+        setProblemTable(problems);
+        setPagination(meta, query, level);
+      }
+      else {
+        $('#probTable').empty();
+        $('#pagination').empty();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
+  function setProblemTable(problems) {
+    $('#probTable').empty();
+
+    for (let prob of problems) {
+      const correctRate = prob.solutionCount? prob.correctCount/prob.solutionCount*100:0;
+      prob.correctorCount = prob.correctorCount??0;
+
+      const tr = document.createElement('tr');
+      
+      const tdIdx = document.createElement('td');
+      const tdState = document.createElement('td');
+      const tdTitle = document.createElement('td');
+      const tdLevel = document.createElement('td');
+      const tdCorrectRate = document.createElement('td');
+      const tdCorrector = document.createElement('td');
+      tdTitle.style = `text-align: left; font-size: 0.9rem;`
+      tdLevel.style = `font-weight: 500;`;
+      tdLevel.classList.add(`lv-${prob.level}`);
+
+      const title = document.createElement('div');
+      const tags = document.createElement('div');
+      title.onclick = () => window.open(`/rookie/problems/ws/${prob.key}`, '_blank');
+      title.classList.add('tr-title');
+      tags.style = 'height: 1.6rem;';
+
+      tdTitle.appendChild(title);
+      tdTitle.appendChild(tags);
+      title.textContent = prob.title;
+      prob.tags.forEach((name) => {
+        const btn = document.createElement('button');
+        btn.classList.add('btn-tag');
+        btn.onclick = () => {
+          $('#inputSearch').val(name);
+          loadPage(1, name);
+        };
+        btn.textContent = name;
+        tags.appendChild(btn);
+      });
+
+      tdIdx.textContent = (prob.isPublic? '':'*') + prob.key;
+      if (prob.clear !== undefined) {
+        tdState.innerHTML = prob.clear? clearIcon:failIcon;
+      }
+      tdLevel.textContent = `LV. ${prob.level}`;
+      tdCorrector.textContent = `${prob.correctorCount} 명`;
+      tdCorrectRate.textContent = `${correctRate.toFixed(1)} %`;
+
+      tr.appendChild(tdIdx);
+      tr.appendChild(tdState);
+      tr.appendChild(tdTitle);
+      tr.appendChild(tdLevel);
+      tr.appendChild(tdCorrector);
+      tr.appendChild(tdCorrectRate);
+
+      $('#probTable').append(tr);
+    }
+  }
+
+  function setPagination(meta, query, level) {
+    $('#pagination').empty();
+
+    function getPageItem(innerHtml, clickEvent) {
+      const li = document.createElement('li'); li.classList.add('page-item');
+      const a = document.createElement('a'); a.classList.add('page-link');
+      li.append(a);
+      a.style.cursor = 'pointer';
+      a.innerHTML = innerHtml;
+      a.onclick = clickEvent;
+      return li;
+    }
+
+    let temp = meta.currentPage-meta.maxPage;
+    const laquo = getPageItem(`<span aria-hidden="true">&laquo;</span>`, () => {
+      loadPage(temp>0 ? temp:1, query, level);
+    });
+    
+    temp = meta.currentPage+meta.maxPage;
+    const raquo = getPageItem(`<span aria-hidden="true">&raquo;</span>`, () => {
+      loadPage(temp<=meta.totalPage? temp:meta.totalPage, query, level);
+    });
+
+    $('#pagination').append(laquo);
+    for (let page=meta.startPage; page<=meta.endPage; page++) {
+      const p = getPageItem(page, () => {loadPage(page, query, level);});
+      if (page === meta.currentPage) p.classList.add('active');
+      $('#pagination').append(p);
+    }
+    $('#pagination').append(raquo);
+  }
+</script>
+</html>

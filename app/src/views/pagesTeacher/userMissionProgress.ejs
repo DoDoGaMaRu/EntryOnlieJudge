@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>코더스아이티 루키</title>
+  <link rel="stylesheet" href="/rookie/css/common.css">
+
+  <link href="https://codersit.co.kr/theme/daontheme_business03/html/css_js/font.css" rel="stylesheet" type="text/css">
+  <link rel='stylesheet' href="https://codersit.co.kr/coders/research/bootstrap/css2/bootstrap.css" />
+  <script src="https://codersit.co.kr/coders/research/jquery/jquery-3.4.1.min.js"></script>
+  <script src="https://codersit.co.kr/coders/research/bootstrap/js2/bootstrap.bundle.min.js"></script>
+
+  <style>
+    body { font-size: 1rem; font-weight: normal; font-family: 'Noto Sans KR', sans-serif; }
+    input:focus { outline:none; }
+    #searchBox { margin: 0.5rem 0; box-sizing: border-box; height: 2rem; border-bottom: solid 2px #444444; padding-bottom: 0.2rem; transition: all 500ms; }
+    #searchBox:hover { border-bottom: solid 2px #4f80ff; }
+
+    /* 테이블 관련 css */
+    tbody tr:hover {background-color: rgba(0, 0, 0, 0.05);}
+    th, td { text-align: center; padding: 0.3rem !important; }
+    th {border-bottom: 1px solid #c8c7d4; font-size: 0.8rem; color: #888888;}
+    td {border-top: 1px solid #c8c7d4;}
+    .table-wraper {border: solid 1px #c8c7d4; background-color: rgba(255, 255, 255, 0.7); border-radius: 0.5rem; overflow: hidden; }
+    .group-name {color: black; text-decoration: none;}
+    .group-name:hover {color: black; font-weight: 500;}
+  </style>
+</head>
+
+<body>
+  <div class="row w-100">
+    <div class="col-xl-2 col-md-3">
+      <%- include('./components/sidebar')%>
+      <script>setCurrentNav('users')</script>
+    </div>
+    <div class="col-xl-10 col-md-9">
+      <div class="container my-5">
+        <div class="row mb-5">
+          <h2>학생 관리</h2>
+        </div>
+        
+        <div class="row mb-3">
+          <div class="col-6">
+            <h5>학생 정보</h5>
+          </div>
+          <div class="col-6" style="text-align: end;">
+            <a href="/rookie/users/<%-user.userId%>" class="btn btn-success mx-1" style="font-size: 0.8rem;">
+              마이페이지
+            </a>
+          </div>
+        </div>
+        
+        <div class="row mb-2">
+          <div class="col">
+            <div class="input-group">
+              <span class="input-group-text">아이디</span>
+              <span class="form-control"><%-user.userId%></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="input-group">
+              <span class="input-group-text">이름</span>
+              <input id="inputUserName" type="text" class="form-control" value="<%-user.userName%>"></input>
+              <button id="btnChangeName" class="btn btn-secondary form-control" style="max-width: fit-content;">변경</button>
+            </div>
+          </div>
+        </div>
+
+        <hr>
+        <div class="row">
+          <div class="col-6">
+            <h5>미션 상태 (<%-missionProgress.clear? '성공':'진행중'%>)</h5>
+          </div>
+          <div class="col-6">
+            <div class="me-2" style="text-align: end;">
+              <span class="h4"><%-missionProgress.mission.title%></span>
+              <span class="h6">(<%-missionProgress.mission.tag%>)</span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="table-wraper">
+              <table class="w-100">
+                <thead>
+                  <tr>
+                    <th style="width: 8%;">#</th>
+                    <th style="width: 5%;">타입</th>
+                    <th style="width: 12%;">번호</th>
+                    <th style="width: 45%;">이름</th>
+                    <th style="width: 10%;">상태</th>
+                    <th style="width: 10%;">-</th>
+                    <th style="width: 10%;">상태변경</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% const subtasks = missionProgress.subtasks %>
+                  <% 
+                    const subtaskTypeText = {
+                      'ProblemSubtask': '문제',
+                      'PracticeSubtask': '실습'
+                    }
+                    const subtaskTypeUrl = {
+                      'ProblemSubtask': '/rookie/problems/ws',
+                      'PracticeSubtask': '/rookie/practices/ws'
+                    }
+                  %>
+                  <% for (let idx=1; idx<=subtasks.length; idx++) { %>
+                  <%  const { _id, subtask, clear } = subtasks[idx-1] %>
+                  <tr>
+                    <td><%-idx%></td>
+                    <td><%-subtaskTypeText[subtask.subtaskType]%></td>
+                    <td><%-subtask.key%></td>
+                    <td style="text-align: left; cursor: pointer;" onclick="window.open('<%-subtaskTypeUrl[subtask.subtaskType]%>/<%-subtask.key%>', '_blank')"><%-subtask.title%></td>
+                    <td><%-clear?'성공':'진행중'%></td>
+                    <td>
+                    <% if (subtask.subtaskType === 'PracticeSubtask') { %>
+                      <%
+                        const params = new URLSearchParams();
+                        params.append('userId', user.userId);
+                      %>
+                      <button 
+                        class="btn btn-secondary" 
+                        style="font-size: 0.8rem;" 
+                        onclick="window.open('/rookie/practices/ws/<%-subtask.key%>?<%-params%>', '_blank')"
+                      >
+                        조회
+                      </button>
+                    <% } else { %>
+                      -
+                    <% } %>
+                    </td>
+                    <td>
+                    <% if (subtask.subtaskType === 'PracticeSubtask') { %>
+                      <button 
+                        class="btn-state-change btn btn-<%-!clear? 'success':'danger'%>" style="font-size: 0.8rem;"
+                        data-subtask-progress-oid="<%-_id%>" 
+                        data-clear="<%-!clear? 'true':'false'%>"
+                      >
+                        <%-clear?'진행중':'성공'%>
+                      </button>
+                    <% } else { %>
+                      -
+                    <% } %>
+                    </td>
+                  </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+            
+          </div>
+        </div>
+
+      </div>
+      
+    </div>
+  </div>
+  
+</body>
+<script>
+  const userId = '<%-user.userId%>';
+  window.onload = async () => {
+    updatesubtaskState();
+    setChangeUserInfoEvent();
+  }
+
+  function updatesubtaskState() {
+    $('.btn-state-change').on('click', async function () {
+      const subtaskStateOid = $(this).data('subtask-progress-oid');
+      const clear = $(this).data('clear');
+      try {
+        const res = await fetch(`/rookie/api/teacher/missions/subtask/${subtaskStateOid}`, {
+          method:'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            userId: userId,
+            clear: clear
+          }),
+        });
+        if (!res.ok) {
+          throw new Error(`서버 응답 오류: ${res.status}`);
+        }
+        window.location.reload();
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  }
+  
+  function setChangeUserInfoEvent() {
+    $('#btnChangeName').on('click', async function () {
+      const userName = $('#inputUserName').val();
+      if (confirm(`이름이 ${userName}으로 변경됩니다.`)) {
+        try {
+          const userData = {
+            userId: userId,
+            userName: userName
+          }
+          const res = await fetch('/rookie/api/teacher/users', {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({userData})
+          })
+          if (!res.ok) {
+            throw new Error(res.status);
+          }
+          alert('이름 변경 성공');
+          window.location.reload();
+        } catch (error) {
+          console.log(error);
+          alert('이름 변경 실패');
+        }
+      }
+    });
+
+  }
+</script>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>코더스아이티 루키</title>
+  <link rel="stylesheet" href="/rookie/css/common.css">
+
+  <link href="https://codersit.co.kr/theme/daontheme_business03/html/css_js/font.css" rel="stylesheet" type="text/css">
+  <link rel='stylesheet' href="https://codersit.co.kr/coders/research/bootstrap/css2/bootstrap.css" />
+  <script src="https://codersit.co.kr/coders/research/jquery/jquery-3.4.1.min.js"></script>
+  <script src="https://codersit.co.kr/coders/research/bootstrap/js2/bootstrap.bundle.min.js"></script>
+
+  <style>
+    body { font-size: 1rem; font-weight: normal; font-family: 'Noto Sans KR', sans-serif; }
+    input:focus { outline:none; }
+    #searchBox { margin: 0.5rem 0; box-sizing: border-box; height: 2rem; border-bottom: solid 2px #444444; padding-bottom: 0.2rem; transition: all 500ms; }
+    #searchBox:hover { border-bottom: solid 2px #4f80ff; }
+
+    /* 테이블 관련 css */
+    tbody tr:hover {background-color: rgba(0, 0, 0, 0.05);}
+    th, td { text-align: center; padding: 0.3rem !important; }
+    th {border-bottom: 1px solid #c8c7d4; font-size: 0.8rem; color: #888888;}
+    td {border-top: 1px solid #c8c7d4;}
+    .table-wraper {border: solid 1px #c8c7d4; background-color: rgba(255, 255, 255, 0.7); border-radius: 0.5rem; overflow: hidden; }
+    .group-name {color: black; text-decoration: none;}
+    .group-name:hover {color: black; font-weight: 500;}
+
+    .bg-box { height: 6rem; overflow: hidden; }
+    .bg-box.selected { border: solid 5px #2be990; }
+  </style>
+</head>
+
+<body>
+  <div class="row w-100">
+    <div class="col-xl-2 col-md-3">
+      <%- include('./components/sidebar')%>
+      <script>setCurrentNav('groups')</script>
+    </div>
+    <div class="col-xl-10 col-md-9">
+      <div class="container my-5">
+        <div class="row mb-5">
+          <h2>새 그룹</h2>
+        </div>
+        <!-- 그룹 정보 -->
+        <div class="row mb-2">
+          <div class="col-3">
+            <h5>그룹 정보</h5>
+          </div>
+          <div class="col-9 d-flex flex-row justify-content-end">
+            <button id="btnCreateGroup" class="btn btn-primary">그룹생성</button>
+          </div>
+          
+        </div>
+        <div class="row mb-2">
+          <div class="col">
+            <div class="input-group">
+              <span class="input-group-text" id="group-name-addon">그룹이름</span>
+              <input id="inputGroupName" type="text" class="form-control" placeholder="그룹 이름" aria-describedby="group-name-addon">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="input-group">
+              <span class="input-group-text" id="group-description-addon">그룹설명</span>
+              <textarea class="form-control" id="inputGroupDescription" aria-describedby="group-description-addon" style="min-height: 7rem; max-height: 7rem;"></textarea>
+            </div>
+          </div>
+        </div>
+        <!-- // 그룹 정보 -->
+
+        <hr>
+
+        <!-- 그룹 이미지 -->
+        <div class="row">
+          <div class="col">
+            <h5>그룹 이미지</h5>
+          </div>
+        </div>
+
+        <div class="row">
+          <% const bgListLen = 24; %>
+          <% for (let idx=0; idx<bgListLen; ++idx) { %>
+          <div class="col-3 mb-2">
+            <div class="bg-box" data-background-image="/rookie/media/image/group-bg/<%-idx%>.png">
+              <img style="width: 100%; height: 100%; object-fit: cover;" src="/rookie/media/image/group-bg/<%-idx%>.png" alt="">
+            </div>
+          </div>
+          <% } %>
+        </div>
+
+        <!-- // 그룹 이미지 -->
+      </div>
+      
+    </div>
+  </div>
+  
+</body>
+<script>
+  let background = null;
+
+  window.onload = async () => {
+    setCreateGroupEvent();
+    setBackgroundSelectEvent();
+  }
+
+  function setCreateGroupEvent() {
+    $('#btnCreateGroup').on('click', async () => {
+      const groupName = $('#inputGroupName').val().trim();
+      const groupDescription = $('#inputGroupDescription').val().trim();
+      
+      const pass = 
+        groupName === ''        ? (alert('그룹 이름을 작성해주세요.'), false):
+        background === null     ? (alert('그룹 이미지를 선택해주세요.'), false):
+        true;
+
+      if (pass) {
+        const group = {
+          name: groupName,
+          description: groupDescription,
+          backgroundImage: background,
+        }
+        
+        try {
+          if (confirm(`그룹을 등록합니다. 계속하시겠습니까?`)) {
+            const res = await fetch(`/rookie/api/teacher/groups`, {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({ group }),
+            });
+            if (!res.ok) {
+              throw new Error(`서버 응답 오류: ${res.status}`);
+            }
+            alert('그룹 등록에 성공했습니다');
+            window.location.href = `/rookie/teacher/groups`;
+          }
+        } catch (error) {
+          console.log(error);
+          alert('그룹 등록에 실패했습니다');
+        }
+      }
+    });
+  }
+
+  function setBackgroundSelectEvent() {
+    $('.bg-box').on('click', function() {
+      background = $(this).data('background-image');
+      $('.bg-box').removeClass('selected');
+      $(this).addClass('selected');
+    });
+  }
+</script>
+</html>

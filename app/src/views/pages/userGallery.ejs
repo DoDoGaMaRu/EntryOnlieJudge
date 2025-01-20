@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      작품 | 코더스아이티 루키
+    </title>
+    <link rel="stylesheet" href="/rookie/css/common.css">
+  
+    <link href="https://codersit.co.kr/theme/daontheme_business03/html/css_js/font.css" rel="stylesheet" type="text/css">
+    <link rel='stylesheet' href="https://codersit.co.kr/coders/research/bootstrap/css2/bootstrap.css" />	
+    <script src="https://codersit.co.kr/coders/research/jquery/jquery-3.4.1.min.js"></script>	
+    <script src="https://codersit.co.kr/coders/research/bootstrap/js2/bootstrap.bundle.min.js"></script>
+    <style>
+      body { font-size: 1rem; font-weight: normal; font-family: 'Noto Sans KR', sans-serif; }
+
+      .workspace-box {
+        background-color: #FAFAFA;
+        height: 14rem;
+        box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
+        margin-bottom: 2rem;
+        border-radius: 0.7rem;
+        transition: all 300ms;
+      }
+      .workspace-box:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 1rem rgba(0, 0, 0, 0.4);
+        margin-bottom: 2rem;
+        border-radius: 0.7rem;
+      }
+      .svg-button {
+        cursor: pointer;
+        margin-top: 0.1rem;
+        margin-left: 0.25rem;
+        margin-right: 0.25rem;
+      }
+      .svg-button:last-child {
+        margin-right: 0.55rem;
+      }
+      .svg-button svg {
+        fill: #888888;
+        transition: all 200ms ease;
+      }
+      .svg-button:hover svg {
+        fill: #555555;
+      }
+    </style>
+  </head>
+  <body>
+    <%- include('./components/header') %>
+    <script>setCurrentNav('mypage');</script>
+    
+    <%- include('./components/sidebg') %>
+
+    <div class="container mb-5">
+      <!-- 유저 정보 -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <%- include('./components/profile') %>
+          <script>setCurrentProfileNav('gallery')</script>
+        </div>
+      </div>
+      <!-- // 유저 정보  -->
+      <div class="row mb-2">
+        <div class="col">
+          <span style="margin-left: 0.8rem; font-size: 1.8rem; font-weight: 600;">작품</span>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col">
+          <div class="default-box" style="min-height: 10rem;">
+            <div class="row" style="padding: 1.5rem;">
+              <!-- 새 작품 -->
+              <% if (_user.userId === user.userId) { %>
+              <div class="col-xl-3 col-md-4">
+                <div 
+                  class="workspace-box fadein bc-1" style="overflow: hidden;"
+                  onclick="window.open('/rookie/workspace/new', '_blank')"
+                >
+                  <div class="h-100 d-flex flex-column justify-content-center align-items-center" style="background-color: #ABCABC;">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="4rem" width="4rem" viewBox="0 0 24 24" fill="#FFFFFF">
+                      <path d="M0 0h24v24H0z" fill="none"/>
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
+                    </svg>
+                    <span style="color: #FFFFFF; font-size: 1.2rem; font-weight: 500;">새작품</span>
+                  </div>
+                </div>
+              </div>
+              <% } %>
+              <!-- // 새 작품 -->
+
+              <!-- 작품 리스트 -->
+              <% for (const ws of workspaces) { %>
+              <div class="col-xl-3 col-md-4">
+                <div class="workspace-box fadein bc-1" style="overflow: hidden;">
+                  <div class="project-info" style="height: 86%; cursor: pointer;"
+                    onclick="window.location.href='/rookie/users/<%-user.userId%>/gallery/<%-ws._id%>'"
+                  >
+                    <div style="height: 58%;">
+                      <img style="width: 100%; height: 100%; object-fit: cover;" src="/rookie/<%-ws.thumbnail%>" alt="">
+                    </div>
+                    <div style="height: 42%;">
+                      <div class="row pt-1 pb-3 m-0">
+                        <div class="col-12 w-100 no-wrap" style="overflow: hidden; text-overflow: ellipsis;">
+                          <span class="h5"><%-ws.title%></span>
+                        </div>
+                        <div class="col-12">
+                          <%
+                            const date = new Date(ws.updatedAt);
+                            const formattedDate = date.toLocaleString('ko-KR', {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                            });
+                          %>
+                          <span style="font-size: 0.8rem;">마지막 수정: </span>
+                          <span style="font-size: 0.8rem;"><%-formattedDate%></span>
+                        </div>
+                        <div class="col-12" style="text-align: end;">
+                          <img 
+                            class="no-drag" style="height: 1.2rem; width: 1.2rem; background-color: #000000; border-radius: 100%;"
+                            src="<%-user.profileThumbnail? `/rookie/${user.profileThumbnail}`:'/rookie/media/image/guestThumb.png'%>" 
+                            alt=""
+                          >
+                          <span><%-user.userId%></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="height: 14%; border-top: 1px solid rgba(0, 0, 0, 0.1);">
+                    <div class="row">
+                      <div class="col d-flex justify-content-end">
+                        <% if (_user.userId===user.userId) { %>
+                        <div 
+                          class="svg-button btn-workspace"
+                          onclick="window.open('/rookie/workspace/<%-ws._id%>', '_blank')"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" height="1.5rem" width="1.5rem" viewBox="0 0 24 24" fill="#AAAAAA"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>
+                        </div>
+                        <% } %>
+                        <% if (_user.userId===user.userId || [_ROLE.TEACHER, _ROLE.ADMIN].includes(_user.role)) { %>
+                        <div
+                          class="svg-button btn-public-change"
+                          data-workspace-oid="<%-ws._id%>"
+                          data-is-public="<%-ws.isPublic%>"
+                        >
+                          <% if (ws.isPublic) { %>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1.5rem" width="1.5rem" viewBox="0 0 24 24" fill="#AAAAAA"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                          <% } else { %>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1.5rem" width="1.5rem" viewBox="0 0 24 24" fill="#AAAAAA"><path d="M0 0h24v24H0zm0 0h24v24H0zm0 0h24v24H0zm0 0h24v24H0z" fill="none"/><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>
+                          <% } %>
+                        </div>
+                        <div class="svg-button btn-delete" data-workspace-oid="<%-ws._id%>">
+                          <svg xmlns="http://www.w3.org/2000/svg" height="1.5rem" width="1.5rem" viewBox="0 0 24 24" fill="#AAAAAA"><path d="M0 0h24v24H0z" fill="none"/><path d="M0 0h24v24H0V0z" fill="none"/><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zm2.46-7.12l1.41-1.41L12 12.59l2.12-2.12 1.41 1.41L13.41 14l2.12 2.12-1.41 1.41L12 15.41l-2.12 2.12-1.41-1.41L10.59 14l-2.13-2.12zM15.5 4l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                        </div>
+                        <% } %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <% } %>
+              <!-- // 작품 리스트 -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- footer -->
+    <%- include('./components/footer') %>
+    <!-- /footer -->
+     
+    <!-- modals -->
+    <%- include('../modals/alert') %>
+    <%- include('../modals/confirm') %>
+    <!-- // modals -->
+  </body>
+
+  <script>
+    const visibleSvg = '<svg xmlns="http://www.w3.org/2000/svg" height="1.5rem" width="1.5rem" viewBox="0 0 24 24" fill="#AAAAAA"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>'
+    const invisibleSvg = '<svg xmlns="http://www.w3.org/2000/svg" height="1.5rem" width="1.5rem" viewBox="0 0 24 24" fill="#AAAAAA"><path d="M0 0h24v24H0zm0 0h24v24H0zm0 0h24v24H0zm0 0h24v24H0z" fill="none"/><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>'
+    
+    window.onload = async () => {
+      setPublicChangeEvent();
+      setDeleteEvent();
+    }
+    
+    function setPublicChangeEvent() {
+      $('.btn-public-change').on('click', async function() {
+        try {
+          const isPublic = !$(this).data('is-public');
+          const workspaceOid = $(this).data('workspace-oid');
+
+          const res = await fetch(`/rookie/api/workspaces/${workspaceOid}/public`, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ isPublic })
+          });
+          if (!res.ok) {
+            throw new Error(res.status);
+          }
+          $(this).data('is-public', isPublic);
+          $(this).html(isPublic? visibleSvg:invisibleSvg);
+
+        } catch (error) {
+          console.log(error);
+          await _alert('공개상태 변경에 실패했어요');
+          window.location.reload();
+        }
+      })
+    }
+
+    function setDeleteEvent() {
+      $('.btn-delete').on('click', async function ()  {
+        if (await _confirm('정말 작품을 삭제하시겠습니까?')) {
+          const workspaceOid = $(this).data('workspace-oid');
+          try {
+            const res = await fetch(`/rookie/api/workspaces/${workspaceOid}`, {method: 'DELETE'});
+            if (!res.ok) {
+              throw new Error(res.status);
+            }
+            await _alert(`작품이 삭제되었습니다`);
+            window.location.reload();
+          } catch (error) {
+            console.log(error);
+            await _alert(`작품의 삭제에 실패했습니다`);
+          }
+        }
+      });
+    }
+
+  </script>
+</html>

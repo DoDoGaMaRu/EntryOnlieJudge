@@ -1,0 +1,44 @@
+
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 id="confirmModalTitle" class="modal-title"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+        <button type="button" id="btnConfirm" class="btn btn-primary">확인</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+	const _confirmModal = document.getElementById('confirmModal');
+  const _confirmModalTitle = document.getElementById('confirmModalTitle');
+	const _bConfirmModal = new bootstrap.Modal(_confirmModal);
+
+  const _btnConfirm = document.getElementById('btnConfirm');
+
+  function _confirm(text) {
+    return new Promise((resolve)=>{
+      _confirmModalTitle.innerHTML = text;
+      _bConfirmModal.show();
+
+      const hideEvent = (e) => {
+        _confirmModal.removeEventListener('hidden.bs.modal', hideEvent);
+        _confirmModalTitle.innerHTML = '';
+        resolve(false);
+      }
+      _confirmModal.addEventListener('hidden.bs.modal', hideEvent);
+
+      const confirmEvent = (e) => {
+        _btnConfirm.removeEventListener('click', confirmEvent);
+        _bConfirmModal.hide();
+        resolve(true);
+      }
+      _btnConfirm.addEventListener('click', confirmEvent);
+    });
+  }
+</script>

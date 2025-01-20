@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>코더스아이티 루키</title>
+  <link rel="stylesheet" href="/rookie/css/common.css">
+
+  <link href="https://codersit.co.kr/theme/daontheme_business03/html/css_js/font.css" rel="stylesheet" type="text/css">
+  <link rel='stylesheet' href="https://codersit.co.kr/coders/research/bootstrap/css2/bootstrap.css" />
+  <script src="https://codersit.co.kr/coders/research/jquery/jquery-3.4.1.min.js"></script>
+  <script src="https://codersit.co.kr/coders/research/bootstrap/js2/bootstrap.bundle.min.js"></script>
+
+  <style>
+    body { font-size: 1rem; font-weight: normal; font-family: 'Noto Sans KR', sans-serif; }
+    input:focus { outline:none; }
+    #searchBox { margin: 0.5rem 0; box-sizing: border-box; height: 2rem; border-bottom: solid 2px #444444; padding-bottom: 0.2rem; transition: all 500ms; }
+    #searchBox:hover { border-bottom: solid 2px #4f80ff; }
+
+    /* 테이블 관련 css */
+    tbody tr:hover {background-color: rgba(0, 0, 0, 0.05);}
+    th, td { text-align: center; padding: 0.3rem !important; }
+    th {border-bottom: 1px solid #c8c7d4; font-size: 0.8rem; color: #888888;}
+    td {border-top: 1px solid #c8c7d4;}
+    .table-wraper {border: solid 1px #c8c7d4; background-color: rgba(255, 255, 255, 0.7); border-radius: 0.5rem; overflow: hidden; }
+    .tr-title { margin-left: 0.1rem; cursor: pointer; width: 100%; }
+    .tr-title:hover { font-weight: 500; }
+    .btn-tag {height: 1.4rem; margin-right: 0.2rem; font-size: 0.7rem; font-weight: 500; border: none; border-radius: 0.5rem; background-color: #EAEAEA; color: #999999; transition: all 0.2s;}
+    .btn-tag:hover { background-color: #DADADA; color: #666666; }
+  </style>
+</head>
+
+<body>
+  <div class="row w-100">
+    <div class="col-xl-2 col-md-3">
+      <%- include('./components/sidebar')%>
+      <script>setCurrentNav('practices')</script>
+    </div>
+    <div class="col-xl-10 col-md-9">
+      <div class="container my-5">
+        <div class="row mb-5">
+          <h2>실습 관리</h2>
+        </div>
+        <div class="row">
+          <div class="row mb-3">
+            <div class="col-3">
+              <h5>실습 목록</h5>
+            </div>
+            <div class="col-9 d-flex flex-row justify-content-end">
+              <a class="btn btn-primary me-3" href="/rookie/teacher/practices/new">새실습</a>
+              
+              <div class="input-group" style="width: 25rem;">
+                <input type="search" class="form-control" placeholder="생성자" aria-describedby="btnSearch" id="inputPracticeOwnerSearch" onkeydown="if(event.key === 'Enter') document.getElementById('btnPracticeSearch').click();">
+                <input type="search" class="form-control" placeholder="제목/태그" aria-describedby="btnSearch" id="inputPracticeSearch" onkeydown="if(event.key === 'Enter') document.getElementById('btnPracticeSearch').click();">
+                <button class="btn btn-outline-secondary" type="button" id="btnPracticeSearch">검색</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 실습 테이블 -->
+          <div class="row mb-3">
+            <div class="col">
+              <div class="table-wraper">
+                <table class="w-100">
+                  <thead>
+                    <tr>
+                      <th style="width: 10%;">번호</th>
+                      <th style="width: 15%;">생성자</th>
+                      <th style="width: 20%;">제목</th>
+                      <th style="width: 55%;">설명</th>
+                    </tr>
+                  </thead>
+                  <tbody id="practiceTableBody">
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+
+          </div>
+          <div class="row">
+            <div class="col">
+              <nav aria-label="Page navigation" class="w-100" style="background: none;">
+                <ul id="practicePagination" class="pagination justify-content-center"></ul>
+              </nav>
+            </div>
+          </div>
+          <!-- // 실습 테이블 -->
+
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+</body>
+<script>
+  window.onload = async () => {
+    setPracticeSearchEvent();
+
+    await loadPractices(1);
+  }
+
+  function setPracticeSearchEvent() {
+    $('#btnPracticeSearch').on('click', async () => {
+      const ownerId = $('#inputPracticeOwnerSearch').val();
+      const query = $('#inputPracticeSearch').val();
+      await loadPractices(1, ownerId, query);
+    });
+  }
+
+  async function loadPractices(page, ownerId, query) {
+    try {
+      const params = new URLSearchParams();
+      if (page) params.append('page', page);
+      if (ownerId) params.append('ownerId', ownerId);
+      if (query) params.append('query', query);
+
+      const res = await fetch(`/rookie/api/practices?${params.toString()}`);
+      const { meta, practices } = await res.json();
+
+      if (practices.length > 0) {
+        setPracticeTable(practices);
+        setPracticePagination(meta, ownerId, query);
+      }
+      else {
+        $('#practiceTableBody').empty();
+        $('#practicePagination').empty();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  function setPracticeTable(practices) {
+    $('#practiceTableBody').empty();
+
+    for (let prac of practices) {
+      const tr = document.createElement('tr');
+      const tdIdx = document.createElement('td');
+      const tdOwner = document.createElement('td');
+      const tdTitle = document.createElement('td');
+      const tdOutline = document.createElement('td');
+      tdTitle.style = `text-align: left; font-size: 0.9rem;`;
+      tdOutline.style = `text-align: left; font-size: 0.9rem;`;
+
+      const title = document.createElement('div');
+      const tags = document.createElement('div');
+      title.onclick = () => window.open(`/rookie/practices/ws/${prac.key}`, '_blank');
+      title.classList.add('tr-title');
+      title.textContent = prac.title;
+      tags.style = 'height: 1.6rem;';
+
+      tdTitle.appendChild(title);
+      tdTitle.appendChild(tags);
+      title.textContent = prac.title;
+      prac.tags.forEach((name) => {
+        const btn = document.createElement('button');
+        btn.classList.add('btn-tag');
+        btn.onclick = () => {
+          const ownerId = $('#inputPracticeOwnerSearch').val();
+          $('#inputPracticeSearch').val(name);
+          loadPractices(1, ownerId, name);
+        };
+        btn.textContent = name;
+        tags.appendChild(btn);
+      });
+      tdIdx.textContent = prac.key;
+      tdOwner.textContent = prac.ownerId;
+      tdOutline.innerHTML = prac.outline.replace(/\n/g, '<br>');
+      
+      tr.appendChild(tdIdx);
+      tr.appendChild(tdOwner);
+      tr.appendChild(tdTitle);
+      tr.appendChild(tdOutline);
+
+      $('#practiceTableBody').append(tr);
+    }
+  }
+  
+  function setPracticePagination(meta, ownerId, query) {
+    $('#practicePagination').empty();
+
+    function getPageItem(innerHtml, clickEvent) {
+      const li = document.createElement('li'); li.classList.add('page-item');
+      const a = document.createElement('a'); a.classList.add('page-link');
+      li.append(a);
+      a.style.cursor = 'pointer';
+      a.innerHTML = innerHtml;
+      a.onclick = clickEvent;
+      return li;
+    }
+
+    let temp = meta.currentPage-meta.maxPage;
+    const laquo = getPageItem(`<span aria-hidden="true">&laquo;</span>`, () => {
+      loadPractices(temp>0 ? temp:1, ownerId, query);
+    });
+    
+    temp = meta.currentPage+meta.maxPage;
+    const raquo = getPageItem(`<span aria-hidden="true">&raquo;</span>`, () => {
+      loadPractices(temp<=meta.totalPage? temp:meta.totalPage, ownerId, query);
+    });
+
+    $('#practicePagination').append(laquo);
+    for (let page=meta.startPage; page<=meta.endPage; page++) {
+      const p = getPageItem(page, () => {loadPractices(page, ownerId, query);});
+      if (page === meta.currentPage) p.classList.add('active');
+      $('#practicePagination').append(p);
+    }
+    $('#practicePagination').append(raquo);
+  }
+
+</script>
+</html>

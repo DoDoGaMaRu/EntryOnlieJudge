@@ -1,0 +1,20 @@
+// vs코드에 명시하기 위한 파일로 실제 컴파일러에서 동작하지 않습니다.
+// import 자동 완성 등에 사용됩니다.
+{
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "baseUrl": "./src",
+    // 실제 동작은 package.json의 "imports"를 참고해주세요.
+    "paths": {
+      "#utils/*": ["utils/*"],
+      "#middlewares/*": ["middlewares/*"],
+      "#routes/*": ["routes/*"],
+      "#controllers/*": ["controllers/*"],
+      "#repositories/*": ["repositories/*"],
+      "#services/*": ["services/*"],
+      "#models/*": ["models/*"],
+    }
+  },
+  "include": ["src/**/*.js"],
+  "exclude": ["node_modules"]
+}

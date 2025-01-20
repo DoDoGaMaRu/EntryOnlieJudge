@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>코더스아이티 루키</title>
+  <link rel="stylesheet" href="/rookie/css/common.css">
+
+  <link href="https://codersit.co.kr/theme/daontheme_business03/html/css_js/font.css" rel="stylesheet" type="text/css">
+  <link rel='stylesheet' href="https://codersit.co.kr/coders/research/bootstrap/css2/bootstrap.css" />
+  <script src="https://codersit.co.kr/coders/research/jquery/jquery-3.4.1.min.js"></script>
+  <script src="https://codersit.co.kr/coders/research/bootstrap/js2/bootstrap.bundle.min.js"></script>
+
+  <style>
+    body { font-size: 1rem; font-weight: normal; font-family: 'Noto Sans KR', sans-serif; }
+    input:focus { outline:none; }
+    #searchBox { margin: 0.5rem 0; box-sizing: border-box; height: 2rem; border-bottom: solid 2px #444444; padding-bottom: 0.2rem; transition: all 500ms; }
+    #searchBox:hover { border-bottom: solid 2px #4f80ff; }
+
+    /* 테이블 관련 css */
+    tbody tr:hover {background-color: rgba(0, 0, 0, 0.05);}
+    th, td { text-align: center; padding: 0.3rem !important; }
+    th {border-bottom: 1px solid #c8c7d4; font-size: 0.8rem; color: #888888;}
+    td {border-top: 1px solid #c8c7d4;}
+    .table-wraper {border: solid 1px #c8c7d4; background-color: rgba(255, 255, 255, 0.7); border-radius: 0.5rem; overflow: hidden; }
+    .group-name {color: black; text-decoration: none;}
+    .group-name:hover {color: black; font-weight: 500;}
+  </style>
+</head>
+
+<body>
+  <div class="row w-100">
+    <div class="col-xl-2 col-md-3">
+      <%- include('./components/sidebar')%>
+      <script>setCurrentNav('groups')</script>
+    </div>
+    <div class="col-xl-10 col-md-9">
+      <div class="container my-5">
+        <div class="row mb-5">
+          <h2>그룹 관리</h2>
+        </div>
+        <div class="row">
+          <div class="row mb-3">
+            <div class="col-3">
+              <h5>그룹 목록</h5>
+            </div>
+            <div class="col-9 d-flex flex-row justify-content-end">
+              <a class="btn btn-primary me-3" href="/rookie/teacher/groups/new">새그룹</a>
+              <div class="input-group" style="width: 20rem;">
+                <input type="search" class="form-control" placeholder="그룹이름" aria-describedby="btnSearch" id="inputSearch" onkeydown="if(event.key === 'Enter') document.getElementById('btnSearch').click();">
+                <button class="btn btn-outline-secondary" type="button" id="btnSearch">검색</button>
+              </div>
+            </div>
+
+          </div>
+          <div class="row">
+            <!-- 그룹 테이블 -->
+            <div class="col">
+              <div class="table-wraper w-100 mb-4">
+                <table class="w-100">
+                  <thead>
+                    <tr>
+                      <th style="width: 8%;">#</th>
+                      <th style="width: 20%;">그룹이름</th>
+                      <th style="width: 57%;">설명</th>
+                      <th style="width: 15%;">인원수</th>
+                    </tr>
+                  </thead>
+                  <tbody class="fadein">
+                    <% for (let idx=1; idx<=groups.length; idx++) { %>
+                    <% const group = groups[idx-1] %>
+                    <tr>
+                      <td><%-idx%></td>
+                      <td>
+                        <a class="group-name" href="/rookie/teacher/groups/<%-group._id%>/missions">
+                          <%-group.name%>
+                        </a>
+                      </td>
+                      <td><%-group.description%></td>
+                      <td><%-group.users.length%></td>
+                    </tr>
+                    <% } %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- /그룹 테이블 -->
+
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+</body>
+<script>
+  window.onload = async () => {
+    setSearchEvent();
+  }
+
+  function setSearchEvent() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const query = urlParams.get('query');
+    $('#inputSearch').val(query);
+
+    $('#btnSearch').on('click', () => {
+			const query = $('#inputSearch').val();
+      const params = new URLSearchParams();
+      if (query) params.append('query', query);
+      window.location.href = `/rookie/teacher/groups?${params.toString()}`;
+    });
+  }
+</script>
+</html>

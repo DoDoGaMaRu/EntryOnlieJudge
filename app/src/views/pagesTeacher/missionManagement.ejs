@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>코더스아이티 루키</title>
+  <link rel="stylesheet" href="/rookie/css/common.css">
+
+  <link href="https://codersit.co.kr/theme/daontheme_business03/html/css_js/font.css" rel="stylesheet" type="text/css">
+  <link rel='stylesheet' href="https://codersit.co.kr/coders/research/bootstrap/css2/bootstrap.css" />
+  <script src="https://codersit.co.kr/coders/research/jquery/jquery-3.4.1.min.js"></script>
+  <script src="https://codersit.co.kr/coders/research/bootstrap/js2/bootstrap.bundle.min.js"></script>
+
+  <style>
+    body { font-size: 1rem; font-weight: normal; font-family: 'Noto Sans KR', sans-serif; }
+    input:focus { outline:none; }
+
+    /* 테이블 관련 css */
+    tbody tr:hover {background-color: rgba(0, 0, 0, 0.05);}
+    th, td { text-align: center; padding: 0.3rem !important; }
+    th {border-bottom: 1px solid #c8c7d4; font-size: 0.8rem; color: #888888;}
+    td {border-top: 1px solid #c8c7d4;}
+    .table-wraper {border: solid 1px #c8c7d4; background-color: rgba(255, 255, 255, 0.7); border-radius: 0.5rem; overflow: hidden; }
+    .tr-title { margin-left: 0.1rem; cursor: pointer; width: 100%; }
+    .tr-title:hover { font-weight: 500; }
+    .btn-tag {height: 1.4rem; margin-right: 0.2rem; font-size: 0.7rem; font-weight: 500; border: none; border-radius: 0.5rem; background-color: #EAEAEA; color: #999999; transition: all 0.2s;}
+    .btn-tag:hover { background-color: #DADADA; color: #666666; }
+    .btn-table {font-size: 0.8rem;}
+  </style>
+</head>
+
+<body>
+  <div class="row w-100">
+    <div class="col-xl-2 col-md-3">
+      <%- include('./components/sidebar')%>
+      <script>setCurrentNav()</script>
+    </div>
+    <div class="col-xl-10 col-md-9">
+      <div class="container my-5">
+        <div class="row mb-5">
+          <h2>미션 관리</h2>
+        </div>
+
+        <!-- 미션 정보 -->
+        <div class="row mb-2">
+          <div class="col-3">
+            <h5>미션 정보</h5>
+          </div>
+          <div class="col-9 d-flex flex-row justify-content-end">
+            <button id="btnDeleteMission" class="btn btn-danger">미션삭제</button>
+          </div>
+          
+        </div>
+        <div class="row mb-2">
+          <div class="col-8">
+            <div class="input-group">
+              <span class="input-group-text" id="mission-title-addon">미션이름</span>
+              <input id="inputMissionTitle" type="text" class="form-control" aria-describedby="mission-title-addon" value="<%-mission.title%>" disabled>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="input-group">
+              <span class="input-group-text" id="mission-tag-addon">미션태그</span>
+              <input id="inputMissionTag" type="text" class="form-control" aria-describedby="mission-tag-addon" value="<%-mission.tag%>" disabled>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-12">
+            <div class="input-group">
+              <span class="input-group-text" id="mission-description-addon">미션설명</span>
+              <textarea class="form-control" id="inputMissionDescription" aria-describedby="mission-description-addon" style="min-height: 7rem; max-height: 7rem;" disabled><%-mission.description%></textarea>
+            </div>
+          </div>
+        </div>
+        <!-- //미션 정보 -->
+
+        <hr class="my-4">
+
+        <div class="row">
+          <!-- 서브태스크 테이블 -->
+          <div class="col-6">
+            <div class="row mb-2">
+              <div class="col-3">
+                <h5>서브태스크</h5>
+              </div>
+              <div class="col-9 d-flex flex-row justify-content-end">
+                <button id="btnAppendProblem" class="btn btn-primary me-2" style="font-size: 0.8rem;">문제 추가</button>
+                <button id="btnAppendPractice" class="btn btn-primary me-2" style="font-size: 0.8rem;">실습 추가</button>
+              </div>
+            </div>
+
+            <div class="row mb-5">
+              <div class="col">
+                <div class="table-wraper">
+                  <table class="w-100">
+                    <thead>
+                      <tr>
+                        <th style="width: 10%;">#</th>
+                        <th style="width: 10%;">타입</th>
+                        <th style="width: 10%;">대상</th>
+                        <th style="width: 55%;">이름</th>
+                        <th style="width: 15%;">-</th>
+                      </tr>
+                    </thead>
+                    <tbody id="subtaskTableBody">
+                      <% 
+                        const subtaskTypeText = {
+                          'ProblemSubtask': '문제',
+                          'PracticeSubtask': '실습'
+                        }
+                      %>
+                      <% for (let idx=1; idx<=mission.subtasks.length; idx++) { %>
+                      <%  const subtask = mission.subtasks[idx-1]; %>
+                      <tr>
+                        <td><%-idx%></td>
+                        <td><%-subtaskTypeText[subtask.subtaskType]%></td>
+                        <td><%-subtask.key%></td>
+                        <td>
+                          <div class="tr-title" 
+                            <% if (subtask.subtaskType === 'problem') { %>
+                              onclick="window.open(`/rookie/problems/ws/<%-subtask.key%>`, '_blank')"
+                            <% } else if (subtask.subtaskType === 'practice') { %>
+                              onclick="window.open(`/rookie/practices/ws/<%-subtask.key%>`, '_blank')"
+                            <% } %>
+                          >
+                            <%-subtask.title%>
+                          </div>
+                        </td>
+                        <td>
+                          <button class="btn-subtask-delete btn-table btn btn-secondary" data-subtask-oid="<%-subtask._id%>">삭제</button> 
+                        </td>
+                      </tr>
+                      <% } %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- //서브태스크 테이블 -->
+
+          <div class="col-6">
+            <!-- 문제 테이블 -->
+            <div id="problemAppend" class="row d-none">
+              <div class="col">
+                <div class="row mb-2">
+                  <div class="col-3">
+                    <h5>문제 추가</h5>
+                  </div>
+                  <div class="col-9 d-flex justify-content-end">
+                    <select id="inputProblemLevel" class="form-select me-3 no-drag" style="width: 6rem; height: 2.4rem;">
+                      <option selected value="">난이도</option>
+                      <option class="lv-1" value="1">LV. 1</option>
+                      <option class="lv-2" value="2">LV. 2</option>
+                      <option class="lv-3" value="3">LV. 3</option>
+                      <option class="lv-4" value="4">LV. 4</option>
+                      <option class="lv-5" value="5">LV. 5</option>
+                      <option class="lv-6" value="6">LV. 6</option>
+                      <option class="lv-7" value="7">LV. 7</option>
+                    </select>
+                    <div class="input-group" style="width: 20rem;">
+                      <input type="search" class="form-control" placeholder="제목/태그" aria-describedby="btnSearch" id="inputProblemSearch" onkeydown="if(event.key === 'Enter') document.getElementById('btnProblemSearch').click();">
+                      <button class="btn btn-outline-secondary" type="button" id="btnProblemSearch">검색</button>
+                    </div>
+                  </div>
+                </div>
+      
+                <div class="row mb-2">
+                  <div class="col">
+                    <div class="table-wraper">
+                      <table class="w-100">
+                        <thead>
+                          <tr>
+                            <th style="width: 15%;">번호</th>
+                            <th style="width: 55%;">제목</th>
+                            <th style="width: 15%;">난이도</th>
+                            <th style="width: 15%;">-</th>
+                          </tr>
+                        </thead>
+                        <tbody id="problemTableBody">
+                          
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+      
+                <div class="row">
+                  <div class="col">
+                    <nav aria-label="Page navigation" class="w-100" style="background: none;">
+                      <ul id="problemPagination" class="pagination justify-content-center"></ul>
+                    </nav>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- //문제 테이블 -->
+
+            <!-- 실습 테이블 -->
+            <div id="practiceAppend" class="row d-none">
+              <div class="col">
+                <div class="row mb-2">
+                  <div class="col-3">
+                    <h5>실습 추가</h5>
+                  </div>
+                  <div class="col-9 d-flex justify-content-end">
+                    <div class="input-group" style="width: 25rem;">
+                      <input type="search" class="form-control" placeholder="생성자" aria-describedby="btnSearch" id="inputPracticeOwnerSearch" onkeydown="if(event.key === 'Enter') document.getElementById('btnPracticeSearch').click();">
+                      <input type="search" class="form-control" placeholder="제목" aria-describedby="btnSearch" id="inputPracticeSearch" onkeydown="if(event.key === 'Enter') document.getElementById('btnPracticeSearch').click();">
+                      <button class="btn btn-outline-secondary" type="button" id="btnPracticeSearch">검색</button>
+                    </div>
+                  </div>
+                </div>
+      
+                <div class="row mb-2">
+                  <div class="col">
+                    <div class="table-wraper">
+                      <table class="w-100">
+                        <thead>
+                          <tr>
+                            <th style="width: 15%;">번호</th>
+                            <th style="width: 50%;">제목</th>
+                            <th style="width: 20%;">생성자</th>
+                            <th style="width: 15%;">-</th>
+                          </tr>
+                        </thead>
+                        <tbody id="practiceTableBody">
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+      
+                <div class="row">
+                  <div class="col">
+                    <nav aria-label="Page navigation" class="w-100" style="background: none;">
+                      <ul id="practicePagination" class="pagination justify-content-center"></ul>
+                    </nav>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- //실습 테이블 -->
+
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  
+</body>
+<script>
+  const missionOid = '<%-mission._id%>';
+  const subtaskMap = {};
+  const SUBTASK_TYPE = {
+    PROBLEM: 'problem',
+    PRACTICE: 'practice',
+  }
+  const SUBTASK_TYPE_TEXT = {
+    'problem': '문제',
+    'practice': '실습',
+  }
+  let lastSubtaskId = 0;
+
+  window.onload = async () => {
+    setDeleteEvent();
+    setAppendSubtaskEvent();
+    setDeleteSubtaskEvent();
+    setProblemSearchEvent();
+    setPracticeSearchEvent();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const type = urlParams.get('type');
+    if (type === 'problem') {
+      const page = urlParams.get('page');
+      const query = urlParams.get('query');
+      const level = urlParams.get('level');
+
+      $('#btnAppendProblem').click();
+      $('#inputProblemSearch').val(query);
+      $('#inputProblemLevel').val(level);
+      await loadProblems(page, query, level);
+    }
+    else if (type === 'practice') {
+      const page = urlParams.get('page');
+      const query = urlParams.get('query');
+      const ownerId = urlParams.get('ownerId');
+
+      $('#btnAppendPractice').click();
+      $('#inputPracticeSearch').val(query);
+      $('#inputPracticeOwnerSearch').val(ownerId);
+      await loadPractices(page, ownerId, query)
+    }
+    else {
+      $('#btnAppendProblem').click();
+    }
+  };
+  function setDeleteEvent() {
+    $('#btnDeleteMission').on('click', async function() {
+      if (confirm('미션을 삭제 하시겠습니까?')) {
+        const res = await fetch(`/rookie/api/teacher/missions/${missionOid}`, {method: 'DELETE'});
+
+        if (res.ok) {
+          alert('미션이 삭제되었습니다.');
+          window.location.href = document.referrer;
+        }
+        else {
+          console.error(res.status);
+        }
+      }
+    });
+  }
+
+  function setAppendSubtaskEvent() {
+    $('#btnAppendProblem').on('click', function() {
+      $('#practiceAppend').addClass('d-none');
+      $('#problemAppend').removeClass('d-none');
+      $('#inputProblemSearch').val('');
+      $('#inputProblemLevel').val('');
+      loadProblems(1);
+    });
+    $('#btnAppendPractice').on('click', function() {
+      $('#problemAppend').addClass('d-none');
+      $('#practiceAppend').removeClass('d-none');
+      $('#inputPracticeSearch').val('');
+      $('#inputPracticeOwnerSearch').val('');
+      loadPractices(1);
+    });
+
+    // 서브태스크 추가 이벤트
+    $(document).on('click', '.btn-subtask-append', async function () {
+      const type = $(this).data('type');
+      const key = $(this).data('key');
+      const title = $(this).data('title');
+
+
+      try {
+        const res = await fetch(`/rookie/api/teacher/missions/subtask`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ missionOid, type, key, title }),
+        })
+        if (!res.ok) {
+          throw new Error(`서버 응답 오류: ${res.status}`);
+        }
+        window.location.reload();
+      } catch (error) {
+        console.log(error);
+        alert('이미 등록된 서브태스크입니다.');
+      }
+    });
+  }
+
+  function setDeleteSubtaskEvent() {
+    $('.btn-subtask-delete').on('click', async function() {
+      try {
+        const subtaskOid = $(this).data('subtask-oid');
+        
+        const res = await fetch(`/rookie/api/teacher/missions/subtask/${subtaskOid}`, {method: 'DELETE'});
+        if (!res.ok) {
+          throw new Error(`서버 응답 오류: ${res.status}`);
+        }
+        window.location.reload();
+      } catch (error) {
+        console.log(error);
+        alert('서브태스크 삭제에 실패했습니다.');
+      }
+    });
+  }
+
+  function setProblemSearchEvent() {
+    $('#btnProblemSearch').on('click', async () => {
+      const query = $('#inputProblemSearch').val();
+      const level = parseInt($('#inputProblemLevel').val());
+      await loadProblems(1, query, level);
+    });
+  }
+
+  async function loadProblems(page, query, level) {
+    try {
+      const params = new URLSearchParams();
+      if (page) params.append('page', page);
+      if (query) params.append('query', query);
+      if (level) params.append('level', level);
+
+      const res = await fetch(`/rookie/api/problems?${params.toString()}`);
+      const { meta, problems } = await res.json();
+
+      params.append('type', 'problem');
+      window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+
+      if (problems.length > 0) {
+        setProblemTable(problems);
+        setProblemPagination(meta, query, level);
+      }
+      else {
+        $('#problemTableBody').empty();
+        $('#problemPagination').empty();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  function setProblemTable(problems) {
+    $('#problemTableBody').empty();
+
+    for (let prob of problems) {
+      const tr = document.createElement('tr');
+      const tdIdx = document.createElement('td');
+      const tdTitle = document.createElement('td');
+      const tdLevel = document.createElement('td');
+      const tdAppend = document.createElement('td');
+      tdTitle.style = `text-align: left; font-size: 0.9rem;`
+      tdLevel.style = `font-weight: 500;`;
+      tdLevel.classList.add(`lv-${prob.level}`);
+      
+      const title = document.createElement('div');
+      const tags = document.createElement('div');
+      title.onclick = () => window.open(`/rookie/problems/ws/${prob.key}`, '_blank');
+      title.classList.add('tr-title');
+      tags.style = 'height: 1.6rem;';
+      
+      // 서브태스크 추가 버튼
+      const btnAppend = document.createElement('button');
+      btnAppend.classList.add('btn');
+      btnAppend.classList.add('btn-table');
+      btnAppend.classList.add('btn-primary');
+      btnAppend.classList.add('btn-subtask-append');
+      btnAppend.textContent = '추가';
+      btnAppend.dataset.type = SUBTASK_TYPE.PROBLEM;
+      btnAppend.dataset.key = prob.key;
+      btnAppend.dataset.title = prob.title;
+      // 서브태스크 추가 버튼 END
+
+      tdTitle.appendChild(title);
+      tdTitle.appendChild(tags);
+      title.textContent = prob.title;
+      prob.tags.forEach((name) => {
+        const btn = document.createElement('button');
+        btn.classList.add('btn-tag');
+        btn.onclick = () => {
+          $('#inputProblemSearch').val(name);
+          loadProblems(1, name);
+        };
+        btn.textContent = name;
+        tags.appendChild(btn);
+      });
+      tdIdx.textContent = (prob.isPublic? '':'*') + prob.key;
+      tdLevel.textContent = `LV. ${prob.level}`;
+      tdAppend.appendChild(btnAppend);
+      
+      tr.appendChild(tdIdx);
+      tr.appendChild(tdTitle);
+      tr.appendChild(tdLevel);
+      tr.appendChild(tdAppend);
+
+      $('#problemTableBody').append(tr);
+    }
+  }
+
+  function setProblemPagination(meta, query, level) {
+    $('#problemPagination').empty();
+
+    function getPageItem(innerHtml, clickEvent) {
+      const li = document.createElement('li'); li.classList.add('page-item');
+      const a = document.createElement('a'); a.classList.add('page-link');
+      li.append(a);
+      a.style.cursor = 'pointer';
+      a.innerHTML = innerHtml;
+      a.onclick = clickEvent;
+      return li;
+    }
+
+    let temp = meta.currentPage-meta.maxPage;
+    const laquo = getPageItem(`<span aria-hidden="true">&laquo;</span>`, () => {
+      loadProblems(temp>0 ? temp:1, query, level);
+    });
+    
+    temp = meta.currentPage+meta.maxPage;
+    const raquo = getPageItem(`<span aria-hidden="true">&raquo;</span>`, () => {
+      loadProblems(temp<=meta.totalPage? temp:meta.totalPage, query, level);
+    });
+
+    $('#problemPagination').append(laquo);
+    for (let page=meta.startPage; page<=meta.endPage; page++) {
+      const p = getPageItem(page, () => {loadProblems(page, query, level);});
+      if (page === meta.currentPage) p.classList.add('active');
+      $('#problemPagination').append(p);
+    }
+    $('#problemPagination').append(raquo);
+  }
+
+
+  function setPracticeSearchEvent() {
+    $('#btnPracticeSearch').on('click', async () => {
+      const ownerId = $('#inputPracticeOwnerSearch').val();
+      const query = $('#inputPracticeSearch').val();
+      await loadPractices(1, ownerId, query);
+    });
+  }
+
+  async function loadPractices(page, ownerId, query) {
+    try {
+      const params = new URLSearchParams();
+      if (page) params.append('page', page);
+      if (ownerId) params.append('ownerId', ownerId);
+      if (query) params.append('query', query);
+
+      const res = await fetch(`/rookie/api/practices?${params.toString()}`);
+      const { meta, practices } = await res.json();
+
+      params.append('type', 'practice');
+      window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+
+      if (practices.length > 0) {
+        setPracticeTable(practices);
+        setPracticePagination(meta, ownerId, query);
+      }
+      else {
+        $('#practiceTableBody').empty();
+        $('#practicePagination').empty();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  function setPracticeTable(practices) {
+    $('#practiceTableBody').empty();
+
+    for (let prac of practices) {
+      const tr = document.createElement('tr');
+      const tdIdx = document.createElement('td');
+      const tdOwner = document.createElement('td');
+      const tdTitle = document.createElement('td');
+      const tdAppend = document.createElement('td');
+      tdTitle.style = `text-align: left; font-size: 0.9rem;`
+      
+      const title = document.createElement('div');
+      const tags = document.createElement('div');
+      title.onclick = () => window.open(`/rookie/practices/ws/${prac.key}`, '_blank');
+      title.classList.add('tr-title');
+      title.textContent = prac.title;
+      tags.style = 'height: 1.6rem;';
+      
+      // 서브태스크 추가 버튼
+      const btnAppend = document.createElement('button');
+      btnAppend.classList.add('btn');
+      btnAppend.classList.add('btn-primary');
+      btnAppend.classList.add('btn-subtask-append');
+      btnAppend.textContent = '추가';
+      btnAppend.style.fontSize = '0.8rem';
+      btnAppend.dataset.type = SUBTASK_TYPE.PRACTICE;
+      btnAppend.dataset.key = prac.key;
+      btnAppend.dataset.title = prac.title;
+      // 서브태스크 추가 버튼 END
+
+      tdTitle.appendChild(title);
+      tdTitle.appendChild(tags);
+      title.textContent = prac.title;
+      prac.tags.forEach((name) => {
+        const btn = document.createElement('button');
+        btn.classList.add('btn-tag');
+        btn.onclick = () => {
+          const ownerId = $('#inputPracticeOwnerSearch').val();
+          $('#inputPracticeSearch').val(name);
+          loadPractices(1, ownerId, name);
+        };
+        btn.textContent = name;
+        tags.appendChild(btn);
+      });
+      tdIdx.textContent = prac.key;
+      tdOwner.textContent = prac.ownerId;
+      tdAppend.appendChild(btnAppend);
+      
+      tr.appendChild(tdIdx);
+      tr.appendChild(tdTitle);
+      tr.appendChild(tdOwner);
+      tr.appendChild(tdAppend);
+
+      $('#practiceTableBody').append(tr);
+    }
+  }
+  
+  function setPracticePagination(meta, ownerId, query) {
+    $('#practicePagination').empty();
+
+    function getPageItem(innerHtml, clickEvent) {
+      const li = document.createElement('li'); li.classList.add('page-item');
+      const a = document.createElement('a'); a.classList.add('page-link');
+      li.append(a);
+      a.style.cursor = 'pointer';
+      a.innerHTML = innerHtml;
+      a.onclick = clickEvent;
+      return li;
+    }
+
+    let temp = meta.currentPage-meta.maxPage;
+    const laquo = getPageItem(`<span aria-hidden="true">&laquo;</span>`, () => {
+      loadPractices(temp>0 ? temp:1, ownerId, query);
+    });
+    
+    temp = meta.currentPage+meta.maxPage;
+    const raquo = getPageItem(`<span aria-hidden="true">&raquo;</span>`, () => {
+      loadPractices(temp<=meta.totalPage? temp:meta.totalPage, ownerId, query);
+    });
+
+    $('#practicePagination').append(laquo);
+    for (let page=meta.startPage; page<=meta.endPage; page++) {
+      const p = getPageItem(page, () => {loadPractices(page, ownerId, query);});
+      if (page === meta.currentPage) p.classList.add('active');
+      $('#practicePagination').append(p);
+    }
+    $('#practicePagination').append(raquo);
+  }
+</script>
+</html>

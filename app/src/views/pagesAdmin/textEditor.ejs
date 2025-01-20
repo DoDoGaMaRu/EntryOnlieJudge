@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>
+		에디터
+	</title>
+  <link rel="stylesheet" href="/rookie/css/common.css">
+
+	<link href="https://codersit.co.kr/theme/daontheme_business03/html/css_js/font.css" rel="stylesheet" type="text/css">
+	<link rel='stylesheet' href="https://codersit.co.kr/coders/research/bootstrap/css2/bootstrap.css" />	
+	<script src="https://codersit.co.kr/coders/research/jquery/jquery-3.4.1.min.js"></script>	
+	<script src="https://codersit.co.kr/coders/research/bootstrap/js2/bootstrap.bundle.min.js"></script>
+	
+	<style>
+		html, body { height: 100%; overflow: hidden; font-family: 'Noto Sans KR', sans-serif;}
+	</style>
+</head>
+
+<body>
+  <div class="row w-100 h-100">
+    <div class="col-xl-2 col-md-3">
+      <%- include('./components/sidebar')%>
+      <script>setCurrentNav('textEditor')</script>
+    </div>
+    <div class="col-xl-10 col-md-9 h-100">
+      <div class="container h-100" style="position: relative;">
+				<!-- 에디터 -->
+				<button id="btnDownload" style="position: absolute; top: 0; right: 3rem;">다운로드</button>
+				<div class="h-100 w-100 no-drag" style="background-color: #888888;">
+					<iframe id="editor" src="/rookie/component/documentEditor" frameborder="0" class="h-100 w-100"></iframe>
+				</div>
+				<!-- /에디터 -->
+      </div>
+    </div>
+  </div>
+</body>
+
+<script type="module">
+import { 
+	postMessage,
+	postResponsiveMessage
+} from '/rookie/js/util.js'
+
+import { event as editorEvent } from '/rookie/js/ckeditor5/iframeEvent.mjs';
+
+const editor = document.getElementById('editor').contentWindow;
+
+
+window.onload = async () => {
+  setDownloadEvent();
+}
+
+
+function setDownloadEvent() {
+  $('#btnDownload').on('click', async () => {
+    const { document: doc } = await postResponsiveMessage(editor, editorEvent.EXPORT_DOCUMENT, null, '*');
+    const blob = new Blob([doc], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'document.txt';
+    document.body.appendChild(a);
+    a.click();
+
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+}
+</script>
+
+</html>

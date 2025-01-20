@@ -1,0 +1,34 @@
+
+<div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 id="alertModalTitle" class="modal-title"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">확인</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+	const _alertModal = document.getElementById('alertModal');
+  const _alertModalTitle = document.getElementById('alertModalTitle');
+	const _bAlertModal = new bootstrap.Modal(_alertModal);
+
+  function _alert(text) {
+    return new Promise((resolve)=>{
+      _alertModalTitle.innerHTML = text;
+      _bAlertModal.show();
+
+      const hideEvent = (e) => {
+        _alertModal.removeEventListener('hidden.bs.modal', hideEvent);
+        _alertModalTitle.innerHTML = '';
+        resolve();
+      }
+      _alertModal.addEventListener('hidden.bs.modal', hideEvent);
+    });
+  }
+</script>

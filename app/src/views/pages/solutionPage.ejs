@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>
+		<%= title %>
+	</title>
+  <link rel="stylesheet" href="/rookie/css/common.css">
+
+	<link href="https://codersit.co.kr/theme/daontheme_business03/html/css_js/font.css" rel="stylesheet" type="text/css">
+	<link rel='stylesheet' href="https://codersit.co.kr/coders/research/bootstrap/css2/bootstrap.css" />	
+	<script src="https://codersit.co.kr/coders/research/jquery/jquery-3.4.1.min.js"></script>	
+	<script src="https://codersit.co.kr/coders/research/bootstrap/js2/bootstrap.bundle.min.js"></script>
+	<script type="module" src="/rookie/js/solutionPage.js"></script>
+	<script>
+		const solutionKey = <%= solutionKey %>
+	</script>
+	<style>
+		html, body { height: 100%; overflow: hidden; font-family: 'Noto Sans KR', sans-serif;}
+		.no-drag { user-select: none; }
+		.svg-button { cursor: pointer; transition: fill 0.2s; margin: 0 0.3rem; }
+		.svg-button:hover { fill: #999999; }
+		.nav-button { height: 1.9rem; font-size: 0.9rem; font-weight: 600; border: none; margin: 0 0.2rem; border-radius: 1rem; white-space: nowrap; background-color: #FEFEFE; color: #555555; transition: all 0.2s;}
+		.nav-button:hover { background-color: #555555; color: #FEFEFE; } 
+		#btnSubmit { background-color: #29c45c; color: #FEFEFE; transition: all 0.2s; }
+		#btnSubmit:hover { background-color: #FEFEFE; color: #555555; }
+		#btnReset { background-color: #FEFEFE; color: #555555; transition: all 0.2s; }
+		#btnReset:hover { background-color: #e25555; color: #FEFEFE; }
+		label { font-size: 1.2rem; font-weight: bold; }
+		table { font-size: 1rem; white-space: nowrap; }
+		
+		.top-padder {min-height: 38px; max-height: 38px; background-color: #4f80ff;}
+		.problem-info-tab { padding: 8px 10px; width: fit-content; background: #FFFFFF; border-radius: 8px 8px 0 0; border-bottom: solid 2px #FFB500; color: #FFB500; font-weight: 600; font-size: 14px;}
+	</style>
+</head>
+
+<body>
+
+	<div class="d-flex flex-column h-100 w-100 fadein">
+
+		<div class="top-nav d-flex flex-row justify-content-between align-items-center"
+		style="height: 3rem; padding: 0.3rem 0; background-color: #4f80ff;">
+			<div class="top-nav-left ms-3 d-flex flex-row justify-content-start" style="padding: 0 0.3rem; width: 35%;">
+				
+				<svg id="btnExit" class="svg-button" xmlns="http://www.w3.org/2000/svg" height="1.9rem" width="1.9rem" viewBox="0 0 24 24" fill="#FEFEFE"><path d="M0 0h24v24H0z" fill="none"/><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+
+
+			</div>
+			<div class="top-nav-mid h-100 d-flex flex-column align-items-center" style="width: 30%;">
+				<div class="nav-title w-100 h-75 d-flex flex-row justify-content-center align-items-center pb-1">
+					<span id="navTitle" class="no-drag d-block" style="font-size: 1.2rem; color: #FFFFFF; font-weight: 600;"></span>
+
+				</div>
+			</div>
+			<div class="top-nav-right me-3 d-flex flex-row justify-content-end" style="padding: 0 0.3rem; width: 35%;">
+				<!-- 
+					<div class="util-box d-flex flex-row"></div>
+					<div style="border-right: 1px solid #FAFAFA; height: 1.3rem; margin: auto 1.3rem"></div>
+				-->
+			</div>
+		</div>
+
+		
+		<div class="d-flex flex-row flex-grow-1 w-100">
+			<div id="left" class="d-flex flex-column" style="background-color: #dddddd; overflow: hidden; max-width: 485px; width: 485px;">
+				<div class="top-padder">
+					<div class="h-100 ms-3 problem-info-tab">
+						<span>문제 설명</span>
+					</div>
+				</div>
+				<iframe id="viewer" src="/rookie/component/documentViewer" frameborder="0" class="h-100 w-100"></iframe>
+			</div>
+
+
+			<div id="resizer">
+				<div class="top-padder"></div>
+				<div class="h-100" style="background-color: #FAFAFA; border: #DDDDDD solid 1px; cursor: col-resize; min-width: 16px; max-width: 16px;">
+					<svg xmlns="http://www.w3.org/2000/svg" width="80%" height="100%" viewBox="0 0 24 24" fill="#AAAAAA">
+						<rect x="8" y="5" width="3" height="32" rx="1" stroke="#AAAAAA" stroke-linecap="round" />
+						<rect x="17" y="5" width="3" height="32" rx="1" stroke="#AAAAAA" stroke-linecap="round" />
+					</svg>
+				</div>
+			</div>
+
+
+			<div id="right" class="d-flex flex-column flex-grow-1" style="min-width: 1024px;">
+
+				<div class="flex-grow-1 no-drag">
+					<iframe id="entry" src="/rookie/component/workspace" frameborder="0" class="h-100 w-100"></iframe>
+				</div>
+			</div>
+		</div>
+	</div>
+
+  <%- include('../modals/alert') %>
+  <%- include('../modals/confirm') %>
+</body>
+
+</html>
